@@ -38,18 +38,13 @@ $ pip3 install -e cli
 
 ```json
 {
-  // 教程名称
   "name": "Build a blog with React & Express",
-  // 教程语言
   "language": "zh-hans",
-  // 维护者电子邮箱
   "maintainer": "email@example.com",
-  // 教程涉及主题
   "topics": [
     "python",
     "click"
   ],
-  // 步骤
   "steps": [
     {
       "name": "Init project",
@@ -79,7 +74,6 @@ $ pip3 install -e cli
         }
       ]
     }
-    // More steps...
   ]
 }
 ```
