@@ -102,3 +102,7 @@ venv.bak/
 
 tuture.json
 .tuture
+
+### VSCode ###
+
+.vscode
