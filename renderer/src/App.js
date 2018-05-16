@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import tuture from '../../tuture.json';
+import tuture from './util/content.json';
 import _ from 'lodash';
 import styled from 'styled-components';
 
@@ -35,13 +35,13 @@ class App extends Component {
     const nowSelectKeyNumber = Number(this.state.selectKey);
     const nowRenderContent = tuture.steps[nowSelectKeyNumber];
     return (
-      <div style={{ height: '100%' }}>
+      <div style={{ height: '100%', width: '100%', display: 'flex' }}>
         <Catalog 
           catalogs={catalogs}
           selectKey={this.state.selectKey}
           updateSelect={this.updateSelect}
-        />
-        <Content 
+          />
+        <Content
           content={nowRenderContent}
         />
       </div>
