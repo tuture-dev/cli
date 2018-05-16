@@ -37,12 +37,12 @@ class App extends Component {
     return (
       <div style={{ height: '100%', width: '100%', display: 'flex' }}>
         <Catalog 
-            catalogs={catalogs}
-            selectKey={this.state.selectKey}
-            updateSelect={this.updateSelect}
+          catalogs={catalogs}
+          selectKey={this.state.selectKey}
+          updateSelect={this.updateSelect}
           />
         <Content
-            content={nowRenderContent}
+          content={nowRenderContent}
         />
       </div>
     );
