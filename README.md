@@ -7,7 +7,7 @@ Tuture 是一个基于 Git 仓库生成交互式教程的工具。
 将仓库 clone 到本地后，执行以下命令安装命令行工具：
 
 ```bash
-$ pip3 install -e cli
+$ npm i -g
 ```
 
 ### `tuture init`
@@ -17,9 +17,9 @@ $ pip3 install -e cli
 调用此命令后，会执行一系列询问：
 
 1. Tutorial Name? 询问此教程的标题
-1. Language Code? 询问此教程的语言代码（例如 `zh-hans` 为简体中文）
-2. Topics? 询问此教程的主题（例如 `javascript,react`）
-3. Maintainer email? 询问此教程维护者的电子邮件（例如 pftom@powerformer.com）
+2. Language Code? 询问此教程的语言代码（例如 `zh-hans` 为简体中文）
+3. Topics? 询问此教程的主题（例如 `javascript,react`）
+4. Maintainer email? 询问此教程维护者的电子邮件（例如 pftom@powerformer.com）
 
 然后会调用 git 命令并根据相应的日志生成以下文件：
 
