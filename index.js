@@ -21,11 +21,11 @@ program
     // Ask for name, language, topics and email from user prompt
     const name = await promptly.prompt(
       'Tutorial Name: ',
-      { default: 'My Awesome Tutorial'}
+      { default: 'My Awesome Tutorial' },
     );
     const languange = await promptly.prompt(
       'Languange Code: ',
-      { default: 'zh-hans' }
+      { default: 'zh-hans' },
     );
     const topics = await promptly.prompt('Topics: ');
     const email = await promptly.prompt('Maintainer Email: ');
@@ -33,12 +33,12 @@ program
     // Make .tuture directoy and its subdirectories
     utils.makeTutureDirs();
 
-    let tuture = {
-      name: name,
+    const tuture = {
+      name,
       language: languange,
       topics: topics ? topics.split(/[ ,]+/) : '<YOUR TOPICS>',
-      maintainer: email ? email : '<YOUR EMAIL>',
-      steps: await utils.getSteps()
+      maintainer: email || '<YOUR EMAIL>',
+      steps: await utils.getSteps(),
     };
 
     fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
@@ -58,11 +58,12 @@ program
       'cd renderer && npm install && npm start',
       (err, stdout, stderr) => {
         if (err) {
-          console.log('Something went wrong with npm!');
+          console.log('Something went wrong with npm!', stderr);
           process.abort(1);
         }
         console.log('Your tutorial is now served on http://localhost:3000');
-    });
+      },
+    );
   });
 
 // If no arguments or options provided, just print help page
