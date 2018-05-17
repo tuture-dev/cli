@@ -7,7 +7,7 @@ const git = require('simple-git/promise')('.');
 const path = require('path');
 
 const EXPLAIN_PLACEHOLDER = '<YOUR EXPLANATION HERE>';
-const DIFF_PATH = '.tuture/diff'
+const TUTURE_ROOT = '.tuture'
 
 async function getGitLogs() {
   let result = null;
@@ -15,7 +15,7 @@ async function getGitLogs() {
     result = await git.raw(['log', '--oneline', '--no-merges']);
   }
   catch (e) {
-    console.log("No git executable detected!")
+    console.log("No git executable detected!");
     process.exit(1);
   }
   let logs = result.split('\n');
@@ -29,7 +29,7 @@ async function getGitDiff(commit) {
     result = await git.raw(['show', commit, '--name-only']);
   }
   catch (e) {
-    console.log("No git executable detected!")
+    console.log("No git executable detected!");
     process.exit(1);
   }
   let changedFiles = result.split('\n\n').slice(-1)[0].split('\n');
@@ -48,13 +48,13 @@ async function storeDiff(commit) {
     result = await git.raw(['show', commit]);
   }
   catch (e) {
-    console.log("No git executable detected!")
+    console.log("No git executable detected!");
     process.exit(1);
   }
   git.raw(['show', commit]);
 
   const diff = result.split('\n\n').slice(-1)[0];
-  const diffPath = path.join(DIFF_PATH, commit + '.diff');
+  const diffPath = path.join(TUTURE_ROOT, 'diff', commit + '.diff');
   fs.writeFileSync(diffPath, diff);
 }
 
@@ -71,6 +71,19 @@ async function makeSteps() {
       diff: await getGitDiff(commit)
     };
   });
+}
+
+// Make .tuture directoy and its subdirectories
+// This operation is IDEMPOTENT.
+exports.makeTutureDirs = () => {
+  if (!fs.existsSync(TUTURE_ROOT)) {
+    fs.mkdirSync(TUTURE_ROOT);
+  }
+
+  const diffDirPath = path.join(TUTURE_ROOT, 'diff');
+  if (!fs.existsSync(diffDirPath)) {
+    fs.mkdirSync(diffDirPath);
+  }
 }
 
 // Constructs "steps" section in tuture.yml and store diff files.

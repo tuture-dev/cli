@@ -30,13 +30,16 @@ program
     const topics = await promptly.prompt('Topics: ');
     const email = await promptly.prompt('Maintainer Email: ');
 
+    // Make .tuture directoy and its subdirectories
+    utils.makeTutureDirs();
+
     let tuture = {
       name: name,
       language: languange,
       topics: topics ? topics.split(/[ ,]+/) : '<YOUR TOPICS>',
       maintainer: email ? email : '<YOUR EMAIL>',
       steps: await utils.getSteps()
-    }
+    };
 
     fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
 
@@ -61,7 +64,5 @@ program
         console.log('Your tutorial is now served on http://localhost:3000');
     });
   });
-
-program.help();
 
 program.parse(process.argv);
