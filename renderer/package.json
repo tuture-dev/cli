@@ -93,6 +93,7 @@
   "devDependencies": {
     "babel-plugin-import": "^1.7.0",
     "babel-plugin-styled-components": "^1.5.1",
+    "copy-webpack-plugin": "^4.5.1",
     "jest-styled-components": "^5.0.1",
     "stylelint": "^9.2.0",
     "stylelint-config-recommended": "^2.1.0",

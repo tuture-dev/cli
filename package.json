@@ -1,7 +1,7 @@
 {
   "name": "tuture-prototype",
   "version": "0.0.1",
-  "description": "Tuture 是一个基于 Git 仓库生成交互式教程的工具",
+  "description": "Tuture makes writing interactive, step-by-step tutorials enjoyable.",
   "main": "cli/index.js",
   "scripts": {
     "test": "echo Test Passed!"
@@ -11,11 +11,17 @@
     "url": "git+https://github.com/tutureproject/prototype.git"
   },
   "license": "MIT",
+  "bin": {
+    "tuture": "./index.js"
+  },
   "bugs": {
     "url": "https://github.com/tutureproject/prototype/issues"
   },
   "homepage": "https://github.com/tutureproject/prototype#readme",
-  "devDependencies": {
-    "copy-webpack-plugin": "^4.5.1"
+  "dependencies": {
+    "commander": "^2.15.1",
+    "js-yaml": "^3.11.0",
+    "promptly": "^3.0.3",
+    "simple-git": "^1.92.0"
   }
 }
