@@ -1,0 +1,31 @@
+diff --git a/.editorconfig b/.editorconfig
+new file mode 100644
+index 0000000..99117d6
+--- /dev/null
++++ b/.editorconfig
+@@ -0,0 +1,3 @@
++[*.js]
++indent_style = space
++indent_size = 2
+\ No newline at end of file
+diff --git a/renderer/src/App.js b/renderer/src/App.js
+index 0c1dc28..c404169 100644
+--- a/renderer/src/App.js
++++ b/renderer/src/App.js
+@@ -37,12 +37,12 @@ class App extends Component {
+     return (
+       <div style={{ height: '100%', width: '100%', display: 'flex' }}>
+         <Catalog 
+-            catalogs={catalogs}
+-            selectKey={this.state.selectKey}
+-            updateSelect={this.updateSelect}
++          catalogs={catalogs}
++          selectKey={this.state.selectKey}
++          updateSelect={this.updateSelect}
+           />
+         <Content
+-            content={nowRenderContent}
++          content={nowRenderContent}
+         />
+       </div>
+     );

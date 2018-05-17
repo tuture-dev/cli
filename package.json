@@ -14,5 +14,8 @@
   "bugs": {
     "url": "https://github.com/tutureproject/prototype/issues"
   },
-  "homepage": "https://github.com/tutureproject/prototype#readme"
+  "homepage": "https://github.com/tutureproject/prototype#readme",
+  "devDependencies": {
+    "copy-webpack-plugin": "^4.5.1"
+  }
 }
