@@ -31,11 +31,12 @@ class App extends Component {
       name: item.name,
       commit: item.commit,
     }));
+    const { name, language, maintainer, topics } = tuture;
     const catalogsInfo = {
-      'name': tuture.name,
-      'language': tuture.language,
-      'maintainer': tuture.maintainer,
-      'topics': tuture.topics,
+      name,
+      language,
+      maintainer,
+      topics,
     };
     const nowSelectKeyNumber = Number(this.state.selectKey);
     const nowRenderContent = tuture.steps[nowSelectKeyNumber];

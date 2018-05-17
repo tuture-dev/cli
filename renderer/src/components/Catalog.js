@@ -16,7 +16,7 @@ export default class Catalog extends Component {
       selectKey,
     } = this.props;
     return (
-      <div style={{display:'flex',flexDirection:'column', float:'left', height:'100%'}}>
+      <div style={{ display: 'flex', flexDirection: 'column', float: 'left', height:'100%' }}>
         <Menu
           onClick={this.handleClick}
           defaultSelectedKeys={[selectKey]}
@@ -30,7 +30,7 @@ export default class Catalog extends Component {
         }
               
         </Menu>
-        <div style={{position:'absolute', bottom:'0', paddingLeft:'24px'}}>
+        <div style={{ position: 'absolute', bottom:'0', paddingLeft:'24px' }}>
           <hr/>
           <p>name: {catalogsInfo.name}</p>
           <p>language: {catalogsInfo.language}</p>
