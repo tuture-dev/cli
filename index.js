@@ -30,13 +30,16 @@ program
     const topics = await promptly.prompt('Topics: ');
     const email = await promptly.prompt('Maintainer Email: ');
 
+    // Make .tuture directoy and its subdirectories
+    utils.makeTutureDirs();
+
     let tuture = {
       name: name,
       language: languange,
       topics: topics ? topics.split(/[ ,]+/) : '<YOUR TOPICS>',
       maintainer: email ? email : '<YOUR EMAIL>',
       steps: await utils.getSteps()
-    }
+    };
 
     fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
 
@@ -62,6 +65,9 @@ program
     });
   });
 
-program.help();
+// If no arguments or options provided, just print help page
+if (process.argv.length === 2) {
+  program.help();
+}
 
 program.parse(process.argv);
