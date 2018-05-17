@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Tabs } from 'antd';
 import ContentItem from './ContentItem';
 
-const TabPane = Tabs.TabPane;
+
 
 export default class Content extends Component {
   callback = (key) => {
@@ -11,21 +10,15 @@ export default class Content extends Component {
 
   render() {
     const { content } = this.props;
-
     return (
-      <div style={{ width: '70%', marginLeft: '20px' }}>
-        <Tabs 
-          defaultActiveKey="1" 
-          onChange={this.callback}
-        >
+      <div style={{ padding:'30px' }}>
+        <h1>{content.name}</h1>
+        <p>{content.explain}</p>
         {
           content.diff.map((diffItem, key) => (
-            <TabPane tab={diffItem.file} key={key}>
-              <ContentItem renderItem={diffItem.explain} />
-            </TabPane>
+            <ContentItem key={key} renderItem={diffItem} />
           ))
         }
-        </Tabs>
       </div>
     );
   }
