@@ -60,6 +60,8 @@ program
         }
         console.log('Your tutorial is now served on http://localhost:3000');
     });
-  })
+  });
+
+program.help();
 
 program.parse(process.argv);
