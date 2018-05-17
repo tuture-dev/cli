@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 
 export default class ContentItem extends Component {
   render() {
-    const { renderItem } = this.props;
+    const { file, change, explain } = this.props.renderItem;
     return (
-      <div>hhhh</div>
+      <div>
+        <h3>{file}</h3>
+        <p>{change}</p>
+        <p>{explain}</p>
+      </div>
     );
   }
 }
