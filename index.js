@@ -65,4 +65,9 @@ program
     });
   });
 
+// If no arguments or options provided, just print help page
+if (process.argv.length === 2) {
+  program.help();
+}
+
 program.parse(process.argv);
