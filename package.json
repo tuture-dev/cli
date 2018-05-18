@@ -4,7 +4,8 @@
   "description": "Tuture makes writing interactive, step-by-step tutorials enjoyable.",
   "main": "cli/index.js",
   "scripts": {
-    "test": "echo Test Passed!"
+    "test": "echo Test Passed!",
+    "lint": "eslint **/*.js"
   },
   "repository": {
     "type": "git",
@@ -23,5 +24,15 @@
     "js-yaml": "^3.11.0",
     "promptly": "^3.0.3",
     "simple-git": "^1.92.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-react-app": "^2.1.0",
+    "eslint-plugin-flowtype": "^2.46.3",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.8.2"
   }
 }
