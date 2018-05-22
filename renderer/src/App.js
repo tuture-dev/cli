@@ -31,13 +31,20 @@ class App extends Component {
       name: item.name,
       commit: item.commit,
     }));
-
+    const { name, language, maintainer, topics } = tuture;
+    const catalogsInfo = {
+      name,
+      language,
+      maintainer,
+      topics,
+    };
     const nowSelectKeyNumber = Number(this.state.selectKey);
     const nowRenderContent = tuture.steps[nowSelectKeyNumber];
     return (
       <div style={{ height: '100%', width: '100%', display: 'flex' }}>
         <Catalog 
           catalogs={catalogs}
+          catalogsInfo={catalogsInfo}
           selectKey={this.state.selectKey}
           updateSelect={this.updateSelect}
           />
