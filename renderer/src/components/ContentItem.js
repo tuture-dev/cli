@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
-import { Diff, parseDiff, Hunk } from 'react-diff-view';
+import { parseDiff } from 'react-diff-view';
+import DiffView from './DiffView/demo/index';
 
-import diffText from '../assets/test.diff'
 
 export default class ContentItem extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      diffText: '',
-    };
-  }
+  state = {
+    diffText: '',
+    rendering: [],
+    diff: [],
+    comments: [],
+    writingChanges: [],
+    selectedChanges: [],
+    zip: false,
+    viewType: 'split',
+  };
 
   async getDiffText() {
     const that = this;
@@ -24,15 +27,6 @@ export default class ContentItem extends Component {
 
   componentDidMount() {
     this.getDiffText();
-  }
-
-  renderHunk = (hunk) => {
-    console.log('hunk', hunk);
-    const header = (
-      <div style={{ background: 'yellow' }}>hhhhh</div>
-    )
-
-    return <Hunk key={hunk.content} hunk={hunk} header={header} />;
   }
 
   render() {
@@ -50,9 +44,7 @@ export default class ContentItem extends Component {
     }
     return (
       <div>
-      {
-        diffText && needRenderFiles.map(({hunks}, i) => <Diff key={i} viewType="split">{hunks.map(this.renderHunk)}</Diff>) }
-      }
+        <DiffView />
       </div>
     );
   }

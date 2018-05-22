@@ -109,21 +109,6 @@ module.exports = {
       // First, run the linter.
       // It's important to do this before Babel processes the JS.
       {
-        test: /\.(js|jsx|mjs)$/,
-        enforce: 'pre',
-        use: [
-          {
-            options: {
-              formatter: eslintFormatter,
-              eslintPath: require.resolve('eslint'),
-              
-            },
-            loader: require.resolve('eslint-loader'),
-          },
-        ],
-        include: paths.appSrc,
-      },
-      {
         // "oneOf" will traverse all following loaders until one will
         // match the requirements. When no loader matches it will fall
         // back to the "file" loader at the end of the loader list.
@@ -189,6 +174,12 @@ module.exports = {
               },
             ],
           },
+          // use raw loader
+          {
+            test: /\.(diff|raw)$/,
+            use: ['raw-loader']
+          },
+          // use worker for parse export 
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.
           // In production, they would get copied to the `build` folder.
@@ -222,7 +213,9 @@ module.exports = {
       inject: true,
       template: paths.appHtml,
     }),
-    new CopyWebpackPlugin([{ from: './src/assets/', to: './assets/'}]),
+    new CopyWebpackPlugin([
+      { from: './src/assets/', to: './assets/'}
+    ]),
     // Add module names to factory functions so they appear in browser profiler.
     new webpack.NamedModulesPlugin(),
     // Makes some environment variables available to the JS code, for example:
