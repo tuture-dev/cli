@@ -60,11 +60,6 @@ typings/
 
 ### Tuture ###
 
-### DS_Store ###
-.DS_Store
-
-### node.js ###
-/node_modules
 tuture.yml
 .tuture/*
 
