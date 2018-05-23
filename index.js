@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-const cp = require('child_process');
-const fs = require('fs');
+const fs = require('fs-extra');
+const ora = require('ora');
 const program = require('commander');
 const promptly = require('promptly');
+const signale = require('signale');
 const utils = require('./utils');
 const yaml = require('js-yaml');
 
@@ -30,9 +31,9 @@ program
     const topics = await promptly.prompt('Topics: ');
     const email = await promptly.prompt('Maintainer Email: ');
 
-    // Make .tuture directoy and its subdirectories
     utils.makeTutureDirs();
 
+    const spinner1 = ora('Extracting diffs from git log...').start();
     const tuture = {
       name,
       language: languange,
@@ -41,9 +42,17 @@ program
       steps: await utils.getSteps(),
     };
 
-    fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
+    fs.writeFile('tuture.yml', yaml.safeDump(tuture)).then(() => {
+      spinner1.stop();
+      signale.success('Diff files and tuture.yml is created!');
+    });
 
-    console.log('Successfully initialized a tuture project!');
+    const spinner2 = ora('Creating tuture renderer...').start();
+    utils.copyRenderer().then(() => {
+      spinner2.stop();
+      signale.success('Tuture renderer is created!');
+      utils.installRendererDeps();
+    });
   });
 
 /**
@@ -53,17 +62,7 @@ program
   .command('up')
   .description('Fire up your tutorial in the browser')
   .action(() => {
-    console.log('Building your tutorial...');
-    cp.exec(
-      'cd renderer && npm install && npm start',
-      (err, stdout, stderr) => {
-        if (err) {
-          console.log('Something went wrong with npm!', stderr);
-          process.abort(1);
-        }
-        console.log('Your tutorial is now served on http://localhost:3000');
-      },
-    );
+    utils.startRenderer();
   });
 
 // If no arguments or options provided, just print help page
