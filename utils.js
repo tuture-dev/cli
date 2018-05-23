@@ -2,9 +2,12 @@
  * Utilities for implementing Tuture CLI.
  */
 
-const fs = require('fs');
+const cp = require('child_process');
+const fs = require('fs-extra');
 const git = require('simple-git/promise')('.');
+const ora = require('ora');
 const path = require('path');
+const signale = require('signale');
 
 const EXPLAIN_PLACEHOLDER = '<YOUR EXPLANATION HERE>';
 const TUTURE_ROOT = '.tuture';
@@ -68,14 +71,8 @@ async function makeSteps() {
 // Make .tuture directoy and its subdirectories
 // This operation is IDEMPOTENT.
 exports.makeTutureDirs = () => {
-  if (!fs.existsSync(TUTURE_ROOT)) {
-    fs.mkdirSync(TUTURE_ROOT);
-  }
-
-  const diffDirPath = path.join(TUTURE_ROOT, 'diff');
-  if (!fs.existsSync(diffDirPath)) {
-    fs.mkdirSync(diffDirPath);
-  }
+  fs.mkdirpSync(path.join(TUTURE_ROOT, 'diff'));
+  fs.mkdirpSync(path.join(TUTURE_ROOT, 'renderer'));
 };
 
 // Constructs "steps" section in tuture.yml and store diff files.
@@ -86,4 +83,37 @@ exports.getSteps = async () => {
   });
 
   return steps;
+};
+
+// Copy renderer directory to user's tutorial project.
+exports.copyRenderer = async () => {
+  try {
+    await fs.copy(
+      path.join(__dirname, 'renderer'),
+      path.join('.', TUTURE_ROOT, 'renderer'),
+    );
+  } catch (e) {
+    console.error(e);
+    process.abort(1);
+  }
+};
+
+exports.installRendererDeps = async () => {
+  process.chdir('.tuture/renderer');
+  const spinner3 = ora('Installing renderer dependencies...').start();
+  cp.exec('npm install', (err) => {
+    if (err) {
+      spinner3.stop();
+      signale.error('Renderer install failed. Please check if your npm is working.');
+      process.abort(1);
+    }
+    spinner3.stop();
+    signale.success('Renderer is successfully installed!');
+  });
+};
+
+exports.startRenderer = () => {
+  process.chdir('.tuture/renderer');
+  cp.exec('npm start');
+  signale.success('Tuture renderer is served on http://localhost:3000.');
 };
