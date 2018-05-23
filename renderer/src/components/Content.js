@@ -9,16 +9,13 @@ export default class Content extends Component {
   }
 
   render() {
-    const { name, explain, diff } = this.props.content;
+    const { name, explain, diff, commit } = this.props.content;
+    console.log('diff', diff);
     return (
       <div style={{ padding: '30px' }}>
         <h1>{name}</h1>
         <p>{explain}</p>
-        {
-          diff.map((diffItem, key) => (
-            <ContentItem key={key} renderItem={diffItem} />
-          ))
-        }
+        <ContentItem diff={diff} commit={commit} />
       </div>
     );
   }

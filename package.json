@@ -23,11 +23,9 @@
     "commander": "^2.15.1",
     "js-yaml": "^3.11.0",
     "promptly": "^3.0.3",
-    "raw-loader": "^0.5.1",
     "simple-git": "^1.92.0"
   },
   "devDependencies": {
-    "babel-plugin-react-require": "^3.0.0",
     "babel-eslint": "^8.2.3",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",

@@ -30,19 +30,7 @@ export default class Catalog extends Component {
         }
               
         </Menu>
-        <div style={{ position: 'absolute', bottom:'0', paddingLeft:'24px' }}>
-          <hr/>
-          <p>name: {catalogsInfo.name}</p>
-          <p>language: {catalogsInfo.language}</p>
-          <p>maintainer: {catalogsInfo.maintainer}</p>
-          <p>topics:  
-          {
-            catalogsInfo.topics.map((item, key) => (
-              <span key={key}> {item}</span>
-            ))
-          }
-          </p>
-        </div>
+        
         
       </div>
       

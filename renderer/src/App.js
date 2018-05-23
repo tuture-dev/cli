@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import tuture from './util/content.json';
-import _ from 'lodash';
+import yaml from 'js-yaml';
 import styled from 'styled-components';
 
 // import conponents
@@ -17,6 +15,7 @@ class App extends Component {
 
     this.state = {
       selectKey: '1',
+      tuture: null,
     };
   }
 
@@ -26,7 +25,32 @@ class App extends Component {
     });
   }
 
+  async loadTuture() {
+    const that = this;
+
+    // Use frontend get data method to get tuture.yml
+    const response = await fetch('./tuture.yml');
+    const content = await response.text();
+
+    // use js-yaml read yamm as js object
+    const tuture = yaml.safeLoad(content);
+    console.log("tuture", tuture);
+    
+    that.setState({
+      tuture,
+    });
+  }
+
+  componentDidMount() {
+    this.loadTuture();
+  }
+
   render() {
+    const { tuture } = this.state;
+    if (!tuture) {
+      return null;
+    }
+
     const catalogs = tuture.steps.map(item => ({
       name: item.name,
       commit: item.commit,
@@ -40,6 +64,8 @@ class App extends Component {
     };
     const nowSelectKeyNumber = Number(this.state.selectKey);
     const nowRenderContent = tuture.steps[nowSelectKeyNumber];
+
+    console.log('nowRenderContent', nowRenderContent);
     return (
       <div style={{ height: '100%', width: '100%', display: 'flex' }}>
         <Catalog 

@@ -13,7 +13,10 @@
     padding: 0 1ch;
     text-align: right;
     cursor: pointer;
-    user-select: none;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 
 .diff-gutter:empty:before,

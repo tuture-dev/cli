@@ -214,7 +214,8 @@ module.exports = {
       template: paths.appHtml,
     }),
     new CopyWebpackPlugin([
-      { from: './src/assets/', to: './assets/'}
+      { from: '../../tuture.yml', to: './tuture.yml'},
+      { from: '../diff/', to: './diff'}
     ]),
     // Add module names to factory functions so they appear in browser profiler.
     new webpack.NamedModulesPlugin(),
