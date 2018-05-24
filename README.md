@@ -1,82 +1,104 @@
 # Tuture
 
-Tuture 是一个基于 Git 仓库生成交互式教程的工具。
+[![Build Status](https://travis-ci.com/tutureproject/prototype.svg?branch=master)](https://travis-ci.com/tutureproject/prototype)
 
-## 命令行工具
+Tuture is a tool for generating tech tutorials with high quality based on Git repositories.
 
-将仓库 clone 到本地后，执行以下命令安装命令行工具：
+*Read this in other languages*: [简体中文](README.zh-CN.md).
+
+## Installation
+
+Make sure you have [Node.js](https://nodejs.org/) (>= 8.0.0) and [npm](https://www.npmjs.com/) (>= 5.0.0) on your machine.
+
+- **install with npm**
+
+```bash
+$ npm i -g tuture
+```
+
+- **install from source**
+
+Clone this repo to your machine, and run following command:
 
 ```bash
 $ npm i -g
 ```
 
+## Using Tuture CLI
+
 ### `tuture init`
 
-初始化一个 Tuture 教程。
+Initialize a Tuture tutorial.
 
-调用此命令后，会执行一系列询问：
+Tuture will prompt you to answer following questions:
 
-1. Tutorial Name? 询问此教程的标题
-2. Language Code? 询问此教程的语言代码（例如 `zh-hans` 为简体中文）
-3. Topics? 询问此教程的主题（例如 `javascript,react`）
-4. Maintainer email? 询问此教程维护者的电子邮件（例如 pftom@powerformer.com）
+| Prompt             | Fields     | Required/Optional | Default            | Meaning                                                      |
+| ------------------ | ---------- | ----------------- | ------------------ | ------------------------------------------------------------ |
+| Tutorial Name?     | `name`     | Required          | My Awesome Project | Title of this tutorial                                       |
+| Tutorial Language? | `language` | Required          | English            | Language of this tutorial                                    |
+| Topics?            | `topics`   | Optional          | -                  | Topics of this tutorial, separated with spaces or commas, such as `express,mongodb` |
+| Maintainer email?  | `email`    | Optional          | -                  | Maintainer email of this tutorial                            |
 
-然后会调用 git 命令并根据相应的日志生成以下文件：
+Then following files will be generated:
 
--  `tuture.yml` 文件，用于记录教程的元数据和每一步的讲解。具体说明参见 tuture.yml 一节。
-
--  `.tuture` 目录，用于存储教程中所需的 diff 数据。
-
-### `tuture up`
-
-生成交互式教程并在浏览器打开。
-
-## `tuture.yml`
-
-样例结构如下：
+- **`tuture.yml`**. This file is a record of metadata and explainations of the tutorial, and here is one possible example:
 
 ```yaml
-name: My Awesome Tutorial
-language: zh-hans
+name: Name of this tutorial
+language: English
 topics:
-  - javascript
-  - express
-maintainer: me@me.com
+  - Topic A
+  - Topic B
+maintainer: maintainer@example.com
 steps:
-  - name: Init project
-    commit: 46ae055
-    explain: <YOUR EXPLANATION HERE>
+  - name: First step
+    commit: ae05546
+    explain: Explain what will be done in this step
     diff:
-      - file: .gitignore
-        explain: <YOUR EXPLANATION HERE>
-      - file: README.md
-        explain: <YOUR EXPLANATION HERE>
-  - name: Roughly implements cli
+      - file: Changed file A
+        explain: Explain why this change happens
+      - file: Changed file B
+        explain: Explain why this change happens
+  - name: Second step
     commit: a45bec1
-    explain: <YOUR EXPLANATION HERE>
+    explain: Explain what will be done in this step
     diff:
-      - file: cli/__init__.py
-        explain: <YOUR EXPLANATION HERE>
-      - file: cli/setup.py
-        explain: <YOUR EXPLANATION HERE>
-      - file: cli/tuture.py
-        explain: <YOUR EXPLANATION HERE>
-      - file: cli/utils.py
-        explain: <YOUR EXPLANATION HERE>
+      - file: Changed file A
+        explain: Explain why this change happens
+      - file: Changed file B
+        explain: Explain why this change happens
+      - file: Changed file C
+        explain: Explain why this change happens
 ```
 
-注意所有的 `explain` 字段都是可选的。
-
-## .tuture 目录
-
-样例结构如下：
+- **`.tuture` ** directory. This houses diff data and renderer used by Tuture.
 
 ```
 .tuture
-└── diff
-    ├── ee2688f.diff
-    ├── b80f04c.diff
-    └── b63ddf5.diff
+├── diff
+│   ├── 023d311.diff
+│   ├── 032b996.diff
+│   └── ff3ec89.diff
+└── renderer
 ```
 
-每个 diff 文件存储了对应 commit 的变化信息。
+Meanwhile, following rules will be appended to your `.gitignore` (Tuture will create one if not exists):
+
+```
+# Tuture supporting files
+.tuture
+```
+
+### `tuture up`
+
+Build the tutorial and open it in your browser.
+
+## How to write a Tuture tutorial
+
+Writing a Tuture tutorial is incredibly simple and delightful.
+
+1. Initialize a Git repo (or start from an existing one)
+2. Write some code and commit. Tuture will extract your commits, and messages of each commit will become the **title of each step in the tutorial**
+3. Write some instructions in related `explain` field in tuture.yml
+
+If you have fired up your browser by `tuture up` and wants to change something, all you need is to edit `tuture.yml` and save it, then you'll see your changes reloaded in your tutorial.
