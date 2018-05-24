@@ -77,7 +77,7 @@ function installRendererDeps() {
     spinner.stop();
     if (err) {
       signale.error('Renderer install failed. Please check if your npm is working.');
-      process.abort(1);
+      process.exit(1);
     }
     signale.success('Renderer is successfully installed!');
   });
@@ -151,7 +151,7 @@ exports.createRenderer = () => {
     }));
   } catch (e) {
     signale.error(e);
-    process.abort(1);
+    process.exit(1);
   }
 };
 
