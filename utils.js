@@ -117,3 +117,12 @@ exports.startRenderer = () => {
   cp.exec('npm start');
   signale.success('Tuture renderer is served on http://localhost:3000.');
 };
+
+exports.appendGitignore = () => {
+  const ignoreRules = '# Tuture supporting files\n.tuture\n';
+  if (!fs.existsSync('.gitignore')) {
+    fs.writeFileSync('.gitignore', ignoreRules);
+  } else {
+    fs.appendFileSync('.gitignore', `\n${ignoreRules}`);
+  }
+};

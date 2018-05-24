@@ -33,6 +33,9 @@ program
 
     utils.makeTutureDirs();
 
+    // Append gitignore rules about tuture.
+    utils.appendGitignore();
+
     const spinner1 = ora('Extracting diffs from git log...').start();
     const tuture = {
       name,
