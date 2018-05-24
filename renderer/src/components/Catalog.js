@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Menu, Icon, Affix } from 'antd';
 
+import './css/Catalog.css';
+
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -17,13 +19,7 @@ export default class Catalog extends Component {
     } = this.props;
 
     return (
-      <div 
-        style={{ 
-          width: '20%',
-          height: '100%',
-          overflowY: 'scroll'
-        }}
-      >
+      <div className="Catalog">
           <Menu
             onClick={this.handleClick}
             defaultSelectedKeys={[selectKey]}

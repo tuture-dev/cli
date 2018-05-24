@@ -1,6 +1,6 @@
 {
-  "name": "tuture-prototype",
-  "version": "0.0.1",
+  "name": "tuture",
+  "version": "0.0.2",
   "description": "Tuture makes writing interactive, step-by-step tutorials enjoyable.",
   "main": "cli/index.js",
   "scripts": {

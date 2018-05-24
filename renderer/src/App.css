@@ -1,3 +1,7 @@
+body {
+  height: 100%;
+}
+
 #root {
   height: 100%;
 }
@@ -31,4 +35,3 @@
   margin-right: 1em;
   color: #ee5b60;
 }
-
