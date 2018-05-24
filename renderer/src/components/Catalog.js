@@ -16,7 +16,7 @@ export default class Catalog extends Component {
       selectKey,
     } = this.props;
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', float: 'left', height:'100%' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', float: 'left', height:'100%', overflow: 'hidden' }}>
         <Menu
           onClick={this.handleClick}
           defaultSelectedKeys={[selectKey]}
@@ -25,7 +25,7 @@ export default class Catalog extends Component {
         >
         {
           catalogs.map((item, key) => (
-            <Menu.Item key={key}>{item.name}({item.commit})</Menu.Item>
+            <Menu.Item key={key}>{item.name}</Menu.Item>
           ))
         }
               
