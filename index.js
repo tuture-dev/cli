@@ -17,19 +17,31 @@ program
  */
 program
   .command('init')
-  .description('Initialize a Tuture tutorial')
-  .action(async () => {
-    // Ask for name, language, topics and email from user prompt
-    const name = await promptly.prompt(
-      'Tutorial Name: ',
-      { default: 'My Awesome Tutorial' },
-    );
-    const languange = await promptly.prompt(
-      'Languange Code: ',
-      { default: 'zh-hans' },
-    );
-    const topics = await promptly.prompt('Topics: ');
-    const email = await promptly.prompt('Maintainer Email: ');
+  .description('initialize a Tuture tutorial')
+  .option('-y, --yes', 'do not ask for prompts and fill in default values')
+  .action(async (options) => {
+    const tuture = Object();
+
+    if (options.yes) {
+      tuture.name = 'My Awesome Tutorial';
+      tuture.language = 'English';
+    } else {
+      // Ask for required fields.
+      tuture.name = await promptly.prompt(
+        'Tutorial Name: (My Awesome Tutorial) ',
+        { default: 'My Awesome Tutorial' },
+      );
+      tuture.language = await promptly.prompt(
+        'Tutorial Languange: (English) ',
+        { default: 'English' },
+      );
+
+      // Ask for optional fields.
+      const topics = await promptly.prompt('Topics: ', { default: '' });
+      const email = await promptly.prompt('Maintainer Email: ', { default: '' });
+      if (topics) tuture.topics = topics.split(/[ ,]+/);
+      if (email) tuture.email = email;
+    }
 
     utils.makeTutureDirs();
 
@@ -37,13 +49,7 @@ program
     utils.appendGitignore();
 
     const spinner1 = ora('Extracting diffs from git log...').start();
-    const tuture = {
-      name,
-      language: languange,
-      topics: topics ? topics.split(/[ ,]+/) : '<YOUR TOPICS>',
-      maintainer: email || '<YOUR EMAIL>',
-      steps: await utils.getSteps(),
-    };
+    tuture.steps = await utils.getSteps();
 
     fs.writeFile('tuture.yml', yaml.safeDump(tuture)).then(() => {
       spinner1.stop();
@@ -63,7 +69,7 @@ program
  */
 program
   .command('up')
-  .description('Fire up your tutorial in the browser')
+  .description('fire up your tutorial in the browser')
   .action(() => {
     utils.startRenderer();
   });
