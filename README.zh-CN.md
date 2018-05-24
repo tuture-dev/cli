@@ -91,6 +91,10 @@ steps:
 
 生成教程并在浏览器打开。
 
+### `tuture destroy`
+
+删除所有 Tuture 相关文件。
+
 ## 如何编写 Tuture 教程
 
 编写 Tuture 教程是一件非常轻松愉悦的事情。

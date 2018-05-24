@@ -71,7 +71,7 @@ steps:
         explain: Explain why this change happens
 ```
 
-- **`.tuture` ** directory. This houses diff data and renderer used by Tuture.
+- **`.tuture`** directory. This houses diff data and renderer used by Tuture.
 
 ```
 .tuture
@@ -93,12 +93,16 @@ Meanwhile, following rules will be appended to your `.gitignore` (Tuture will cr
 
 Build the tutorial and open it in your browser.
 
+### `tuture destroy`
+
+Delete all tuture-related files.
+
 ## How to write a Tuture tutorial
 
 Writing a Tuture tutorial is incredibly simple and delightful.
 
 1. Initialize a Git repo (or start from an existing one)
 2. Write some code and commit. Tuture will extract your commits, and messages of each commit will become the **title of each step in the tutorial**
-3. Write some instructions in related `explain` field in tuture.yml
+3. Write some instructions in related `explain` field in **tuture.yml**
 
 If you have fired up your browser by `tuture up` and wants to change something, all you need is to edit `tuture.yml` and save it, then you'll see your changes reloaded in your tutorial.
