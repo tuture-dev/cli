@@ -3,6 +3,9 @@ import './App.css';
 import yaml from 'js-yaml';
 import styled from 'styled-components';
 
+// TODO: hackable method to solve tuture.yml update not update browser
+import tutureYml from '../../../tuture.yml';
+
 // import conponents
 import {
   Content,
@@ -14,7 +17,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      selectKey: '1',
+      selectKey: '0',
       tuture: null,
     };
   }
