@@ -19,7 +19,16 @@ class App extends Component {
     this.state = {
       selectKey: '0',
       tuture: null,
+      viewType: 'unified',
     };
+  }
+
+  changeViewType = () => {
+    const { viewType } = this.state;
+
+    this.setState({
+      viewType: viewType === 'unified' ? 'split' : 'unified',
+    });
   }
 
   updateSelect = (key) => {
@@ -76,9 +85,11 @@ class App extends Component {
           catalogsInfo={catalogsInfo}
           selectKey={this.state.selectKey}
           updateSelect={this.updateSelect}
-          />
+        />
         <Content
           content={nowRenderContent}
+          viewType={this.state.viewType}
+          changeViewType={this.changeViewType}
         />
       </div>
     );
