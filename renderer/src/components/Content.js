@@ -12,7 +12,12 @@ export default class Content extends Component {
     const { name, explain, diff, commit } = this.props.content;
     console.log('diff', diff);
     return (
-      <div style={{ padding: '30px' }}>
+      <div style={{ 
+        width: '80%',
+        padding: '30px', 
+        height: '100%',
+        overflowY: 'scroll',
+      }}>
         <h1>{name}</h1>
         <p>{explain}</p>
         <ContentItem diff={diff} commit={commit} />
