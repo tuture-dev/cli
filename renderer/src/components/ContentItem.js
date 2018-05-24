@@ -61,7 +61,7 @@ export default class ContentItem extends Component {
                     <strong className="filename">{this.extractFileName(file)}</strong>
                 </header>
                 <main>
-                  <Diff key={i} hunks={file.hunks} viewType="split" />
+                  <Diff key={i} hunks={file.hunks} viewType={this.props.viewType} />
                 </main>
               </article>
               <div>

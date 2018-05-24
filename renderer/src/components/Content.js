@@ -1,26 +1,31 @@
 import React, { Component } from 'react';
+import { Button } from 'antd';
+
 import ContentItem from './ContentItem';
+import './css/Content.css';
 
 
 
 export default class Content extends Component {
-  callback = (key) => {
-    console.log('key', key);
-  }
-
   render() {
     const { name, explain, diff, commit } = this.props.content;
-    console.log('diff', diff);
     return (
-      <div style={{ 
-        width: '80%',
-        padding: '30px', 
-        height: '100%',
-        overflowY: 'scroll',
-      }}>
-        <h1>{name}</h1>
+      <div className="Content">
+        <div className="Content-header">
+          <h1>{name}</h1>
+          <Button 
+            type="primary" 
+            onClick={this.props.changeViewType}
+          >
+            {this.props.viewType}
+          </Button>
+        </div>
         <p>{explain}</p>
-        <ContentItem diff={diff} commit={commit} />
+        <ContentItem 
+          diff={diff} 
+          commit={commit}
+          viewType={this.props.viewType}
+        />
       </div>
     );
   }
