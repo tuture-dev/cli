@@ -5,7 +5,8 @@
   "main": "cli/index.js",
   "scripts": {
     "test": "echo Test Passed!",
-    "lint": "eslint **/*.js"
+    "lint": "eslint **/*.js",
+    "lint:style": "stylelint renderer/**/*.css"
   },
   "repository": {
     "type": "git",
@@ -37,6 +38,7 @@
     "eslint-plugin-flowtype": "^2.46.3",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.8.2"
+    "eslint-plugin-react": "^7.8.2",
+    "stylelint": "^9.2.1"
   }
 }
