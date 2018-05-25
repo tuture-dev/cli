@@ -24,6 +24,8 @@ $ npm i -g
 
 ## 使用 Tuture 命令行工具
 
+以下命令假定你处在一个 Git 仓库中。如果你还没有安装 Git，请从[此处](https://git-scm.com/downloads)下载。
+
 ### `tuture init`
 
 初始化一个 Tuture 教程。
@@ -39,7 +41,7 @@ $ npm i -g
 
 然后会生成以下文件：
 
--  **`tuture.yml`** 文件，用于记录教程的元数据和每一步的讲解，实例结构如下。
+-  **tuture.yml** 文件，用于记录教程的元数据和每一步的讲解，实例结构如下。
 
 ```yaml
 name: 教程的名称
@@ -49,7 +51,7 @@ topics:
   - 主题 B
 maintainer: 教程维护者的电子邮箱
 steps:
-  - name: 第一步
+  - name: commit ae05546 的提交信息
     commit: ae05546
     explain: 讲解第一步做了什么
     diff:
@@ -57,7 +59,7 @@ steps:
         explain: 讲解为什么要增加或修改这个文件
       - file: 发生变化的文件 B
         explain: 讲解为什么要增加或修改这个文件
-  - name: 第二步
+  - name: commit ae05546 的提交信息
     commit: a45bec1
     explain: 讲解第二步做了什么
     diff:
@@ -69,7 +71,7 @@ steps:
         explain: 讲解为什么要增加或修改这个文件
 ```
 
--  **`.tuture`** 目录，用于存放 Tuture 所需的 diff 数据和渲染器。
+-  **.tuture** 目录，用于存放 Tuture 所需的 diff 数据和渲染器。
 
 ```
 .tuture
@@ -100,7 +102,13 @@ steps:
 编写 Tuture 教程是一件非常轻松愉悦的事情。
 
 1. 初始化一个 Git 仓库（或者在一个已有的仓库中展开）
-2. 编写代码并提交，Tuture 会提取您的每次提交，提交信息（commit message）将作为**教程中每一步的标题**
-3. 填写 tuture.yml 中相应的 `explain` 字段
 
-在输入 `tuture up` 打开浏览器时，如果您想要修改某处讲解，只需编辑 `tuture.yml` 后保存，改变将会加载到教程中。
+2. 编写代码并提交，每次提交信息应有意义
+
+3. 运行 `tuture init` 来初始化 Tuture 教程
+
+4. 在 tuture.yml 的相应 `explain` 字段中填写你的讲解
+
+5. 运行 `tuture up` ，就会打开浏览器并渲染你的教程
+
+6. 编辑 `tuture.yml` 并保存，即可修改教程中的内容

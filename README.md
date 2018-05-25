@@ -26,6 +26,8 @@ $ npm i -g
 
 ## Using Tuture CLI
 
+Following commands assume that you are working on a Git repo. If you does not have Git on your machine, please download it from [here](https://git-scm.com/downloads).
+
 ### `tuture init`
 
 Initialize a Tuture tutorial.
@@ -41,7 +43,7 @@ Tuture will prompt you to answer following questions:
 
 Then following files will be generated:
 
-- **`tuture.yml`**. This file is a record of metadata and explainations of the tutorial, and here is one possible example:
+- **tuture.yml**. This file is a record of metadata and explainations of the tutorial, and here is one possible example:
 
 ```yaml
 name: Name of this tutorial
@@ -51,7 +53,7 @@ topics:
   - Topic B
 maintainer: maintainer@example.com
 steps:
-  - name: First step
+  - name: Commit message of commit ae05546
     commit: ae05546
     explain: Explain what will be done in this step
     diff:
@@ -59,7 +61,7 @@ steps:
         explain: Explain why this change happens
       - file: Changed file B
         explain: Explain why this change happens
-  - name: Second step
+  - name: Commit message of commit ae05546
     commit: a45bec1
     explain: Explain what will be done in this step
     diff:
@@ -71,7 +73,7 @@ steps:
         explain: Explain why this change happens
 ```
 
-- **`.tuture`** directory. This houses diff data and renderer used by Tuture.
+- **.tuture** directory. This houses diff data and renderer used by Tuture.
 
 ```
 .tuture
@@ -102,7 +104,13 @@ Delete all tuture-related files.
 Writing a Tuture tutorial is incredibly simple and delightful.
 
 1. Initialize a Git repo (or start from an existing one)
-2. Write some code and commit. Tuture will extract your commits, and messages of each commit will become the **title of each step in the tutorial**
-3. Write some instructions in related `explain` field in **tuture.yml**
 
-If you have fired up your browser by `tuture up` and wants to change something, all you need is to edit `tuture.yml` and save it, then you'll see your changes reloaded in your tutorial.
+2. Write some code and commit with a meaningful message
+
+3. Run `tuture init` to initialize a Tuture tutorial
+
+4. Write some instructions in related `explain` fields in **tuture.yml**
+
+5. Run `tuture up` to see your tutorial live in the browser
+
+6. Edit **tuture.yml** and save to change something
