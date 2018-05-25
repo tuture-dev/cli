@@ -229,3 +229,8 @@ exports.removeTutureFiles = async (force) => {
     signale.success('Tuture suite has been destroyed!');
   });
 };
+
+exports.handleUnknownCommand = (cmd) => {
+  signale.error(`Unknown command: ${cmd}`);
+  process.exit(1);
+};
