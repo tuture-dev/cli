@@ -89,10 +89,6 @@ export default class ContentItem extends Component {
     // use fileName key map it belongs obj
     const mapedFiles = this.mapArrItemToObjValue('newPath', files);
     const mapedDiff = this.mapArrItemToObjValue('file', diff);
-
-    console.log('mapedFiles', mapedFiles);
-    console.log('mapedDiff', mapedDiff);
-
     const endRenderContent = diff.map(diffItem => {
       const fileName = diffItem.file;
       return {
