@@ -113,6 +113,14 @@ function installRendererDeps() {
   });
 }
 
+function checkTutureSuite() {
+  if (fs.existsSync(TUTURE_ROOT) && fs.existsSync('tuture.yml')) {
+    return;
+  }
+  signale.error('Tuture has not been initialized!');
+  process.exit(1);
+}
+
 /**
  * Construct metadata object from user prompt
  * @param {boolean} shouldPrompt Whether `-y` option is provided
@@ -188,6 +196,7 @@ exports.createRenderer = () => {
 };
 
 exports.startRenderer = () => {
+  checkTutureSuite();
   process.chdir('.tuture/renderer');
   cp.exec('npm start');
   signale.success('Tuture renderer is served on http://localhost:3000.');
