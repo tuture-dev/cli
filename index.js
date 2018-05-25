@@ -4,8 +4,10 @@ const program = require('commander');
 
 const utils = require('./utils');
 
+const VERSION = require('./package.json').version;
+
 program
-  .version('0.0.1')
+  .version(VERSION)
   .description('Tuture makes writing interactive, step-by-step tutorials enjoyable.');
 
 /**
