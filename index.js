@@ -49,6 +49,11 @@ program
     utils.removeTutureFiles(options.force);
   });
 
+program
+  .action((cmd) => {
+    utils.handleUnknownCommand(cmd);
+  });
+
 // If no arguments or options provided, just print help page
 if (process.argv.length === 2) {
   program.help();
