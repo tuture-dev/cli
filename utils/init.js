@@ -1,7 +1,3 @@
-/**
- * Utilities for implementing Tuture CLI.
- */
-
 const cp = require('child_process');
 const fs = require('fs-extra');
 const git = require('simple-git/promise')('.').silent(true);
@@ -12,17 +8,14 @@ const promptly = require('promptly');
 const signale = require('signale');
 const yaml = require('js-yaml');
 
-const collapsedFiles = require('./collapse');
-
-const EXPLAIN_PLACEHOLDER = '<YOUR EXPLANATION HERE>';
-const TUTURE_ROOT = '.tuture';
+const common = require('./common');
 
 /**
  * Returns whether a file should be collapsed in renderer.
  * @param {string} file path of a file
  */
 function shouldBeCollapsed(file) {
-  return collapsedFiles.some(pattern => minimatch(path.basename(file), pattern));
+  return common.collapsedFiles.some(pattern => minimatch(path.basename(file), pattern));
 }
 
 async function checkGitEnv() {
@@ -62,7 +55,7 @@ async function getGitDiff(commit) {
   let changedFiles = result.split('\n\n').slice(-1)[0].split('\n');
   changedFiles = changedFiles.slice(0, changedFiles.length - 1);
   return changedFiles.map((file) => {
-    const diffFile = { file, explain: EXPLAIN_PLACEHOLDER };
+    const diffFile = { file, explain: common.EXPLAIN_PLACEHOLDER };
     if (shouldBeCollapsed(file)) {
       diffFile.collapse = true;
     }
@@ -81,7 +74,7 @@ async function storeDiff(commit) {
   git.raw(['show', commit]);
 
   const diff = result.split('\n\n').slice(-1)[0];
-  const diffPath = path.join(TUTURE_ROOT, 'diff', `${commit}.diff`);
+  const diffPath = path.join(common.TUTURE_ROOT, 'diff', `${commit}.diff`);
   fs.writeFileSync(diffPath, diff);
 }
 
@@ -94,7 +87,7 @@ async function makeSteps() {
     return {
       name: msg,
       commit,
-      explain: EXPLAIN_PLACEHOLDER,
+      explain: common.EXPLAIN_PLACEHOLDER,
       diff: await getGitDiff(commit),
     };
   });
@@ -113,14 +106,12 @@ function installRendererDeps() {
   });
 }
 
-exports.ifTutureSuiteExists = () => fs.existsSync(TUTURE_ROOT) && fs.existsSync('tuture.yml');
-
 /**
  * Construct metadata object from user prompt
  * @param {boolean} shouldPrompt Whether `-y` option is provided
  * @returns {object} Metadata object to be dumped into tuture.yml
  */
-exports.promptMetaData = async (shouldPrompt) => {
+async function promptMetaData(shouldPrompt) {
   await checkGitEnv();
 
   const tuture = Object();
@@ -146,17 +137,10 @@ exports.promptMetaData = async (shouldPrompt) => {
   }
 
   return tuture;
-};
-
-// Make .tuture directoy and its subdirectories
-// This operation is IDEMPOTENT.
-exports.makeTutureDirs = () => {
-  fs.mkdirpSync(path.join(TUTURE_ROOT, 'diff'));
-  fs.mkdirpSync(path.join(TUTURE_ROOT, 'renderer'));
-};
+}
 
 // Constructs "steps" section in tuture.yml and store diff files.
-exports.getSteps = async () => {
+async function getSteps() {
   const spinner = ora('Extracting diffs from git log...').start();
   const steps = await makeSteps().then(async (resArr) => {
     const res = await Promise.all(resArr);
@@ -166,78 +150,44 @@ exports.getSteps = async () => {
   });
 
   return steps;
-};
-
-exports.writeTutureYML = (tuture) => {
-  fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
-};
+}
 
 // Copy renderer to user's tutorial root and install it.
-exports.createRenderer = () => {
-  try {
-    const spinner = ora('Creating Tuture renderer...').start();
-    fs.copy(
-      path.join(__dirname, 'renderer'),
-      path.join('.', TUTURE_ROOT, 'renderer'),
-    ).then((() => {
-      spinner.stop();
-      installRendererDeps();
-    }));
-  } catch (e) {
-    signale.error(e);
-    process.exit(1);
-  }
-};
+function createRenderer() {
+  const spinner = ora('Creating Tuture renderer...').start();
+  fs.copy(
+    path.join(__dirname, '..', 'renderer'),
+    path.join('.', common.TUTURE_ROOT, 'renderer'),
+  ).then((() => {
+    spinner.stop();
+    installRendererDeps();
+  }));
+}
 
-exports.startRenderer = () => {
-  if (!this.ifTutureSuiteExists()) {
-    signale.error('Tuture has not been initialized!');
-    process.exit(1);
-  }
-  process.chdir('.tuture/renderer');
-  cp.exec('npm start');
-  signale.success('Tuture renderer is served on http://localhost:3000.');
-};
-
-exports.appendGitignore = () => {
+function appendGitignore() {
   const ignoreRules = '# Tuture supporting files\n.tuture\n';
   if (!fs.existsSync('.gitignore')) {
     fs.writeFileSync('.gitignore', ignoreRules);
   } else {
     fs.appendFileSync('.gitignore', `\n${ignoreRules}`);
   }
-};
+}
 
-exports.removeTutureSuite = async () => {
-  const spinner = ora('Deleting Tuture files...').start();
-  await fs.remove('tuture.yml');
-  await fs.remove(TUTURE_ROOT);
-  spinner.stop();
-  signale.success('Tuture suite has been destroyed!');
-};
-
-exports.destroyTuture = async (force) => {
-  if (!this.ifTutureSuiteExists()) {
-    signale.error('No Tuture tutorial to destroy!');
-    process.exit(1);
-  }
+module.exports = async (options) => {
   try {
-    const answer = force ? true : await promptly.confirm(
-      'Are you sure? [y/N] ',
-      { default: 'n' },
-    );
-    if (!answer) {
-      console.log('Aborted!');
-      process.exit(1);
-    }
-    this.removeTutureSuite();
+    const tuture = await promptMetaData(!options.yes);
+    fs.mkdirpSync(path.join(common.TUTURE_ROOT, 'diff'));
+    fs.mkdirpSync(path.join(common.TUTURE_ROOT, 'renderer'));
+    tuture.steps = await getSteps();
+    fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
+
+    appendGitignore();
+    createRenderer();
   } catch (e) {
     console.log('\nAborted!');
+    const spinner = ora('Cleaning...').start();
+    await common.removeTutureSuite();
+    spinner.stop();
     process.exit(1);
   }
-};
-
-exports.handleUnknownCommand = (cmd) => {
-  signale.error(`Unknown command: ${cmd}`);
-  process.exit(1);
 };

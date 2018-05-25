@@ -16,21 +16,7 @@ program
   .description('initialize a Tuture tutorial')
   .option('-y, --yes', 'do not ask for prompts and fill in default values')
   .action(async (options) => {
-    utils.makeTutureDirs();
-    try {
-      const tuture = await utils.promptMetaData(!options.yes);
-      tuture.steps = await utils.getSteps();
-      utils.writeTutureYML(tuture);
-
-      // Append gitignore rules about tuture.
-      utils.appendGitignore();
-
-      utils.createRenderer();
-    } catch (e) {
-      console.log('\nAborted!');
-      await utils.removeTutureSuite();
-      process.exit(1);
-    }
+    utils.initTuture(options);
   });
 
 /**
@@ -51,12 +37,12 @@ program
   .description('delete all Tuture files')
   .option('-f, --force', 'destroy without confirmation')
   .action((options) => {
-    utils.destroyTuture(options.force);
+    utils.destroyTuture(options);
   });
 
 program
   .action((cmd) => {
-    utils.handleUnknownCommand(cmd);
+    utils.handleUnknownCmd(cmd);
   });
 
 // If no arguments or options provided, just print help page
