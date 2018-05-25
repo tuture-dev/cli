@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Helmet } from 'react-helmet';
 import './App.css';
 import yaml from 'js-yaml';
 import styled from 'styled-components';
@@ -47,7 +48,7 @@ class App extends Component {
     // use js-yaml read yamm as js object
     const tuture = yaml.safeLoad(content);
     console.log("tuture", tuture);
-    
+
     that.setState({
       tuture,
     });
@@ -80,7 +81,10 @@ class App extends Component {
     console.log('nowRenderContent', nowRenderContent);
     return (
       <div style={{ height: '100%', width: '100%', display: 'flex' }}>
-        <Catalog 
+        <Helmet>
+          <title>{name}</title>
+        </Helmet>
+        <Catalog
           catalogs={catalogs}
           catalogsInfo={catalogsInfo}
           selectKey={this.state.selectKey}
