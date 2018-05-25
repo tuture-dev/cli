@@ -113,13 +113,7 @@ function installRendererDeps() {
   });
 }
 
-function checkTutureSuite() {
-  if (fs.existsSync(TUTURE_ROOT) && fs.existsSync('tuture.yml')) {
-    return;
-  }
-  signale.error('Tuture has not been initialized!');
-  process.exit(1);
-}
+exports.ifTutureSuiteExists = () => fs.existsSync(TUTURE_ROOT) && fs.existsSync('tuture.yml');
 
 /**
  * Construct metadata object from user prompt
@@ -196,7 +190,10 @@ exports.createRenderer = () => {
 };
 
 exports.startRenderer = () => {
-  checkTutureSuite();
+  if (!this.ifTutureSuiteExists()) {
+    signale.error('Tuture has not been initialized!');
+    process.exit(1);
+  }
   process.chdir('.tuture/renderer');
   cp.exec('npm start');
   signale.success('Tuture renderer is served on http://localhost:3000.');
@@ -211,25 +208,33 @@ exports.appendGitignore = () => {
   }
 };
 
-exports.removeTutureSuite = () => {
+exports.removeTutureSuite = async () => {
   const spinner = ora('Deleting Tuture files...').start();
-  fs.removeSync('tuture.yml');
-  fs.remove(TUTURE_ROOT).then(() => {
-    spinner.stop();
-    signale.success('Tuture suite has been destroyed!');
-  });
+  await fs.remove('tuture.yml');
+  await fs.remove(TUTURE_ROOT);
+  spinner.stop();
+  signale.success('Tuture suite has been destroyed!');
 };
 
 exports.destroyTuture = async (force) => {
-  const answer = force ? true : await promptly.confirm(
-    'Are you sure? [y/N] ',
-    { default: 'n' },
-  );
-  if (!answer) {
-    console.log('Aborted!');
+  if (!this.ifTutureSuiteExists()) {
+    signale.error('No Tuture tutorial to destroy!');
     process.exit(1);
   }
-  this.removeTutureSuite();
+  try {
+    const answer = force ? true : await promptly.confirm(
+      'Are you sure? [y/N] ',
+      { default: 'n' },
+    );
+    if (!answer) {
+      console.log('Aborted!');
+      process.exit(1);
+    }
+    this.removeTutureSuite();
+  } catch (e) {
+    console.log('\nAborted!');
+    process.exit(1);
+  }
 };
 
 exports.handleUnknownCommand = (cmd) => {

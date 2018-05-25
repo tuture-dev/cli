@@ -17,15 +17,20 @@ program
   .option('-y, --yes', 'do not ask for prompts and fill in default values')
   .action(async (options) => {
     utils.makeTutureDirs();
+    try {
+      const tuture = await utils.promptMetaData(!options.yes);
+      tuture.steps = await utils.getSteps();
+      utils.writeTutureYML(tuture);
 
-    const tuture = await utils.promptMetaData(!options.yes);
-    tuture.steps = await utils.getSteps();
-    utils.writeTutureYML(tuture);
+      // Append gitignore rules about tuture.
+      utils.appendGitignore();
 
-    // Append gitignore rules about tuture.
-    utils.appendGitignore();
-
-    utils.createRenderer();
+      utils.createRenderer();
+    } catch (e) {
+      console.log('\nAborted!');
+      await utils.removeTutureSuite();
+      process.exit(1);
+    }
   });
 
 /**
