@@ -25,6 +25,19 @@ function shouldBeCollapsed(file) {
   return collapsedFiles.some(pattern => minimatch(path.basename(file), pattern));
 }
 
+async function checkGitEnv() {
+  try {
+    await git.raw(['status']);
+  } catch (e) {
+    if (fs.existsSync('.git')) {
+      signale.error('Git is not working on your machine!');
+    } else {
+      signale.error('You are not working on a git repo!');
+    }
+    process.exit(1);
+  }
+}
+
 async function getGitLogs() {
   let result = null;
   try {
@@ -106,6 +119,8 @@ function installRendererDeps() {
  * @returns {object} Metadata object to be dumped into tuture.yml
  */
 exports.promptMetaData = async (shouldPrompt) => {
+  await checkGitEnv();
+
   const tuture = Object();
   if (!shouldPrompt) {
     tuture.name = 'My Awesome Tutorial';
