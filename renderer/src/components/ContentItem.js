@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { property, union } from 'lodash/fp';
-import { Input } from 'antd';
+import { property, union, isArray } from 'lodash/fp';
+import { Input, Button, Icon } from 'antd';
 import { parseDiff, Diff, HunkHeader } from 'react-diff-view';
+
+import './css/ContentItem.css';
 import './css/Hunk.css';
 import './css/Change.css';
 import './css/Diff.css';
@@ -10,27 +12,60 @@ import './css/Diff.css';
 export default class ContentItem extends Component {
   state = {
     diffText: '',
+    collapseObj: {},
+    diff: [],
+    files: [],
   };
 
-  async getDiffText(commit) {
+  async setDiffAndFiles(commit, diff) {
     const that = this;
     const response = await fetch(`diff/${commit}.diff`);
     const diffText = await response.text();
+    let files = [];
+
+    if (diffText) {
+      files = parseDiff(diffText);
+    }
 
     that.setState({
-      diffText,
+      files,
+      diff,
     });
   }
 
+  getCollapseObj = (arr) => {
+    // write a new func for reduce repeat work
+    let constructNewCollapseObj = {};
+    if (isArray(arr)) {
+      arr.map(arrItem => {
+        constructNewCollapseObj[arrItem.file] = arrItem.collapse;
+      });
+    }
+
+    return constructNewCollapseObj;
+  }
+
   componentDidMount() {
-    const { commit } = this.props;
-    console.log('commit', commit);
-    this.getDiffText(commit);
+    const { commit, diff } = this.props;
+    this.setDiffAndFiles(commit, diff);
+
+    // construct collapsed arr
+    const newCollapseObj = this.getCollapseObj(diff);
+    this.setState({
+      collapseObj: newCollapseObj,
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.commit !== this.props.commit) {
-      this.getDiffText(nextProps.commit);
+      this.setDiffAndFiles(nextProps.commit, nextProps.diff);
+    }
+
+    if (nextProps.diff !== this.props.diff) {
+      const newCollapseObj = this.getCollapseObj(nextProps.diff);
+      this.setState({
+        collapseObj: newCollapseObj,
+      });
     }
   }
 
@@ -38,34 +73,74 @@ export default class ContentItem extends Component {
     return type === 'delete' ? oldPath : newPath;
   }
 
-  render() {
-    const { renderItem } = this.props;
+  mapArrItemToObjValue = (property, arr) => {
+    let resObj = {};
 
-    const { diffText } = this.state;
-
-    let needRenderFiles = [];
-    if (diffText) {
-      const files = parseDiff(diffText);
-
-      console.log('files', files);
-
-      needRenderFiles = files;
+    if (Array.isArray(arr)) {
+      arr.map(item => {
+        resObj[item[property]] = item;
+      });
     }
+
+    return resObj;
+  }
+
+  getEndRenderContent = (diff, files) => {
+    // use fileName key map it belongs obj
+    const mapedFiles = this.mapArrItemToObjValue('newPath', files);
+    const mapedDiff = this.mapArrItemToObjValue('file', diff);
+
+    console.log('mapedFiles', mapedFiles);
+    console.log('mapedDiff', mapedDiff);
+
+    const endRenderContent = diff.map(diffItem => {
+      const fileName = diffItem.file;
+      return {
+        ...mapedDiff[fileName],
+        ...mapedFiles[fileName],
+      };
+    });
+
+    return endRenderContent;
+  }
+
+  toggleCollapse = (fileName) => {
+    const { collapseObj } = this.state;
+    const newCollapseObj = { ...collapseObj, [fileName]: !collapseObj[fileName] };
+
+    this.setState({
+      collapseObj: newCollapseObj,
+    });
+  }
+
+  render() {
+    const { files, diff, collapseObj } = this.state;
+    const needRenderFiles = this.getEndRenderContent(diff, files);
+
     return (
-      <div>
+      <div className="ContentItem">
         {
           needRenderFiles.map((file, i) => (
             <div key={i}>
               <article className="diff-file" key={i}>
                 <header className="diff-file-header">
                     <strong className="filename">{this.extractFileName(file)}</strong>
+                    <Button
+                      onClick={() => this.toggleCollapse(file.file)}
+                    >
+                    {<Icon type={collapseObj[file.file] ? 'up' : 'down'} />}
+                    </Button>
                 </header>
                 <main>
-                  <Diff key={i} hunks={file.hunks} viewType={this.props.viewType} />
+                  {
+                    file && !collapseObj[file.file] && (
+                      <Diff key={i} hunks={file.hunks} viewType={this.props.viewType} />
+                    )
+                  }
                 </main>
               </article>
               <div>
-                <div style={{ marginTop: '20px' }}>输入你的说明文字</div>
+                <div style={{ marginTop: '20px' }}>{file.explain}</div>
               </div>
             </div>
           ))
