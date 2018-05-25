@@ -54,13 +54,16 @@ async function getGitDiff(commit) {
   }
   let changedFiles = result.split('\n\n').slice(-1)[0].split('\n');
   changedFiles = changedFiles.slice(0, changedFiles.length - 1);
-  return changedFiles.map((file) => {
-    const diffFile = { file, explain: common.EXPLAIN_PLACEHOLDER };
-    if (shouldBeCollapsed(file)) {
-      diffFile.collapse = true;
-    }
-    return diffFile;
-  });
+  return changedFiles
+    // don't track changes of tuture.yml
+    .filter(file => file !== 'tuture.yml')
+    .map((file) => {
+      const diffFile = { file, explain: common.EXPLAIN_PLACEHOLDER };
+      if (shouldBeCollapsed(file)) {
+        diffFile.collapse = true;
+      }
+      return diffFile;
+    });
 }
 
 async function storeDiff(commit) {
@@ -80,17 +83,21 @@ async function storeDiff(commit) {
 
 async function makeSteps() {
   const logs = await getGitLogs();
-  return logs.reverse().map(async (log) => {
-    const commit = log.slice(0, 7);
-    const msg = log.slice(8, log.length);
-    await storeDiff(commit);
-    return {
-      name: msg,
-      commit,
-      explain: common.EXPLAIN_PLACEHOLDER,
-      diff: await getGitDiff(commit),
-    };
-  });
+  return logs
+    .reverse()
+    // filter out commits whose commit message starts with 'tuture:'
+    .filter(log => !log.startsWith('tuture:'))
+    .map(async (log) => {
+      const commit = log.slice(0, 7);
+      const msg = log.slice(8, log.length);
+      await storeDiff(commit);
+      return {
+        name: msg,
+        commit,
+        explain: common.EXPLAIN_PLACEHOLDER,
+        diff: await getGitDiff(commit),
+      };
+    });
 }
 
 function installRendererDeps() {
