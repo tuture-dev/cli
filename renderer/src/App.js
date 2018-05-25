@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
-import './App.css';
 import yaml from 'js-yaml';
 import styled from 'styled-components';
 
 // TODO: hackable method to solve tuture.yml update not update browser
 import tutureYml from '../../../tuture.yml';
+
+import './App.css';
 
 // import conponents
 import {
@@ -14,15 +15,11 @@ import {
 } from './components/index';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      selectKey: '0',
-      tuture: null,
-      viewType: 'unified',
-    };
-  }
+  state = {
+    selectKey: '0',
+    tuture: null,
+    viewType: 'unified',
+  };
 
   changeViewType = () => {
     const { viewType } = this.state;
@@ -47,7 +44,6 @@ class App extends Component {
 
     // use js-yaml read yamm as js object
     const tuture = yaml.safeLoad(content);
-    console.log("tuture", tuture);
 
     that.setState({
       tuture,
@@ -78,7 +74,6 @@ class App extends Component {
     const nowSelectKeyNumber = Number(this.state.selectKey);
     const nowRenderContent = tuture.steps[nowSelectKeyNumber];
 
-    console.log('nowRenderContent', nowRenderContent);
     return (
       <div style={{ height: '100%', width: '100%', display: 'flex' }}>
         <Helmet>
