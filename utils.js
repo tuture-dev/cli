@@ -211,7 +211,16 @@ exports.appendGitignore = () => {
   }
 };
 
-exports.removeTutureFiles = async (force) => {
+exports.removeTutureSuite = () => {
+  const spinner = ora('Deleting Tuture files...').start();
+  fs.removeSync('tuture.yml');
+  fs.remove(TUTURE_ROOT).then(() => {
+    spinner.stop();
+    signale.success('Tuture suite has been destroyed!');
+  });
+};
+
+exports.destroyTuture = async (force) => {
   const answer = force ? true : await promptly.confirm(
     'Are you sure? [y/N] ',
     { default: 'n' },
@@ -220,14 +229,7 @@ exports.removeTutureFiles = async (force) => {
     console.log('Aborted!');
     process.exit(1);
   }
-
-  fs.removeSync('tuture.yml');
-
-  const spinner = ora('Deleting Tuture files...').start();
-  fs.remove(TUTURE_ROOT).then(() => {
-    spinner.stop();
-    signale.success('Tuture suite has been destroyed!');
-  });
+  this.removeTutureSuite();
 };
 
 exports.handleUnknownCommand = (cmd) => {

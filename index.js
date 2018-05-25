@@ -46,7 +46,7 @@ program
   .description('delete all Tuture files')
   .option('-f, --force', 'destroy without confirmation')
   .action((options) => {
-    utils.removeTutureFiles(options.force);
+    utils.destroyTuture(options.force);
   });
 
 program
