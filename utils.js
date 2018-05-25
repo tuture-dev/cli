@@ -5,14 +5,25 @@
 const cp = require('child_process');
 const fs = require('fs-extra');
 const git = require('simple-git/promise')('.');
+const minimatch = require('minimatch');
 const ora = require('ora');
 const path = require('path');
 const promptly = require('promptly');
 const signale = require('signale');
 const yaml = require('js-yaml');
 
+const collapsedFiles = require('./collapse');
+
 const EXPLAIN_PLACEHOLDER = '<YOUR EXPLANATION HERE>';
 const TUTURE_ROOT = '.tuture';
+
+/**
+ * Returns whether a file should be collapsed in renderer.
+ * @param {string} file path of a file
+ */
+function shouldBeCollapsed(file) {
+  return collapsedFiles.some(pattern => minimatch(path.basename(file), pattern));
+}
 
 async function getGitLogs() {
   let result = null;
@@ -37,7 +48,13 @@ async function getGitDiff(commit) {
   }
   let changedFiles = result.split('\n\n').slice(-1)[0].split('\n');
   changedFiles = changedFiles.slice(0, changedFiles.length - 1);
-  return changedFiles.map(file => ({ file, explain: EXPLAIN_PLACEHOLDER }));
+  return changedFiles.map((file) => {
+    const diffFile = { file, explain: EXPLAIN_PLACEHOLDER };
+    if (shouldBeCollapsed(file)) {
+      diffFile.collapse = true;
+    }
+    return diffFile;
+  });
 }
 
 async function storeDiff(commit) {
