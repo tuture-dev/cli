@@ -171,11 +171,17 @@ function createRenderer() {
   }));
 }
 
+/**
+ * Append .tuture rule to gitignore.
+ * If it's already ignored, do nothing.
+ * If .gitignore doesn't exist, create one and add the rule.
+ */
 function appendGitignore() {
-  const ignoreRules = '# Tuture supporting files\n.tuture\n';
+  const ignoreRules = '# Tuture supporting files\n\n.tuture\n';
+
   if (!fs.existsSync('.gitignore')) {
     fs.writeFileSync('.gitignore', ignoreRules);
-  } else {
+  } else if (fs.readFileSync('.gitignore').toString().indexOf('.tuture') === -1) {
     fs.appendFileSync('.gitignore', `\n${ignoreRules}`);
   }
 }
