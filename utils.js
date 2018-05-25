@@ -4,7 +4,7 @@
 
 const cp = require('child_process');
 const fs = require('fs-extra');
-const git = require('simple-git/promise')('.');
+const git = require('simple-git/promise')('.').silent(true);
 const minimatch = require('minimatch');
 const ora = require('ora');
 const path = require('path');
