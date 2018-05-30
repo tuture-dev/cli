@@ -73,15 +73,15 @@ steps:
         explain: Explain why this change happens
 ```
 
-- **.tuture** directory. This houses diff data and renderer used by Tuture.
+- **.tuture** directory. This houses diff data used by Tuture.
 
 ```
 .tuture
-├── diff
-│   ├── 023d311.diff
-│   ├── 032b996.diff
-│   └── ff3ec89.diff
-└── renderer
+└── diff
+    ├── 084a277.diff
+    ├── e4a9539.diff
+    ├── f898719.diff
+    └── fefe569.diff
 ```
 
 Meanwhile, following rules will be appended to your `.gitignore` (Tuture will create one if not exists):

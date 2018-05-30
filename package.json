@@ -5,21 +5,20 @@
   "main": "cli/index.js",
   "scripts": {
     "test": "echo Test Passed!",
-    "lint": "eslint **/*.js",
-    "lint:style": "stylelint renderer/**/*.css"
+    "lint": "eslint **/*.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tutureproject/prototype.git"
+    "url": "git+https://github.com/tutureproject/tuture.git"
   },
   "license": "MIT",
   "bin": {
     "tuture": "./index.js"
   },
   "bugs": {
-    "url": "https://github.com/tutureproject/prototype/issues"
+    "url": "https://github.com/tutureproject/tuture/issues"
   },
-  "homepage": "https://github.com/tutureproject/prototype#readme",
+  "homepage": "https://github.com/tutureproject/tuture#readme",
   "dependencies": {
     "commander": "^2.15.1",
     "fs-extra": "^6.0.1",
@@ -31,14 +30,10 @@
     "simple-git": "^1.92.0"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.3",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
-    "eslint-config-react-app": "^2.1.0",
-    "eslint-plugin-flowtype": "^2.46.3",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.8.2",
-    "stylelint": "^9.2.1"
+    "eslint-plugin-react": "^7.8.2"
   }
 }

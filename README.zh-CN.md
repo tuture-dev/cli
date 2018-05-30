@@ -71,15 +71,15 @@ steps:
         explain: 讲解为什么要增加或修改这个文件
 ```
 
--  **.tuture** 目录，用于存放 Tuture 所需的 diff 数据和渲染器。
+-  **.tuture** 目录，用于存放 Tuture 所需的 diff 数据。
 
 ```
 .tuture
-├── diff
-│   ├── 023d311.diff
-│   ├── 032b996.diff
-│   └── ff3ec89.diff
-└── renderer
+└── diff
+    ├── 084a277.diff
+    ├── e4a9539.diff
+    ├── f898719.diff
+    └── fefe569.diff
 ```
 
 同时，会在你的 `.gitignore` 中添加以下规则（如果没有会为你创建）：

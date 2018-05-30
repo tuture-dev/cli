@@ -8,7 +8,10 @@ module.exports = () => {
     signale.error('Tuture has not been initialized!');
     process.exit(1);
   }
-  process.chdir(`${common.TUTURE_ROOT}/renderer`);
-  cp.exec('npm start');
+  try {
+    cp.execSync('tuture-renderer');
+  } catch (e) {
+    signale.error('tuture-renderer is not available!');
+  }
   signale.success('Tuture renderer is served on http://localhost:3000.');
 };

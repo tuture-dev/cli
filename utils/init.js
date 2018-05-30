@@ -1,4 +1,3 @@
-const cp = require('child_process');
 const fs = require('fs-extra');
 const git = require('simple-git/promise')('.').silent(true);
 const minimatch = require('minimatch');
@@ -100,19 +99,6 @@ async function makeSteps() {
     });
 }
 
-function installRendererDeps() {
-  process.chdir('.tuture/renderer');
-  const spinner = ora('Installing renderer dependencies...').start();
-  cp.exec('npm install', (err) => {
-    spinner.stop();
-    if (err) {
-      signale.error('Renderer install failed. Please check if your npm is working.');
-      process.exit(1);
-    }
-    signale.success('Renderer is successfully installed!');
-  });
-}
-
 /**
  * Construct metadata object from user prompt
  * @param {boolean} shouldPrompt Whether `-y` option is provided
@@ -159,18 +145,6 @@ async function getSteps() {
   return steps;
 }
 
-// Copy renderer to user's tutorial root and install it.
-function createRenderer() {
-  const spinner = ora('Creating Tuture renderer...').start();
-  fs.copy(
-    path.join(__dirname, '..', 'renderer'),
-    path.join('.', common.TUTURE_ROOT, 'renderer'),
-  ).then((() => {
-    spinner.stop();
-    installRendererDeps();
-  }));
-}
-
 /**
  * Append .tuture rule to gitignore.
  * If it's already ignored, do nothing.
@@ -190,12 +164,9 @@ module.exports = async (options) => {
   try {
     const tuture = await promptMetaData(!options.yes);
     fs.mkdirpSync(path.join(common.TUTURE_ROOT, 'diff'));
-    fs.mkdirpSync(path.join(common.TUTURE_ROOT, 'renderer'));
     tuture.steps = await getSteps();
     fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
-
     appendGitignore();
-    createRenderer();
   } catch (e) {
     console.log('\nAborted!');
     const spinner = ora('Cleaning...').start();
