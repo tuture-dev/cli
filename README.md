@@ -1,6 +1,6 @@
 # Tuture
 
-[![Build Status](https://travis-ci.com/tutureproject/prototype.svg?branch=master)](https://travis-ci.com/tutureproject/prototype)
+[![Build Status](https://travis-ci.com/tutureproject/tuture.svg?branch=master)](https://travis-ci.com/tutureproject/tuture)
 
 Tuture is a tool for generating tech tutorials with high quality based on Git repositories.
 
