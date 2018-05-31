@@ -10,8 +10,8 @@ module.exports = () => {
   }
   try {
     cp.execSync('tuture-renderer');
+    signale.success('Tuture renderer is served on http://localhost:3000.');
   } catch (e) {
     signale.error('tuture-renderer is not available!');
   }
-  signale.success('Tuture renderer is served on http://localhost:3000.');
 };
