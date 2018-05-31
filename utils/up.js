@@ -9,8 +9,8 @@ module.exports = () => {
     process.exit(1);
   }
   try {
-    cp.execSync('tuture-renderer');
     signale.success('Tuture renderer is served on http://localhost:3000.');
+    cp.execSync('tuture-renderer');
   } catch (e) {
     signale.error('tuture-renderer is not available!');
   }
