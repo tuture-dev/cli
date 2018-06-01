@@ -5,7 +5,6 @@
   "main": "cli/index.js",
   "scripts": {
     "pretest": "npm uninstall -g && npm install -g",
-    "posttest": "npm uninstall -g",
     "test": "jest",
     "lint": "eslint **/*.js"
   },
