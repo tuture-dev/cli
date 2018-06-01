@@ -19,77 +19,19 @@ describe('tuture init', () => {
   // TODO: Test prompts when no args given.
 
   describe('-y', () => {
-    const nonGitRepo = utils.createEmptyDir();
-    tmpDirs.push(nonGitRepo);
-    process.chdir(nonGitRepo);
-    const cp1 = utils.run(['init', '-y']);
-
-    it('should refuse to init outside a git repo', () => {
-      expect(cp1.status).toBe(1);
-    });
-
-    const gitRepo = utils.createGitRepo();
-    tmpDirs.push(gitRepo);
-    process.chdir(gitRepo);
-    const cp2 = utils.run(['init', '-y']);
-
-    it('should exit with status 0', () => {
-      expect(cp2.status).toBe(0);
-    });
-
-    it('should create .tuture/diff directory', () => {
-      const diffPath = path.join('.tuture', 'diff');
-      expect(fs.existsSync(diffPath)).toBe(true);
-      expect(fs.readdirSync(diffPath).length).toBe(testRepo.length);
-    });
-
-    it('should create correct tuture.yml with default values', () => {
-      expect(fs.existsSync('tuture.yml')).toBe(true);
-
-      const tuture = yaml.safeLoad(fs.readFileSync('tuture.yml'));
-      testTutureObject(tuture);
-    });
+    testInit('-y');
   });
 
   describe('--yes', () => {
-    const nonGitRepo = utils.createEmptyDir();
-    tmpDirs.push(nonGitRepo);
-    process.chdir(nonGitRepo);
-    const cp1 = utils.run(['init', '--yes']);
-
-    it('should refuse to init outside a git repo', () => {
-      expect(cp1.status).toBe(1);
-    });
-
-    const gitRepo = utils.createGitRepo();
-    tmpDirs.push(gitRepo);
-    process.chdir(gitRepo);
-    const cp2 = utils.run(['init', '--yes']);
-
-    it('should exit with status 0', () => {
-      expect(cp2.status).toBe(0);
-    });
-
-    it('should create .tuture/diff directory', () => {
-      const diffPath = path.join('.tuture', 'diff');
-      expect(fs.existsSync(diffPath)).toBe(true);
-      expect(fs.readdirSync(diffPath).length).toBe(testRepo.length);
-    });
-
-    it('should create correct tuture.yml with default values', () => {
-      expect(fs.existsSync('tuture.yml')).toBe(true);
-
-      const tuture = yaml.safeLoad(fs.readFileSync('tuture.yml'));
-      testTutureObject(tuture);
-    });
+    testInit('--yes');
   });
 });
 
-function testInit(args) {
+function testInit(option) {
   const nonGitRepo = utils.createEmptyDir();
   tmpDirs.push(nonGitRepo);
   process.chdir(nonGitRepo);
-  const cp1 = utils.run(args);
+  const cp1 = utils.run(['init', option]);
 
   it('should refuse to init outside a git repo', () => {
     expect(cp1.status).toBe(1);
@@ -98,7 +40,7 @@ function testInit(args) {
   const gitRepo = utils.createGitRepo();
   tmpDirs.push(gitRepo);
   process.chdir(gitRepo);
-  const cp2 = utils.run(args);
+  const cp2 = utils.run(['init', option]);
 
   it('should exit with status 0', () => {
     expect(cp2.status).toBe(0);
