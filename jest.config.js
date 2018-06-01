@@ -3,4 +3,5 @@ module.exports = {
     'index.js',
     'utils/*.js',
   ],
+  verbose: true,
 };
