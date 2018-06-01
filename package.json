@@ -4,7 +4,8 @@
   "description": "Tuture makes writing interactive, step-by-step tutorials enjoyable.",
   "main": "cli/index.js",
   "scripts": {
-    "test": "echo Test Passed!",
+    "pretest": "npm uninstall -g && npm install -g",
+    "test": "jest",
     "lint": "eslint **/*.js"
   },
   "repository": {
@@ -34,6 +35,8 @@
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.8.2"
+    "eslint-plugin-react": "^7.8.2",
+    "jest": "^23.0.1",
+    "tmp": "^0.0.33"
   }
 }
