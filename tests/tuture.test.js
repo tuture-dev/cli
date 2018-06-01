@@ -41,6 +41,7 @@ describe('tuture', () => {
     });
 
     it('should exit(1) when unknown options are given', () => {
+      expect(run(['-f']).status).toBe(1);
       expect(run(['--foobar']).status).toBe(1);
     });
   });
