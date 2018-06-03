@@ -2,15 +2,20 @@
   "name": "tuture",
   "version": "0.1.0",
   "description": "Tuture makes writing interactive, step-by-step tutorials enjoyable.",
-  "main": "cli/index.js",
+  "main": "index.js",
+  "preferGlobal": true,
+  "keywords": [
+    "tutorial",
+    "learn-by-example"
+  ],
   "scripts": {
-    "pretest": "npm uninstall -g && npm install -g",
+    "pretest": "npm un -g && npm i -g",
     "test": "jest",
     "lint": "eslint **/*.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tutureproject/tuture.git"
+    "url": "https://github.com/tutureproject/tuture.git"
   },
   "license": "MIT",
   "bin": {
@@ -20,6 +25,10 @@
     "url": "https://github.com/tutureproject/tuture/issues"
   },
   "homepage": "https://github.com/tutureproject/tuture#readme",
+  "files":[
+    "index.js",
+    "utils/"
+  ],
   "dependencies": {
     "commander": "^2.15.1",
     "fs-extra": "^6.0.1",
