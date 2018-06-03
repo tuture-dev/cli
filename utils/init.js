@@ -1,6 +1,4 @@
 const fs = require('fs-extra');
-const git = require('simple-git/promise')('.').silent(true);
-const minimatch = require('minimatch');
 const ora = require('ora');
 const path = require('path');
 const promptly = require('promptly');
@@ -8,96 +6,7 @@ const signale = require('signale');
 const yaml = require('js-yaml');
 
 const common = require('./common');
-
-/**
- * Returns whether a file should be collapsed in renderer.
- * @param {string} file path of a file
- */
-function shouldBeCollapsed(file) {
-  return common.collapsedFiles.some(pattern => minimatch(path.basename(file), pattern));
-}
-
-async function checkGitEnv() {
-  try {
-    await git.raw(['status']);
-  } catch (e) {
-    if (fs.existsSync('.git')) {
-      signale.error('Git is not working on your machine!');
-    } else {
-      signale.error('You are not working on a git repo!');
-    }
-    process.exit(1);
-  }
-}
-
-async function getGitLogs() {
-  let result = null;
-  try {
-    result = await git.raw(['log', '--oneline', '--no-merges']);
-  } catch (e) {
-    console.log('No git executable detected!');
-    process.exit(1);
-  }
-  let logs = result.split('\n');
-  logs = logs.slice(0, logs.length - 1);
-  return logs;
-}
-
-async function getGitDiff(commit) {
-  let result = null;
-  try {
-    result = await git.raw(['show', commit, '--name-only']);
-  } catch (e) {
-    console.log('No git executable detected!');
-    process.exit(1);
-  }
-  let changedFiles = result.split('\n\n').slice(-1)[0].split('\n');
-  changedFiles = changedFiles.slice(0, changedFiles.length - 1);
-  return changedFiles
-    // don't track changes of tuture.yml
-    .filter(file => file !== 'tuture.yml')
-    .map((file) => {
-      const diffFile = { file, explain: common.EXPLAIN_PLACEHOLDER };
-      if (shouldBeCollapsed(file)) {
-        diffFile.collapse = true;
-      }
-      return diffFile;
-    });
-}
-
-async function storeDiff(commit) {
-  let result = null;
-  try {
-    result = await git.raw(['show', commit]);
-  } catch (e) {
-    console.log('No git executable detected!');
-    process.exit(1);
-  }
-  git.raw(['show', commit]);
-
-  const diff = result.split('\n\n').slice(-1)[0];
-  const diffPath = path.join(common.TUTURE_ROOT, 'diff', `${commit}.diff`);
-  fs.writeFileSync(diffPath, diff);
-}
-
-async function makeSteps() {
-  const logs = await getGitLogs();
-  return logs
-    .reverse()
-    // filter out commits whose commit message starts with 'tuture:'
-    .filter(log => !log.startsWith('tuture:'))
-    .map(async (log) => {
-      const commit = log.slice(0, 7);
-      const msg = log.slice(8, log.length);
-      await storeDiff(commit);
-      return {
-        name: msg,
-        commit,
-        explain: common.EXPLAIN_PLACEHOLDER,
-        diff: await getGitDiff(commit),
-      };
-    });
-}
+const git = require('./git');
 
 /**
  * Construct metadata object from user prompt
@@ -105,7 +14,7 @@ async function makeSteps() {
  * @returns {object} Metadata object to be dumped into tuture.yml
  */
 async function promptMetaData(shouldPrompt) {
-  await checkGitEnv();
+  await git.checkGitEnv();
 
   const tuture = Object();
   if (!shouldPrompt) {
@@ -130,6 +39,25 @@ async function promptMetaData(shouldPrompt) {
   }
 
   return tuture;
+}
+
+async function makeSteps() {
+  const logs = await git.getGitLogs();
+  return logs
+    .reverse()
+    // filter out commits whose commit message starts with 'tuture:'
+    .filter(log => !log.startsWith('tuture:'))
+    .map(async (log) => {
+      const commit = log.slice(0, 7);
+      const msg = log.slice(8, log.length);
+      await git.storeDiff(commit);
+      return {
+        name: msg,
+        commit,
+        explain: common.EXPLAIN_PLACEHOLDER,
+        diff: await git.getGitDiff(commit),
+      };
+    });
 }
 
 // Constructs "steps" section in tuture.yml and store diff files.
