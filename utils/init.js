@@ -94,7 +94,7 @@ module.exports = async (options) => {
 
     appendGitignore();
   } catch (e) {
-    console.log(e);
+    console.log(e.message);
     const spinner = ora('Cleaning...').start();
     await common.removeTutureSuite();
     spinner.stop();
