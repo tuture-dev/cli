@@ -3244,12 +3244,6 @@ signale@^1.1.0:
     figures "^2.0.0"
     pkg-conf "^2.1.0"
 
-simple-git@^1.92.0:
-  version "1.95.0"
-  resolved "http://registry.npm.taobao.org/simple-git/download/simple-git-1.95.0.tgz#29f4f21b5841d0b6bd7174afe60f583ac736f902"
-  dependencies:
-    debug "^3.1.0"
-
 slash@^1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/slash/download/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"

@@ -1,46 +1,42 @@
+const cp = require('child_process');
 const fs = require('fs-extra');
-const git = require('simple-git/promise')('.').silent(true);
 const minimatch = require('minimatch');
 const path = require('path');
 const signale = require('signale');
 
 const common = require('./common');
 
-async function checkGitEnv() {
-  try {
-    await git.raw(['status']);
-  } catch (e) {
-    if (fs.existsSync('.git')) {
-      signale.error('Git is not working on your machine!');
-    } else {
-      signale.error('You are not working on a git repo!');
-    }
+/**
+ * Run arbitrary Git commands.
+ * If exit status is not 0, log out stderr message and exit.
+ * @param {Array} args arguments of command
+ * @returns {String} stdout of running this git command
+ */
+function runGitCommand(args) {
+  const subprocess = cp.spawnSync('git', args);
+  if (subprocess.status !== 0) {
+    signale.error(subprocess.stderr.toString());
     process.exit(1);
   }
+  return subprocess.stdout.toString();
 }
 
-async function getGitLogs() {
-  let result = null;
-  try {
-    result = await git.raw(['log', '--oneline', '--no-merges']);
-  } catch (e) {
-    console.log('No git executable detected!');
-    process.exit(1);
-  }
-  let logs = result.split('\n');
-  logs = logs.slice(0, logs.length - 1);
-  return logs;
+/**
+ * Get an array of Git commit messages.
+ * @returns {Array} Git commit messages
+ */
+function getGitLogs() {
+  return runGitCommand(['log', '--oneline', '--no-merges']).trim().split('\n');
 }
 
-async function getGitDiff(commit) {
-  let result = null;
-  try {
-    result = await git.raw(['show', commit, '--name-only']);
-  } catch (e) {
-    console.log('No git executable detected!');
-    process.exit(1);
-  }
-  let changedFiles = result.split('\n\n').slice(-1)[0].split('\n');
+/**
+ * Get diff of a given commit.
+ * @param {String} commit Commit ID
+ * @returns {Array} Diff objects with attrs `file`, `explain`, and optional `collapse`
+ */
+function getGitDiff(commit) {
+  const output = runGitCommand(['show', commit, '--name-only']);
+  let changedFiles = output.split('\n\n').slice(-1)[0].split('\n');
   changedFiles = changedFiles.slice(0, changedFiles.length - 1);
   return changedFiles
     // don't track changes of tuture.yml
@@ -54,22 +50,17 @@ async function getGitDiff(commit) {
     });
 }
 
-async function storeDiff(commit) {
-  let result = null;
-  try {
-    result = await git.raw(['show', commit]);
-  } catch (e) {
-    console.log('No git executable detected!');
-    process.exit(1);
-  }
-  git.raw(['show', commit]);
-
-  const diff = result.split('\n\n').slice(-1)[0];
+/**
+ * Store diff of a given commit to a file.
+ * @param {String} commit Commit ID
+ */
+function storeDiff(commit) {
+  const output = runGitCommand(['show', commit]);
+  const diff = output.split('\n\n').slice(-1)[0];
   const diffPath = path.join(common.TUTURE_ROOT, 'diff', `${commit}.diff`);
   fs.writeFileSync(diffPath, diff);
 }
 
-exports.checkGitEnv = checkGitEnv;
 exports.getGitLogs = getGitLogs;
 exports.getGitDiff = getGitDiff;
 exports.storeDiff = storeDiff;

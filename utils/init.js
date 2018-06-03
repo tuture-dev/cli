@@ -14,8 +14,6 @@ const git = require('./git');
  * @returns {object} Metadata object to be dumped into tuture.yml
  */
 async function promptMetaData(shouldPrompt) {
-  await git.checkGitEnv();
-
   const tuture = Object();
   if (!shouldPrompt) {
     tuture.name = 'My Awesome Tutorial';
@@ -41,36 +39,27 @@ async function promptMetaData(shouldPrompt) {
   return tuture;
 }
 
-async function makeSteps() {
-  const logs = await git.getGitLogs();
+/**
+ * Construct tuture steps.
+ * @returns {Array} steps of a tutorial.
+ */
+function makeSteps() {
+  const logs = git.getGitLogs();
   return logs
     .reverse()
     // filter out commits whose commit message starts with 'tuture:'
     .filter(log => !log.startsWith('tuture:'))
-    .map(async (log) => {
+    .map((log) => {
       const commit = log.slice(0, 7);
       const msg = log.slice(8, log.length);
-      await git.storeDiff(commit);
+      git.storeDiff(commit);
       return {
         name: msg,
         commit,
         explain: common.EXPLAIN_PLACEHOLDER,
-        diff: await git.getGitDiff(commit),
+        diff: git.getGitDiff(commit),
       };
     });
-}
-
-// Constructs "steps" section in tuture.yml and store diff files.
-async function getSteps() {
-  const spinner = ora('Extracting diffs from git log...').start();
-  const steps = await makeSteps().then(async (resArr) => {
-    const res = await Promise.all(resArr);
-    spinner.stop();
-    signale.success('Diff files are created!');
-    return res;
-  });
-
-  return steps;
 }
 
 /**
@@ -83,8 +72,10 @@ function appendGitignore() {
 
   if (!fs.existsSync('.gitignore')) {
     fs.writeFileSync('.gitignore', ignoreRules);
-  } else if (fs.readFileSync('.gitignore').toString().indexOf('.tuture') === -1) {
+    signale.success('.gitignore is created!');
+  } else if (!fs.readFileSync('.gitignore').toString().includes('.tuture')) {
     fs.appendFileSync('.gitignore', `\n${ignoreRules}`);
+    signale.success('.gitignore rule is appended!');
   }
 }
 
@@ -92,11 +83,18 @@ module.exports = async (options) => {
   try {
     const tuture = await promptMetaData(!options.yes);
     fs.mkdirpSync(path.join(common.TUTURE_ROOT, 'diff'));
-    tuture.steps = await getSteps();
+
+    const spinner = ora('Extracting diff from git logs...').start();
+    tuture.steps = makeSteps();
+    spinner.stop();
+    signale.success('Diff files are extracted!');
+
     fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
+    signale.success('tuture.yml is created!');
+
     appendGitignore();
   } catch (e) {
-    console.log('\nAborted!');
+    console.log(e);
     const spinner = ora('Cleaning...').start();
     await common.removeTutureSuite();
     spinner.stop();
