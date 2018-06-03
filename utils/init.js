@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
-const ora = require('ora');
 const path = require('path');
+
+const ora = require('ora');
 const promptly = require('promptly');
 const signale = require('signale');
 const yaml = require('js-yaml');
