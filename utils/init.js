@@ -69,7 +69,7 @@ async function promptMetaData(shouldPrompt) {
  * Construct tuture steps.
  * @returns {Array} steps of a tutorial.
  */
-async function makeSteps() {
+function makeSteps() {
   const logs = git.getGitLogs();
   return logs
     .reverse()
@@ -109,7 +109,7 @@ module.exports = async (options) => {
 
   try {
     const spinner = ora('Extracting diff from git logs...').start();
-    tuture.steps = await makeSteps();
+    tuture.steps = makeSteps();
     spinner.stop();
     signale.success('Diff files are extracted!');
 
