@@ -26,7 +26,7 @@ program
  */
 program
   .command('up')
-  .description('fire up your tutorial in the browser')
+  .description('render your tutorial in the browser')
   .action(() => {
     utils.startRenderer();
   });
