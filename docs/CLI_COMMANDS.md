@@ -8,10 +8,11 @@ Tuture will prompt you to answer following questions (if `-y` or `--yes` option 
 
 | Prompt             | Fields     | Required/Optional | Default            | Meaning                                                      |
 | ------------------ | ---------- | ----------------- | ------------------ | ------------------------------------------------------------ |
-| Tutorial Name?     | `name`     | Required          | My Awesome Project | Title of this tutorial                                       |
-| Tutorial Language? | `language` | Required          | English            | Language of this tutorial                                    |
-| Topics?            | `topics`   | Optional          | -                  | Topics of this tutorial, separated with spaces or commas, such as `express,mongodb` |
-| Maintainer email?  | `email`    | Optional          | -                  | Maintainer email of this tutorial                            |
+| Tutorial Name?     | `name`     | Required          | My Awesome Tutorial | Title of this tutorial                                       |
+| Version | `version` | Required          | 0.0.1            | Version of this tutorial        |
+| Tutorial Language? | `language` | Required  | en           | Language of this tutorial |
+| Topics? | `topics` | Optional  | javascript,  git, cli | Topics of this tutorial, separated with spaces or commas, such as `express, mongodb` |
+| Maintainer email? | `email` | Optional | me@example.com | Maintainer email of this tutorial |
 
 Afterwards following files will be generated:
 

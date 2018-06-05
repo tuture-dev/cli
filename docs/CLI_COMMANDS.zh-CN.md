@@ -9,7 +9,8 @@ Tuture 会询问你以下问题（如果使用了 `-y` 或 `—yes` 则不会询
 | 询问               | 对应字段   | 必要/可选 | 默认值             | 含义                                                         |
 | ------------------ | ---------- | --------- | ------------------ | ------------------------------------------------------------ |
 | Tutorial Name?     | `name`     | 必要      | My Awesome Project | 此教程的标题                                                 |
-| Tutorial Language? | `language` | 必要      | English            | 此教程的语言                                                 |
+| Version | `version` | 必要          | 0.0.1            | 此教程的版本        |
+| Tutorial Language? | `language` | 必要      | en            | 此教程的语言                                                 |
 | Topics?            | `topics`   | 可选      | -                  | 此教程的主题，不同的主题用空格或逗号分隔，例如 `express,mongodb` |
 | Maintainer email?  | `email`    | 可选      | -                  | 此教程维护者的电子邮件                                       |
 

@@ -47,13 +47,13 @@ Try to be informative and attractive, such as *Build Your Own NoSQL Database wit
 
 ## `language`
 
-Language of your tutorial.
+**[Required]** Language of your tutorial.
 
 Note that it's about **natural languages** that your tutorial is written in, not **programming languages**. Tuture fully appreciates the importance of internationlization (aka i18n), so tutorials will be divided into different groups by languages.
 
 ## `version`
 
-Version of your tutorial.
+**[Required]** Version of your tutorial.
 
 ## `topics`
 
