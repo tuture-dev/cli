@@ -58,7 +58,7 @@ async function promptMetaData(shouldPrompt) {
   ];
 
   const onCancel = () => {
-    console.log('Aborted!');
+    signale.fatal('Aborted!');
     process.exit(1);
   };
 

@@ -1,16 +1,17 @@
 const ora = require('ora');
 const prompts = require('prompts');
+const signale = require('signale');
 
 const common = require('./common');
 
 module.exports = async (options) => {
   if (!common.ifTutureSuiteExists()) {
-    console.log('No Tuture tutorial to destroy!');
+    signale.error('No Tuture tutorial to destroy!');
     process.exit(1);
   }
 
   const onCancel = () => {
-    console.log('Aborted!');
+    signale.fatal('Aborted!');
     process.exit(1);
   };
 
@@ -26,5 +27,6 @@ module.exports = async (options) => {
   }
   const spinner = ora('Deleting Tuture files...').start();
   await common.removeTutureSuite();
-  spinner.succeed('Tuture suite has been destroyed!');
+  spinner.stop();
+  signale.success('Tuture suite has been destroyed!');
 };
