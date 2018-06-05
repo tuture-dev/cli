@@ -62,7 +62,7 @@ function testInit(option) {
 
 function testTutureObject(tuture) {
   expect(tuture.name).toBe('My Awesome Tutorial');
-  expect(tuture.language).toBe('English');
+  expect(tuture.language).toBe('en');
   expect(tuture.steps.length).toBe(testRepo.length);
   expect(tuture.steps[0].name).toBe(testRepo[0].message);
   expect(tuture.steps[0].explain).toBe(EXPLAIN_PLACEHOLDER);

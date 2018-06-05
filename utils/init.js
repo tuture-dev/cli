@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 
 const ora = require('ora');
-const promptly = require('promptly');
+const prompts = require('prompts');
 const signale = require('signale');
 const yaml = require('js-yaml');
 
@@ -15,29 +15,54 @@ const git = require('./git');
  * @returns {object} Metadata object to be dumped into tuture.yml
  */
 async function promptMetaData(shouldPrompt) {
-  const tuture = Object();
-  if (!shouldPrompt) {
-    tuture.name = 'My Awesome Tutorial';
-    tuture.language = 'English';
-  } else {
-    // Ask for required fields.
-    tuture.name = await promptly.prompt(
-      'Tutorial Name: (My Awesome Tutorial) ',
-      { default: 'My Awesome Tutorial' },
-    );
-    tuture.language = await promptly.prompt(
-      'Tutorial Languange: (English) ',
-      { default: 'English' },
-    );
+  const defaultValues = {
+    name: 'My Awesome Tutorial',
+    version: '0.0.1',
+    language: 'en',
+  };
+  const questions = [
+    {
+      type: 'text',
+      name: 'name',
+      message: 'Tutorial Name',
+      initial: defaultValues.name,
+    },
+    {
+      type: 'text',
+      name: 'version',
+      message: 'Version',
+      initial: defaultValues.version,
+    },
+    {
+      type: 'select',
+      name: 'language',
+      message: 'Tutorial Language',
+      choices: [
+        { title: 'English', value: 'en' },
+        { title: '简体中文', value: 'zh-CN' },
+      ],
+      initial: 0,
+    },
+    {
+      type: 'list',
+      name: 'topics',
+      message: 'Topics',
+      initial: 'javascript, git, cli',
+    },
+    {
+      type: 'text',
+      name: 'email',
+      message: 'Maintainer Email',
+      initial: 'me@example.com',
+    },
+  ];
 
-    // Ask for optional fields.
-    const topics = await promptly.prompt('Topics: ', { default: '' });
-    const email = await promptly.prompt('Maintainer Email: ', { default: '' });
-    if (topics) tuture.topics = topics.split(/[ ,]+/);
-    if (email) tuture.email = email;
-  }
+  const onCancel = () => {
+    signale.fatal('Aborted!');
+    process.exit(1);
+  };
 
-  return tuture;
+  return shouldPrompt ? prompts(questions, { onCancel }) : defaultValues;
 }
 
 /**
@@ -73,18 +98,16 @@ function appendGitignore() {
 
   if (!fs.existsSync('.gitignore')) {
     fs.writeFileSync('.gitignore', ignoreRules);
-    signale.success('.gitignore is created!');
   } else if (!fs.readFileSync('.gitignore').toString().includes('.tuture')) {
     fs.appendFileSync('.gitignore', `\n${ignoreRules}`);
-    signale.success('.gitignore rule is appended!');
   }
 }
 
 module.exports = async (options) => {
-  try {
-    const tuture = await promptMetaData(!options.yes);
-    fs.mkdirpSync(path.join(common.TUTURE_ROOT, 'diff'));
+  const tuture = await promptMetaData(!options.yes);
+  fs.mkdirpSync(path.join(common.TUTURE_ROOT, 'diff'));
 
+  try {
     const spinner = ora('Extracting diff from git logs...').start();
     tuture.steps = makeSteps();
     spinner.stop();
@@ -95,7 +118,7 @@ module.exports = async (options) => {
 
     appendGitignore();
   } catch (e) {
-    console.log(e.message);
+    signale.error(e.message);
     const spinner = ora('Cleaning...').start();
     await common.removeTutureSuite();
     spinner.stop();

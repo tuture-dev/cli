@@ -35,7 +35,7 @@
     "js-yaml": "^3.11.0",
     "minimatch": "^3.0.4",
     "ora": "^2.1.0",
-    "promptly": "^3.0.3",
+    "prompts": "^0.1.8",
     "signale": "^1.1.0"
   },
   "devDependencies": {
