@@ -16,10 +16,10 @@ describe('tuture destroy', () => {
     const tuturePath = utils.createTutureSuite();
     tmpDirs.push(tuturePath);
     process.chdir(tuturePath);
-    const cp2 = utils.run(['destroy', '-f']);
+    const cp = utils.run(['destroy', '-f']);
 
     it('should exit with status 0', () => {
-      expect(cp2.status).toBe(0);
+      expect(cp.status).toBe(0);
     });
 
     it('should delete all tuture files', () => {
