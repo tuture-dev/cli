@@ -11,7 +11,7 @@ let tmpDirs = Array();
 describe('tuture init', () => {
 
   afterAll(() => {
-    tmpDirs.map(dir => fs.removeSync(dir));
+    tmpDirs.forEach(dir => fs.removeSync(dir));
     process.chdir(path.join(__dirname, '..'));
   });
 

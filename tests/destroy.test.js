@@ -8,7 +8,7 @@ let tmpDirs = Array();
 describe('tuture destroy', () => {
 
   afterAll(() => {
-    tmpDirs.map(dir => fs.removeSync(dir));
+    tmpDirs.forEach(dir => fs.removeSync(dir));
     process.chdir(path.join(__dirname, '..'));
   });
 
