@@ -1,7 +1,6 @@
 const cp = require('child_process');
 
 const fs = require('fs-extra');
-const minimatch = require('minimatch');
 const path = require('path');
 const signale = require('signale');
 
@@ -44,7 +43,7 @@ function getGitDiff(commit) {
     .filter(file => file !== 'tuture.yml')
     .map((file) => {
       const diffFile = { file, explain: common.EXPLAIN_PLACEHOLDER };
-      if (common.collapsedFiles.some(pattern => minimatch(path.basename(file), pattern))) {
+      if (common.shouldBeCollapsed(file)) {
         diffFile.collapse = true;
       }
       return diffFile;
