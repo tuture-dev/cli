@@ -104,6 +104,8 @@ function appendGitignore() {
 }
 
 module.exports = async (options) => {
+  common.checkGitEnv();
+
   const tuture = await promptMetaData(!options.yes);
   fs.mkdirpSync(path.join(common.TUTURE_ROOT, 'diff'));
 

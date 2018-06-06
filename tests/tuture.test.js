@@ -35,7 +35,7 @@ describe('tuture', () => {
     });
   });
 
-  describe('unknown args', () => {
+  describe('(unknown args)', () => {
     it('should exit(1) when unknown commands are given', () => {
       expect(run(['foobar']).status).toBe(1);
     });
