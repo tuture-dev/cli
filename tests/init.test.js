@@ -15,6 +15,17 @@ describe('tuture init', () => {
     process.chdir(path.join(__dirname, '..'));
   });
 
+  describe('outside a git repo', () => {
+    const nonGitRepo = utils.createEmptyDir();
+    tmpDirs.push(nonGitRepo);
+
+    it('should refuse to init', () => {
+      process.chdir(nonGitRepo);
+      const cp = utils.run(['init', '-y']);
+      expect(cp.status).toBe(1);
+    });
+  });
+
   describe('inside a Git repo', () => {
 
     describe('no .gitignore', () => {
@@ -73,17 +84,6 @@ describe('tuture init', () => {
         const cp = utils.run(['init', '-y']);
         expect(cp.status).toBe(1);
       });
-    });
-  });
-
-  describe('outside a git repo', () => {
-    const nonGitRepo = utils.createEmptyDir();
-    tmpDirs.push(nonGitRepo);
-
-    it('should refuse to init', () => {
-      process.chdir(nonGitRepo);
-      const cp = utils.run(['init', '-y']);
-      expect(cp.status).toBe(1);
     });
   });
 });
