@@ -12,53 +12,31 @@ describe('tuture destroy', () => {
     process.chdir(path.join(__dirname, '..'));
   });
 
-  describe('(no args)', () => {
+  describe('normal destroy', () => {
     const tuturePath = utils.createTutureSuite();
     tmpDirs.push(tuturePath);
     process.chdir(tuturePath);
-    const cp = utils.run(['destroy']);
+    const cp2 = utils.run(['destroy', '-f']);
 
-    it('should prompt message', () => {
-      expect(cp.stdout.toString()).toMatch(/Are you sure?/);
+    it('should exit with status 0', () => {
+      expect(cp2.status).toBe(0);
     });
 
-    // TODO: Untangle this prompt mess.
-    it.skip('should not delete tuture files when choosing default', () => {
-      expect(fs.existsSync(path.join('.tuture', 'diff'))).toBe(true);
-      expect(fs.existsSync('tuture.yml')).toBe(true);
+    it('should delete all tuture files', () => {
+      process.chdir(tuturePath);
+      expect(fs.existsSync(path.join('.tuture', 'diff'))).toBe(false);
+      expect(fs.existsSync('tuture.yml')).toBe(false);
     });
   });
 
-  describe('-f', () => {
-    testDestroy(['destroy', '-f']);
-  });
+  describe('no tuture files present', () => {
+    const nonTuturePath = utils.createEmptyDir();
+    tmpDirs.push(nonTuturePath);
+    process.chdir(nonTuturePath);
+    const cp = utils.run(['destroy', '-f']);
 
-  describe('--force', () => {
-    testDestroy(['destroy', '--force']);
+    it('should refuse to destroy', () => {
+      expect(cp.status).toBe(1);
+    });
   });
 });
-
-function testDestroy(args) {
-  const nonTuturePath = utils.createEmptyDir();
-  tmpDirs.push(nonTuturePath);
-  process.chdir(nonTuturePath);
-  const cp1 = utils.run(args);
-
-  it('should refuse to destroy when no tuture files present', () => {
-    expect(cp1.status).toBe(1);
-  });
-
-  const tuturePath = utils.createTutureSuite();
-  tmpDirs.push(tuturePath);
-  process.chdir(tuturePath);
-  const cp2 = utils.run(args);
-
-  it('should exit with status 0', () => {
-    expect(cp2.status).toBe(0);
-  });
-
-  it('should delete all tuture files', () => {
-    expect(fs.existsSync(path.join('.tuture', 'diff'))).toBe(false);
-    expect(fs.existsSync('tuture.yml')).toBe(false);
-  });
-}

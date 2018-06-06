@@ -1,10 +1,9 @@
 const utils = require('./utils');
-const testRepo = require('./utils').testRepo;
 const fs = require('fs-extra');
 const path = require('path');
 const yaml = require('js-yaml');
 
-const { EXPLAIN_PLACEHOLDER } = require('../utils/common');
+const { EXPLAIN_PLACEHOLDER, shouldBeCollapsed } = require('../utils/common');
 
 // Tmp directories used in tests.
 let tmpDirs = Array();
@@ -16,34 +15,89 @@ describe('tuture init', () => {
     process.chdir(path.join(__dirname, '..'));
   });
 
-  // TODO: Test prompts when no args given.
-
-  describe('-y', () => {
-    testInit('-y');
+  describe('no .gitignore', () => {
+    // NOTE: When contriving testRepo, put `files` in alphabetic order.
+    const testRepo = [
+      {
+        message: 'Commit 1',
+        files: ['test1.js', 'test2.js'],
+      },
+      {
+        message: 'Commit 2',
+        files: ['package-lock.json'],
+      },
+    ];
+    testInit(testRepo);
   });
 
-  describe('--yes', () => {
-    testInit('--yes');
+  describe('.gitignore without ignoring .tuture', () => {
+    const testRepo = [
+      {
+        message: 'Test',
+        files: ['.gitignore', 'app.js'],
+      },
+      {
+        message: 'Another Test',
+        files: ['dir/test1.js', 'dir/yarn.lock'],
+      },
+      {
+        message: 'Still Another Test',
+        files: ['dir/test2.js'],
+      },
+    ];
+    testInit(testRepo);
+  });
+
+  describe('.gitignore already having .tuture ignored', () => {
+    const testRepo = [
+      {
+        message: 'First Commit',
+        files: ['.gitignore', 'test1.js'],
+      },
+      {
+        message: 'Second Commit',
+        files: ['test2.js'],
+      },
+    ];
+    testInit(testRepo, true);
+  });
+
+  describe('outside a git repo', () => {
+    const nonGitRepo = utils.createEmptyDir();
+    tmpDirs.push(nonGitRepo);
+
+    it('should refuse to init', () => {
+      process.chdir(nonGitRepo);
+      const cp = utils.run(['init', '-y']);
+      expect(cp.status).toBe(1);
+    });
+  });
+
+  describe('inside a git repo with no commit', () => {
+    const gitRepo = utils.createGitRepo([]);
+    tmpDirs.push(gitRepo);
+
+    it('should refuse to init', () => {
+      process.chdir(gitRepo);
+      const cp = utils.run(['init', '-y']);
+      expect(cp.status).toBe(1);
+    });
   });
 });
 
-function testInit(option) {
-  const nonGitRepo = utils.createEmptyDir();
-  tmpDirs.push(nonGitRepo);
-  process.chdir(nonGitRepo);
-  const cp1 = utils.run(['init', option]);
-
-  it('should refuse to init outside a git repo', () => {
-    expect(cp1.status).toBe(1);
-  });
-
-  const gitRepo = utils.createGitRepo();
+function testInit(testRepo, ignoreTuture = false) {
+  const gitRepo = utils.createGitRepo(testRepo, ignoreTuture);
   tmpDirs.push(gitRepo);
   process.chdir(gitRepo);
-  const cp2 = utils.run(['init', option]);
+  const cp = utils.run(['init', '-y']);
+
+  // Make sure when running each test, it's on the correct path.
+  beforeEach(() => {
+    process.chdir(gitRepo);
+  })
 
   it('should exit with status 0', () => {
-    expect(cp2.status).toBe(0);
+    expect(cp.status).toBe(0);
   });
 
   it('should create .tuture/diff directory', () => {
@@ -56,22 +110,43 @@ function testInit(option) {
     expect(fs.existsSync('tuture.yml')).toBe(true);
 
     const tuture = yaml.safeLoad(fs.readFileSync('tuture.yml'));
-    testTutureObject(tuture);
+    testTutureObject(testRepo, tuture);
+  });
+
+  it('should have .gitignore properly configured', () => {
+    expect(fs.existsSync('.gitignore')).toBe(true);
+
+    const ignoreRules = fs.readFileSync('.gitignore').toString();
+
+    // .tuture is ignored.
+    expect(ignoreRules.indexOf('.tuture')).not.toBe(-1);
+
+    // .tuture is ignored only once.
+    expect(ignoreRules.indexOf('.tuture')).toBe(ignoreRules.lastIndexOf('.tuture'));
   });
 }
 
-function testTutureObject(tuture) {
+function testTutureObject(testRepo, tuture) {
+  // Expect metadata to be default values.
   expect(tuture.name).toBe('My Awesome Tutorial');
+  expect(tuture.version).toBe('0.0.1');
   expect(tuture.language).toBe('en');
+
   expect(tuture.steps.length).toBe(testRepo.length);
-  expect(tuture.steps[0].name).toBe(testRepo[0].message);
-  expect(tuture.steps[0].explain).toBe(EXPLAIN_PLACEHOLDER);
-  expect(tuture.steps[0].diff[0].file).toBe(testRepo[0].files[0]);
-  expect(tuture.steps[0].diff[0].explain).toBe(EXPLAIN_PLACEHOLDER);
-  expect(tuture.steps[0].diff[1].file).toBe(testRepo[0].files[1]);
-  expect(tuture.steps[0].diff[1].explain).toBe(EXPLAIN_PLACEHOLDER);
-  expect(tuture.steps[1].name).toBe(testRepo[1].message);
-  expect(tuture.steps[1].diff[0].file).toBe(testRepo[1].files[0]);
-  expect(tuture.steps[1].diff[0].explain).toBe(EXPLAIN_PLACEHOLDER);
-  expect(tuture.steps[1].diff[0].collapse).toBe(true);
+
+  // Check equivalence of each step.
+  for (let i = 0; i < testRepo.length; i++) {
+    expect(tuture.steps[i].name).toBe(testRepo[i].message);
+    expect(tuture.steps[i].explain).toBe(EXPLAIN_PLACEHOLDER);
+    expect(tuture.steps[i].diff.length).toBe(testRepo[i].files.length);
+
+    for (let j = 0; j < testRepo[i].files.length; j++) {
+      expect(tuture.steps[i].diff[j].file).toBe(testRepo[i].files[j]);
+      expect(tuture.steps[i].diff[j].explain).toBe(EXPLAIN_PLACEHOLDER);
+
+      if (shouldBeCollapsed(testRepo[i].files[j])) {
+        expect(tuture.steps[i].diff[j].collapse).toBe(true);
+      }
+    }
+  }
 }

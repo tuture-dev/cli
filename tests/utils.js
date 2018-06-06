@@ -3,51 +3,48 @@ const cp = require('child_process');
 const path = require('path');
 const tmp = require('tmp');
 
+const { EXPLAIN_PLACEHOLDER } = require('../utils/common');
+
 /**
  * Run any tuture command.
  * @param {Array} args array of arguments
- * @param {String} dir working directory path
  * @returns {ChildProcess} spawned ChildProcess
  */
-function run(args, dir) {
-  return cp.spawnSync('tuture', args, { cwd: dir });
+function run(args) {
+  return cp.spawnSync('tuture', args);
 }
 
-// Temporary Git repo.
-const testRepo = [
-  {
-    message: 'Commit 1',
-    files: ['test1.js', 'test2.js'],
-  },
-  {
-    message: 'Commit 2',
-    files: ['package-lock.json'],
-  },
-];
-
+/**
+ * Create an empty temporary directory.
+ * @returns {String} Path to the created directory.
+ */
 function createEmptyDir() {
   return tmp.dirSync().name;
 }
 
 /**
- * Create a temporary Git repo according to `testRepo`.
+ * Create a temporary Git repo.
+ * @param {Array<Object>} repo Commit objects with `message` and `files`
+ * @param {Boolean} ignoreTuture Whether .tuture should be ignored in .gitignore
+ * @returns {String} Path to the created Git repo
  */
-function createGitRepo() {
+function createGitRepo(repo, ignoreTuture = false) {
   const repoPath = tmp.dirSync().name;
-
-  // cp.execSync(`git init`, { cwd: repoPath });
-  // testRepo.map(step => {
-  //   step.files.map(file => cp.execSync(`touch ${file}`, { cwd: repoPath }));
-  //   cp.execSync(`git add ${step.files.join(' ')}`, { cwd: repoPath });
-  //   cp.execSync(`git commit -m '${step.message}'`, { cwd: repoPath });
-  // });
 
   process.chdir(repoPath);
   cp.execSync(`git init`);
-  testRepo.map(step => {
-    step.files.map(file => cp.execSync(`touch ${file}`));
-    cp.execSync(`git add ${step.files.join(' ')}`);
-    cp.execSync(`git commit -m '${step.message}'`);
+  repo.forEach(commit => {
+    commit.files.forEach(fileName => {
+      const dir = path.parse(fileName).dir;
+      if (dir) fs.mkdirpSync(dir);
+      if (fileName === '.gitignore' && ignoreTuture) {
+        fs.writeFileSync(fileName, '.tuture\n');
+      } else {
+        cp.execSync(`touch ${fileName}`);
+      }
+    });
+    cp.execSync(`git add ${commit.files.join(' ')}`);
+    cp.execSync(`git commit -m '${commit.message}'`);
   });
 
   return repoPath;
@@ -63,7 +60,6 @@ function createTutureSuite() {
 }
 
 exports.run = run;
-exports.testRepo = testRepo;
 exports.createEmptyDir = createEmptyDir;
 exports.createGitRepo = createGitRepo;
 exports.createTutureSuite = createTutureSuite;
