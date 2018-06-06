@@ -14,5 +14,6 @@ module.exports = () => {
     cp.execSync('tuture-renderer');
   } catch (e) {
     signale.error('tuture-renderer is not available!');
+    process.exit(1);
   }
 };
