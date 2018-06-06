@@ -15,51 +15,65 @@ describe('tuture init', () => {
     process.chdir(path.join(__dirname, '..'));
   });
 
-  describe('no .gitignore', () => {
-    // NOTE: When contriving testRepo, put `files` in alphabetic order.
-    const testRepo = [
-      {
-        message: 'Commit 1',
-        files: ['test1.js', 'test2.js'],
-      },
-      {
-        message: 'Commit 2',
-        files: ['package-lock.json'],
-      },
-    ];
-    testInit(testRepo);
-  });
+  describe('inside a Git repo', () => {
 
-  describe('.gitignore without ignoring .tuture', () => {
-    const testRepo = [
-      {
-        message: 'Test',
-        files: ['.gitignore', 'app.js'],
-      },
-      {
-        message: 'Another Test',
-        files: ['dir/test1.js', 'dir/yarn.lock'],
-      },
-      {
-        message: 'Still Another Test',
-        files: ['dir/test2.js'],
-      },
-    ];
-    testInit(testRepo);
-  });
+    describe('no .gitignore', () => {
+      // NOTE: When contriving testRepo, put `files` in alphabetic order.
+      const testRepo = [
+        {
+          message: 'Commit 1',
+          files: ['test1.js', 'test2.js'],
+        },
+        {
+          message: 'Commit 2',
+          files: ['package-lock.json'],
+        },
+      ];
+      testInit(testRepo);
+    });
 
-  describe('.gitignore already having .tuture ignored', () => {
-    const testRepo = [
-      {
-        message: 'First Commit',
-        files: ['.gitignore', 'test1.js'],
-      },
-      {
-        message: 'Second Commit',
-        files: ['test2.js'],
-      },
-    ];
-    testInit(testRepo, true);
+    describe('.gitignore without ignoring .tuture', () => {
+      const testRepo = [
+        {
+          message: 'Test',
+          files: ['.gitignore', 'app.js'],
+        },
+        {
+          message: 'Another Test',
+          files: ['dir/test1.js', 'dir/yarn.lock'],
+        },
+        {
+          message: 'Still Another Test',
+          files: ['dir/test2.js'],
+        },
+      ];
+      testInit(testRepo);
+    });
+
+    describe('.gitignore already having .tuture ignored', () => {
+      const testRepo = [
+        {
+          message: 'First Commit',
+          files: ['.gitignore', 'test1.js'],
+        },
+        {
+          message: 'Second Commit',
+          files: ['test2.js'],
+        },
+      ];
+      testInit(testRepo, true);
+    });
+
+    describe('no commit at all', () => {
+      const gitRepo = utils.createGitRepo([]);
+      tmpDirs.push(gitRepo);
+
+      it('should refuse to init', () => {
+        process.chdir(gitRepo);
+        const cp = utils.run(['init', '-y']);
+        expect(cp.status).toBe(1);
+      });
+    });
   });
 
   describe('outside a git repo', () => {
@@ -68,17 +82,6 @@ describe('tuture init', () => {
 
     it('should refuse to init', () => {
       process.chdir(nonGitRepo);
-      const cp = utils.run(['init', '-y']);
-      expect(cp.status).toBe(1);
-    });
-  });
-
-  describe('inside a git repo with no commit', () => {
-    const gitRepo = utils.createGitRepo([]);
-    tmpDirs.push(gitRepo);
-
-    it('should refuse to init', () => {
-      process.chdir(gitRepo);
       const cp = utils.run(['init', '-y']);
       expect(cp.status).toBe(1);
     });
