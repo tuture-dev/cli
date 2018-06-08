@@ -36,7 +36,8 @@
     "minimatch": "^3.0.4",
     "ora": "^2.1.0",
     "prompts": "^0.1.8",
-    "signale": "^1.1.0"
+    "signale": "^1.1.0",
+    "simple-git": "^1.95.1"
   },
   "devDependencies": {
     "eslint": "^4.19.1",

@@ -1,8 +1,6 @@
-const cp = require('child_process');
 const fs = require('fs-extra');
 const minimatch = require('minimatch');
 const path = require('path');
-const signale = require('signale');
 
 exports.EXPLAIN_PLACEHOLDER = '<YOUR EXPLANATION HERE>';
 exports.TUTURE_ROOT = '.tuture';
@@ -33,15 +31,4 @@ exports.ifTutureSuiteExists = () =>
 exports.removeTutureSuite = async () => {
   await fs.remove('tuture.yml');
   await fs.remove(this.TUTURE_ROOT);
-};
-
-/**
- * Check cwd is a valid Git repo with at least one commit.
- */
-exports.checkGitEnv = () => {
-  const subprocess = cp.spawnSync('git', ['log']);
-  if (subprocess.status) {
-    signale.fatal(subprocess.stderr.toString().replace('fatal:', ''));
-    process.exit(1);
-  }
 };

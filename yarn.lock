@@ -3242,6 +3242,12 @@ signale@^1.1.0:
     figures "^2.0.0"
     pkg-conf "^2.1.0"
 
+simple-git@^1.95.1:
+  version "1.95.1"
+  resolved "http://registry.npm.taobao.org/simple-git/download/simple-git-1.95.1.tgz#8f23b998f0d9e877b12e0291200ce115e004878c"
+  dependencies:
+    debug "^3.1.0"
+
 sisteransi@^0.1.0:
   version "0.1.0"
   resolved "http://registry.npm.taobao.org/sisteransi/download/sisteransi-0.1.0.tgz#2e6706ac427019b84e60f751d588d87920484f25"
