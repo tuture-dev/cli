@@ -1,5 +1,7 @@
 # CLI 命令
 
+以下命令假定你处在一个 Git 仓库中。如果你还没有安装 Git，请从[此处](https://git-scm.com/downloads)下载。
+
 ## `tuture init`
 
 初始化一个 Tuture 教程。

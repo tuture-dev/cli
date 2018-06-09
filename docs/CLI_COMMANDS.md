@@ -1,5 +1,7 @@
 # CLI Commands
 
+Following commands assume that you are working on a Git repo. If you does not have Git on your machine, please download it from [here](https://git-scm.com/downloads).
+
 ## `tuture init`
 
 Initialize a Tuture tutorial.
