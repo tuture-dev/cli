@@ -1,6 +1,6 @@
 # Tuture
 
-Tuture 是一个基于 Git 仓库生成高质量技术教程的工具。
+Tuture 是一个基于 Git 仓库、轻松且快速编写高质量技术教程的工具。
 
 *其他语言版本*：[English](README.md)。
 
@@ -22,80 +22,11 @@ $ npm i -g tuture
 $ npm i -g
 ```
 
-## 使用 Tuture 命令行工具
+## 文档
 
-以下命令假定你处在一个 Git 仓库中。如果你还没有安装 Git，请从[此处](https://git-scm.com/downloads)下载。
+- [CLI 命令](docs/CLI_COMMANDS.zh-CN.md) 详细地介绍了 Tuture 命令行工具的使用
 
-### `tuture init`
-
-初始化一个 Tuture 教程。
-
-初始化过程中会触发一系列询问如下：
-
-| 询问               | 对应字段   | 必要/可选 | 默认值             | 含义                                                         |
-| ------------------ | ---------- | --------- | ------------------ | ------------------------------------------------------------ |
-| Tutorial Name?     | `name`     | 必要      | My Awesome Project | 此教程的标题                                                 |
-| Tutorial Language? | `language` | 必要      | English            | 此教程的语言                                                 |
-| Topics?            | `topics`   | 可选      | -                  | 此教程的主题，不同的主题用空格或逗号分隔，例如 `express,mongodb` |
-| Maintainer email?  | `email`    | 可选      | -                  | 此教程维护者的电子邮件                                       |
-
-然后会生成以下文件：
-
--  **tuture.yml** 文件，用于记录教程的元数据和每一步的讲解，实例结构如下。
-
-```yaml
-name: 教程的名称
-language: 教程的语言
-topics:
-  - 主题 A
-  - 主题 B
-maintainer: 教程维护者的电子邮箱
-steps:
-  - name: commit ae05546 的提交信息
-    commit: ae05546
-    explain: 讲解第一步做了什么
-    diff:
-      - file: 发生变化的文件 A
-        explain: 讲解为什么要增加或修改这个文件
-      - file: 发生变化的文件 B
-        explain: 讲解为什么要增加或修改这个文件
-  - name: commit ae05546 的提交信息
-    commit: a45bec1
-    explain: 讲解第二步做了什么
-    diff:
-      - file: 发生变化的文件 A
-        explain: 讲解为什么要增加或修改这个文件
-      - file: 发生变化的文件 B
-        explain: 讲解为什么要增加或修改这个文件
-      - file: 发生变化的文件 C
-        explain: 讲解为什么要增加或修改这个文件
-```
-
--  **.tuture** 目录，用于存放 Tuture 所需的 diff 数据。
-
-```
-.tuture
-└── diff
-    ├── 084a277.diff
-    ├── e4a9539.diff
-    ├── f898719.diff
-    └── fefe569.diff
-```
-
-同时，会在你的 `.gitignore` 中添加以下规则（如果没有会为你创建）：
-
-```
-# Tuture supporting files
-.tuture
-```
-
-### `tuture up`
-
-生成教程并在浏览器打开。
-
-### `tuture destroy`
-
-删除所有 Tuture 相关文件。
+- [tuture.yml 规格说明](docs/TUTURE_YML_SPEC.zh-CN.md) 是关于 tuture.yml 的详尽说明
 
 ## 如何编写 Tuture 教程
 

@@ -43,13 +43,20 @@ steps:
 
 This will be displayed as the title of your tutorial in [tuture-renderer](https://github.com/tutureproject/renderer). By default it's *My Awesome Tutorial*.
 
-Try to be informative and attractive, such as *Build Your Own NoSQL Database with Python*, and don't use general descriptions (or something like a book title), for instance *Learning JavaScript*.
+**Advices**
+
+- Try to be informative and attractive, such as *Build Your Own NoSQL Database with Python*
+- Don't use general descriptions (or something like a book title), for instance *Learning JavaScript*.
 
 ## `language`
 
 **[Required]** Language of your tutorial.
 
-Note that it's about **natural languages** that your tutorial is written in, not **programming languages**. Tuture fully appreciates the importance of internationlization (aka i18n), so tutorials will be divided into different groups by languages.
+Tuture fully appreciates the importance of internationlization (aka i18n), so tutorials will be divided into different groups by languages.
+
+**Notes**
+
+- This field is about **natural languages** that your tutorial is written in, not **programming languages** you've utilized in your tutorial.
 
 ## `version`
 
@@ -75,7 +82,19 @@ Maintainer email.
 
 **[Required]** Steps for readers to follow.
 
-This field should contain at least one step. Each step corresponds with one commit in your Git repo strictly. For each step, you should stick to the renowned and respected UNIX philosiphy - **Do One Thing and Do It Well**. Finally, you can freely adjust the order of diff files for convenience of explanation.
+**Notes**
+
+- This field should contain at least one step
+- Each step corresponds with one commit in your Git repo strictly
+
+**Advices**
+
+- For each step, stick to the renowned and respected UNIX philosiphy - **Do One Thing and Do It Well**
+- Adjust the order of diff files for better illustration
+
+**Tips**
+
+- For commits not intended to be tracked by Tuture, just start commit message with `tuture:`
 
 Here is the specification of a single step.
 
@@ -93,7 +112,13 @@ Explanation for this step. Generally you can explain what will be done in this s
 
 ### `diff`
 
-Added or changed files in this step. Each file has three fields:
+Added or changed files in this step.
+
+**Notes**
+
+- Changes to **tuture.yml** will not be tracked by default.
+
+Each diff file has three fields:
 
 #### `file`
 

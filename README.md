@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/tutureproject/tuture.svg?branch=master)](https://travis-ci.com/tutureproject/tuture)
 
-Tuture is a tool for generating tech tutorials with high quality based on Git repositories.
+Tuture is a tool for writing high-quality tutorials with both ease and speed based on Git repositories.
 
 *Read this in other languages*: [简体中文](README.zh-CN.md).
 
@@ -24,80 +24,11 @@ Clone this repo to your machine, and run following command:
 $ npm i -g
 ```
 
-## Using Tuture CLI
+## Documentation
 
-Following commands assume that you are working on a Git repo. If you does not have Git on your machine, please download it from [here](https://git-scm.com/downloads).
+- [CLI Commands](docs/CLI_COMMANDS.md) is a detailed manual on using Tuture CLI.
 
-### `tuture init`
-
-Initialize a Tuture tutorial.
-
-Tuture will prompt you to answer following questions:
-
-| Prompt             | Fields     | Required/Optional | Default            | Meaning                                                      |
-| ------------------ | ---------- | ----------------- | ------------------ | ------------------------------------------------------------ |
-| Tutorial Name?     | `name`     | Required          | My Awesome Project | Title of this tutorial                                       |
-| Tutorial Language? | `language` | Required          | English            | Language of this tutorial                                    |
-| Topics?            | `topics`   | Optional          | -                  | Topics of this tutorial, separated with spaces or commas, such as `express,mongodb` |
-| Maintainer email?  | `email`    | Optional          | -                  | Maintainer email of this tutorial                            |
-
-Then following files will be generated:
-
-- **tuture.yml**. This file is a record of metadata and explainations of the tutorial, and here is one possible example:
-
-```yaml
-name: Name of this tutorial
-language: English
-topics:
-  - Topic A
-  - Topic B
-maintainer: maintainer@example.com
-steps:
-  - name: Commit message of commit ae05546
-    commit: ae05546
-    explain: Explain what will be done in this step
-    diff:
-      - file: Changed file A
-        explain: Explain why this change happens
-      - file: Changed file B
-        explain: Explain why this change happens
-  - name: Commit message of commit ae05546
-    commit: a45bec1
-    explain: Explain what will be done in this step
-    diff:
-      - file: Changed file A
-        explain: Explain why this change happens
-      - file: Changed file B
-        explain: Explain why this change happens
-      - file: Changed file C
-        explain: Explain why this change happens
-```
-
-- **.tuture** directory. This houses diff data used by Tuture.
-
-```
-.tuture
-└── diff
-    ├── 084a277.diff
-    ├── e4a9539.diff
-    ├── f898719.diff
-    └── fefe569.diff
-```
-
-Meanwhile, following rules will be appended to your `.gitignore` (Tuture will create one if not exists):
-
-```
-# Tuture supporting files
-.tuture
-```
-
-### `tuture up`
-
-Build the tutorial and open it in your browser.
-
-### `tuture destroy`
-
-Delete all tuture-related files.
+- [tuture.yml Specification](docs/TUTURE_YML_SPEC.md) is a complete specification of **tuture.yml**.
 
 ## How to write a Tuture tutorial
 

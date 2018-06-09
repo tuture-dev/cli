@@ -1,5 +1,7 @@
 # CLI 命令
 
+以下命令假定你处在一个 Git 仓库中。如果你还没有安装 Git，请从[此处](https://git-scm.com/downloads)下载。
+
 ## `tuture init`
 
 初始化一个 Tuture 教程。
@@ -16,7 +18,7 @@ Tuture 会询问你以下问题（如果使用了 `-y` 或 `—yes` 则不会询
 
 然后会生成以下文件：
 
--  **tuture.yml** 文件，用于记录教程的元数据和每一步的讲解，实例结构如下。
+-  **tuture.yml** 文件，用于记录教程的元数据和每一步的讲解，详细规格说明请参考 [tuture.yml 规格说明](TUTURE_YML_SPEC.zh-CN.md)。
 
 -  **.tuture** 目录，用于存放 Tuture 所需的 diff 数据。
 
