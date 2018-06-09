@@ -1,10 +1,21 @@
-const cp = require('child_process');
-
 const fs = require('fs-extra');
+const git = require('simple-git/promise')('.');
 const path = require('path');
 const signale = require('signale');
 
 const common = require('./common');
+
+/**
+ * Check cwd is a valid Git repo with at least one commit.
+ */
+async function checkGitEnv() {
+  try {
+    await git.log();
+  } catch (e) {
+    signale.error(e);
+    process.exit(1);
+  }
+}
 
 /**
  * Run arbitrary Git commands.
@@ -12,21 +23,24 @@ const common = require('./common');
  * @param {Array} args arguments of command
  * @returns {String} stdout of running this git command
  */
-function runGitCommand(args) {
-  const subprocess = cp.spawnSync('git', args);
-  if (subprocess.status !== 0) {
-    signale.error(subprocess.stderr.toString());
+async function runGitCommand(args) {
+  let res = null;
+  try {
+    res = await git.raw(args);
+  } catch (e) {
+    signale.error(e);
     process.exit(1);
   }
-  return subprocess.stdout.toString();
+  return res;
 }
 
 /**
  * Get an array of Git commit messages.
  * @returns {Array} Git commit messages
  */
-function getGitLogs() {
-  return runGitCommand(['log', '--oneline', '--no-merges']).trim().split('\n');
+async function getGitLogs() {
+  const output = await runGitCommand(['log', '--oneline', '--no-merges']);
+  return output.trim().split('\n');
 }
 
 /**
@@ -34,8 +48,8 @@ function getGitLogs() {
  * @param {String} commit Commit ID
  * @returns {Array} Diff objects with attrs `file`, `explain`, and optional `collapse`
  */
-function getGitDiff(commit) {
-  const output = runGitCommand(['show', commit, '--name-only']);
+async function getGitDiff(commit) {
+  const output = await runGitCommand(['show', commit, '--name-only']);
   let changedFiles = output.split('\n\n').slice(-1)[0].split('\n');
   changedFiles = changedFiles.slice(0, changedFiles.length - 1);
   return changedFiles
@@ -54,13 +68,14 @@ function getGitDiff(commit) {
  * Store diff of a given commit to a file.
  * @param {String} commit Commit ID
  */
-function storeDiff(commit) {
-  const output = runGitCommand(['show', commit]);
+async function storeDiff(commit) {
+  const output = await runGitCommand(['show', commit]);
   const diff = output.split('\n\n').slice(-1)[0];
   const diffPath = path.join(common.TUTURE_ROOT, 'diff', `${commit}.diff`);
   fs.writeFileSync(diffPath, diff);
 }
 
+exports.checkGitEnv = checkGitEnv;
 exports.getGitLogs = getGitLogs;
 exports.getGitDiff = getGitDiff;
 exports.storeDiff = storeDiff;

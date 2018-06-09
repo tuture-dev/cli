@@ -65,27 +65,38 @@ async function promptMetaData(shouldPrompt) {
   return shouldPrompt ? prompts(questions, { onCancel }) : defaultValues;
 }
 
-/**
- * Construct tuture steps.
- * @returns {Array} steps of a tutorial.
- */
-function makeSteps() {
-  const logs = git.getGitLogs();
+async function makeSteps() {
+  const logs = await git.getGitLogs();
   return logs
     .reverse()
     // filter out commits whose commit message starts with 'tuture:'
     .filter(log => !log.startsWith('tuture:'))
-    .map((log) => {
+    .map(async (log) => {
       const commit = log.slice(0, 7);
       const msg = log.slice(8, log.length);
-      git.storeDiff(commit);
+      await git.storeDiff(commit);
       return {
         name: msg,
         commit,
         explain: common.EXPLAIN_PLACEHOLDER,
-        diff: git.getGitDiff(commit),
+        diff: await git.getGitDiff(commit),
       };
     });
+}
+
+/**
+ * Constructs "steps" section in tuture.yml and store diff files.
+ */
+async function getSteps() {
+  const spinner = ora('Extracting diffs from git log...').start();
+  const steps = await makeSteps().then(async (resArr) => {
+    const res = await Promise.all(resArr);
+    spinner.stop();
+    signale.success('Diff files are created!');
+    return res;
+  });
+
+  return steps;
 }
 
 /**
@@ -104,16 +115,13 @@ function appendGitignore() {
 }
 
 module.exports = async (options) => {
-  common.checkGitEnv();
+  await git.checkGitEnv();
 
   const tuture = await promptMetaData(!options.yes);
   fs.mkdirpSync(path.join(common.TUTURE_ROOT, 'diff'));
 
   try {
-    const spinner = ora('Extracting diff from git logs...').start();
-    tuture.steps = makeSteps();
-    spinner.stop();
-    signale.success('Diff files are extracted!');
+    tuture.steps = await getSteps();
 
     fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
     signale.success('tuture.yml is created!');
