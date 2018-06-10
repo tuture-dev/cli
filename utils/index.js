@@ -135,6 +135,7 @@ async function initTuture(options) {
     signale.success('tuture.yml is created!');
 
     appendGitignore();
+    git.appendGitHook();
   } catch (e) {
     signale.error(e.message);
     const spinner = ora('Cleaning...').start();
@@ -142,6 +143,37 @@ async function initTuture(options) {
     spinner.stop();
     process.exit(1);
   }
+}
+
+/**
+ * Update Tuture files (diff files and tuture.yml).
+ */
+async function reloadTuture() {
+  if (!common.ifTutureSuiteExists()) {
+    signale.error('Tuture has not been initialized!');
+    process.exit(1);
+  }
+
+  let tuture = null;
+  try {
+    tuture = yaml.safeLoad(fs.readFileSync('tuture.yml'), 'utf8');
+  } catch (e) {
+    signale.error(e);
+    process.exit(1);
+  }
+
+  const currentSteps = await getSteps();
+  currentSteps.forEach((currentStep, index) => {
+    tuture.steps.forEach((step) => {
+      if (currentStep.commit === step.commit) {
+        currentSteps[index] = step;
+      }
+    });
+  });
+
+  tuture.steps = currentSteps;
+  fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
+  signale.success('tuture.yml is reloaded!');
 }
 
 /**
@@ -186,6 +218,9 @@ async function destroyTuture(options) {
     console.log('Aborted!');
     process.exit(1);
   }
+
+  git.removeGitHook();
+
   const spinner = ora('Deleting Tuture files...').start();
   await common.removeTutureSuite();
   spinner.stop();
@@ -193,6 +228,7 @@ async function destroyTuture(options) {
 }
 
 exports.initTuture = initTuture;
+exports.reloadTuture = reloadTuture;
 exports.startRenderer = startRenderer;
 exports.destroyTuture = destroyTuture;
 

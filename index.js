@@ -22,6 +22,16 @@ program
   });
 
 /**
+ * tuture reload
+ */
+program
+  .command('reload')
+  .description('update Tuture files to the latest repo')
+  .action(async () => {
+    utils.reloadTuture();
+  });
+
+/**
  * tuture up
  */
 program
