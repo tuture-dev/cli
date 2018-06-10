@@ -5,6 +5,17 @@ const tmp = require('tmp');
 
 const { EXPLAIN_PLACEHOLDER } = require('../utils/common');
 
+const exampleRepo = [
+  {
+    message: 'Commit 1',
+    files: ['test1.js', 'test2.js'],
+  },
+  {
+    message: 'Commit 2',
+    files: ['package-lock.json'],
+  },
+];
+
 /**
  * Run any tuture command.
  * @param {Array} args array of arguments
@@ -28,7 +39,7 @@ function createEmptyDir() {
  * @param {Boolean} ignoreTuture Whether .tuture should be ignored in .gitignore
  * @returns {String} Path to the created Git repo
  */
-function createGitRepo(repo, ignoreTuture = false) {
+function createGitRepo(repo = exampleRepo, ignoreTuture = false) {
   const repoPath = tmp.dirSync().name;
 
   process.chdir(repoPath);
@@ -59,6 +70,7 @@ function createTutureSuite() {
   return tuturePath;
 }
 
+exports.exampleRepo = exampleRepo;
 exports.run = run;
 exports.createEmptyDir = createEmptyDir;
 exports.createGitRepo = createGitRepo;
