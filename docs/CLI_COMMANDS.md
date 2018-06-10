@@ -16,28 +16,19 @@ Tuture will prompt you to answer following questions (if `-y` or `--yes` option 
 | Topics? | `topics` | Optional  | javascript,  git, cli | Topics of this tutorial, separated with spaces or commas, such as `express, mongodb` |
 | Maintainer email? | `email` | Optional | me@example.com | Maintainer email of this tutorial |
 
-Afterwards following files will be generated:
+Afterwards Tuture will do three things for you:
 
-- **tuture.yml**. This file is everthing you need to write your tutorial, and for detailed information please refer to [tuture.yml Specification](TUTURE_YML_SPEC.md).
+1. Create **tuture.yml** which is everything you need to write your tutorial (refer to [tuture.yml Specification](TUTURE_YML_SPEC.md) for detailed information), and **.tuture** directory which houses diff data of each commit.
 
-- **.tuture** directory. This houses diff data of each commit used by Tuture.
-
-```
-.tuture
-└── diff
-    ├── 084a277.diff
-    ├── e4a9539.diff
-    ├── f898719.diff
-    └── fefe569.diff
-```
-
-Meanwhile, following rules will be appended to your `.gitignore` (Tuture will create one if not exists):
+2. Append following rule to your `.gitignore` (Tuture will create one if not exists):
 
 ```
 # Tuture supporting files
 
 .tuture
 ```
+
+3. Add Git post-commit hook for calling `tuture reload` after each commit (create one if not exists).
 
 ### Preconditions
 
@@ -48,6 +39,27 @@ Current working directory should be a Git repo with at least one commit.
 #### `-y`, `--yes`
 
 Do not ask for prompts and fill in default values.
+
+#### `-h`, `--help`
+
+Output usage information.
+
+## `tuture reload`
+
+Update Tuture files to the latest repo.
+
+Tuture will do following two things by extracting latest changes from Git logs:
+
+- Add diff file of new commits
+- Append new steps to **tuture.yml**
+
+Note that this command will be automatically invoked after each commit. You can also run this command manually.
+
+### Preconditions
+
+Current working directory should already be initialized with `tuture init`.
+
+### Options
 
 #### `-h`, `--help`
 
