@@ -27,6 +27,15 @@ describe('tuture destroy', () => {
       expect(fs.existsSync(path.join('.tuture', 'diff'))).toBe(false);
       expect(fs.existsSync('tuture.yml')).toBe(false);
     });
+
+    it('should have no post-commit git hook', () => {
+      process.chdir(tuturePath);
+      const hookPath = path.join('.git', 'hooks', 'post-commit');
+      if (fs.existsSync(hookPath)) {
+        const hook = fs.readFileSync(hookPath).toString();
+        expect(hook).toEqual(expect.not.stringContaining('tuture reload'));
+      }
+    });
   });
 
   describe('no tuture files present', () => {
