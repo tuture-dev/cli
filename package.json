@@ -47,5 +47,12 @@
     "eslint-plugin-react": "^7.8.2",
     "jest": "^23.0.1",
     "tmp": "^0.0.33"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "index.js",
+      "utils/*.js"
+    ],
+    "verbose": true
   }
 }
