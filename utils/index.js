@@ -186,7 +186,7 @@ function startRenderer() {
   }
   try {
     signale.success('Tuture renderer is served on http://localhost:3000.');
-    cp.execSync(`tuture-renderer ${process.cwd()}`);
+    cp.execSync('tuture-renderer');
   } catch (e) {
     signale.error('tuture-renderer is not available!');
     process.exit(1);
