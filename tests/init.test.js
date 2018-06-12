@@ -29,21 +29,11 @@ describe('tuture init', () => {
   describe('inside a Git repo', () => {
 
     describe('no .gitignore', () => {
-      // NOTE: When contriving testRepo, put `files` in alphabetic order.
-      const testRepo = [
-        {
-          message: 'Commit 1',
-          files: ['test1.js', 'test2.js'],
-        },
-        {
-          message: 'Commit 2',
-          files: ['package-lock.json'],
-        },
-      ];
-      testInit(testRepo);
+      testInit();
     });
 
     describe('.gitignore without ignoring .tuture', () => {
+      // NOTE: When contriving testRepo, put `files` in alphabetic order.
       const testRepo = [
         {
           message: 'Test',
@@ -88,7 +78,7 @@ describe('tuture init', () => {
   });
 });
 
-function testInit(testRepo, ignoreTuture = false) {
+function testInit(testRepo = utils.exampleRepo, ignoreTuture = false) {
   const gitRepo = utils.createGitRepo(testRepo, ignoreTuture);
   tmpDirs.push(gitRepo);
   process.chdir(gitRepo);
@@ -97,7 +87,7 @@ function testInit(testRepo, ignoreTuture = false) {
   // Make sure when running each test, it's on the correct path.
   beforeEach(() => {
     process.chdir(gitRepo);
-  })
+  });
 
   it('should exit with status 0', () => {
     expect(cp.status).toBe(0);
