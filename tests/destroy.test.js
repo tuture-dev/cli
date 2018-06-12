@@ -13,23 +13,28 @@ describe('tuture destroy', () => {
   });
 
   describe('normal destroy', () => {
-    const tuturePath = utils.createTutureSuite();
-    tmpDirs.push(tuturePath);
-    process.chdir(tuturePath);
+    const gitRepo = utils.createGitRepo();
+    tmpDirs.push(gitRepo);
+    process.chdir(gitRepo);
+    utils.run(['init', '-y']);
+
     const cp = utils.run(['destroy', '-f']);
+
+    // Make sure when running each test, it's on the correct path.
+    beforeEach(() => {
+      process.chdir(gitRepo);
+    });
 
     it('should exit with status 0', () => {
       expect(cp.status).toBe(0);
     });
 
     it('should delete all tuture files', () => {
-      process.chdir(tuturePath);
       expect(fs.existsSync(path.join('.tuture', 'diff'))).toBe(false);
       expect(fs.existsSync('tuture.yml')).toBe(false);
     });
 
     it('should have no post-commit git hook', () => {
-      process.chdir(tuturePath);
       const hookPath = path.join('.git', 'hooks', 'post-commit');
       if (fs.existsSync(hookPath)) {
         const hook = fs.readFileSync(hookPath).toString();

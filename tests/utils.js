@@ -61,17 +61,7 @@ function createGitRepo(repo = exampleRepo, ignoreTuture = false) {
   return repoPath;
 }
 
-function createTutureSuite() {
-  const tuturePath = tmp.dirSync().name;
-  process.chdir(tuturePath);
-  fs.mkdirpSync(path.join('.tuture', 'diff'));
-  fs.createFileSync('tuture.yml');
-
-  return tuturePath;
-}
-
 exports.exampleRepo = exampleRepo;
 exports.run = run;
 exports.createEmptyDir = createEmptyDir;
 exports.createGitRepo = createGitRepo;
-exports.createTutureSuite = createTutureSuite;

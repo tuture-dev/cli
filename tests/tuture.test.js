@@ -5,45 +5,34 @@ const { version } = require('../package.json');
 
 describe('tuture', () => {
 
-  describe('(no args)', () => {
-    it('should output help message', () => {
-      matchHelpMessage(run([]).stdout);
-    });
+  test('output help message', () => {
+    // no args given
+    matchHelpMessage(run([]).stdout);
+
+    // -h option given
+    matchHelpMessage(run(['-h']).stdout);
+
+    // --help option given
+    matchHelpMessage(run(['--help']).stdout);
   });
 
-  describe('-h', () => {
-    it('should output help message', () => {
-      matchHelpMessage(run(['-h']).stdout);
-    });
+  test('output version number', () => {
+    // -V option given
+    expect(run(['-V']).stdout.toString()).toMatch(version);
+
+    // --version option given
+    expect(run(['--version']).stdout.toString()).toMatch(version);
   });
 
-  describe('--help', () => {
-    it('should output help message', () => {
-      matchHelpMessage(run(['--help']).stdout);
-    });
-  });
+  test('unknown args', () => {
+    // unknown commands given
+    expect(run(['foobar']).status).toBe(1);
 
-  describe('-V', () => {
-    it('should output version number', () => {
-      expect(run(['-V']).stdout.toString()).toMatch(version);
-    });
-  });
+    // unknown options (shorthand) given
+    expect(run(['-f']).status).toBe(1);
 
-  describe('--version', () => {
-    it('should output version number', () => {
-      expect(run(['--version']).stdout.toString()).toMatch(version);
-    });
-  });
-
-  describe('(unknown args)', () => {
-    it('should exit(1) when unknown commands are given', () => {
-      expect(run(['foobar']).status).toBe(1);
-    });
-
-    it('should exit(1) when unknown options are given', () => {
-      expect(run(['-f']).status).toBe(1);
-      expect(run(['--foobar']).status).toBe(1);
-    });
+    // unknown options given
+    expect(run(['--foobar']).status).toBe(1);
   });
 });
 
