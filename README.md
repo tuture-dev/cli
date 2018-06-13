@@ -1,6 +1,7 @@
 # Tuture
 
 [![Build Status](https://travis-ci.com/tutureproject/tuture.svg?branch=master)](https://travis-ci.com/tutureproject/tuture)
+[![Build status](https://ci.appveyor.com/api/projects/status/j1l7dkyhhyxfjdyr?svg=true)](https://ci.appveyor.com/project/mRcfps/tuture)
 
 Tuture is a tool for writing high-quality tutorials with both ease and speed based on Git repositories.
 
