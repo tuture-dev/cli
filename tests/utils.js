@@ -22,7 +22,8 @@ const exampleRepo = [
  * @returns {ChildProcess} spawned ChildProcess
  */
 function run(args) {
-  return cp.spawnSync('tuture', args);
+  const cmd = process.platform === 'win32' ? 'tuture.cmd' : 'tuture';
+  return cp.spawnSync(cmd, args);
 }
 
 /**
@@ -51,11 +52,11 @@ function createGitRepo(repo = exampleRepo, ignoreTuture = false) {
       if (fileName === '.gitignore' && ignoreTuture) {
         fs.writeFileSync(fileName, '.tuture\n');
       } else {
-        cp.execSync(`touch ${fileName}`);
+        fs.createFileSync(fileName);
       }
     });
     cp.execSync(`git add ${commit.files.join(' ')}`);
-    cp.execSync(`git commit -m '${commit.message}'`);
+    cp.execSync(`git commit -m "${commit.message}"`);
   });
 
   return repoPath;
