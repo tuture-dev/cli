@@ -39,7 +39,8 @@ describe('tuture reload', () => {
     fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
 
     // Add one more commit.
-    execSync(`touch test3.js && git add test3.js && git commit -m 'Commit 3'`);
+    fs.createFileSync('test3.js');
+    execSync(`git add test3.js && git commit -m "Commit 3"`);
 
     // Make sure when running each test, it's on the correct path.
     beforeEach(() => {
