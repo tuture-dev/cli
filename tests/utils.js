@@ -3,7 +3,7 @@ const cp = require('child_process');
 const path = require('path');
 const tmp = require('tmp');
 
-const { EXPLAIN_PLACEHOLDER } = require('../utils/common');
+const { EXPLAIN_PLACEHOLDER } = require('../lib/common');
 
 const exampleRepo = [
   {
