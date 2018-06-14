@@ -2,7 +2,7 @@
   "name": "tuture",
   "version": "0.1.0",
   "description": "Tuture makes writing interactive, step-by-step tutorials enjoyable.",
-  "main": "index.js",
+  "main": "lib/tuture.js",
   "preferGlobal": true,
   "keywords": [
     "tutorial",
@@ -19,7 +19,7 @@
   },
   "license": "MIT",
   "bin": {
-    "tuture": "./index.js"
+    "tuture": "bin/tuture"
   },
   "bugs": {
     "url": "https://github.com/tutureproject/tuture/issues"
