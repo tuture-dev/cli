@@ -22,7 +22,7 @@ const exampleRepo = [
 function tutureRunnerFactory(cwd) {
   return function(args) {
     const tuturePath = path.join(__dirname, '..', 'bin', 'tuture');
-    return cp.spawnSync(tuturePath, args, { cwd: cwd });
+    return cp.spawnSync('node', [tuturePath, ...args], { cwd: cwd });
   }
 }
 
