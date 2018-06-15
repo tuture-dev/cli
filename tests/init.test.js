@@ -10,18 +10,15 @@ let tmpDirs = Array();
 
 describe('tuture init', () => {
 
-  afterAll(() => {
-    tmpDirs.forEach(dir => fs.removeSync(dir));
-    process.chdir(path.join(__dirname, '..'));
-  });
+  afterAll(() => tmpDirs.forEach(dir => fs.removeSync(dir)));
 
   describe('outside a git repo', () => {
-    const nonGitRepo = utils.createEmptyDir();
-    tmpDirs.push(nonGitRepo);
+    const nonRepoPath = utils.createEmptyDir();
+    const tutureRunner = utils.tutureRunnerFactory(nonRepoPath);
+    tmpDirs.push(nonRepoPath);
 
     it('should refuse to init', () => {
-      process.chdir(nonGitRepo);
-      const cp = utils.run(['init', '-y']);
+      const cp = tutureRunner(['init', '-y']);
       expect(cp.status).toBe(1);
     });
   });
@@ -84,12 +81,12 @@ describe('tuture init', () => {
     });
 
     describe('no commit at all', () => {
-      const gitRepo = utils.createGitRepo([]);
-      tmpDirs.push(gitRepo);
+      const repoPath = utils.createGitRepo([]);
+      const tutureRunner = utils.tutureRunnerFactory(repoPath);
+      tmpDirs.push(repoPath);
 
       it('should refuse to init', () => {
-        process.chdir(gitRepo);
-        const cp = utils.run(['init', '-y']);
+        const cp = tutureRunner(['init', '-y']);
         expect(cp.status).toBe(1);
       });
     });
@@ -97,41 +94,38 @@ describe('tuture init', () => {
 });
 
 function testInit(testRepo = utils.exampleRepo, ignoreTuture = false) {
-  const gitRepo = utils.createGitRepo(testRepo, ignoreTuture);
+  const repoPath = utils.createGitRepo(testRepo, ignoreTuture);
+  const tutureRunner = utils.tutureRunnerFactory(repoPath);
+  tmpDirs.push(repoPath);
 
   // Remove commits with commit messages starting with `tuture:`
   const expectedRepo = testRepo.filter(commit => !commit.message.startsWith('tuture:'));
 
-  tmpDirs.push(gitRepo);
-  process.chdir(gitRepo);
-  const cp = utils.run(['init', '-y']);
-
-  // Make sure when running each test, it's on the correct path.
-  beforeEach(() => {
-    process.chdir(gitRepo);
-  });
+  const cp = tutureRunner(['init', '-y']);
 
   it('should exit with status 0', () => {
     expect(cp.status).toBe(0);
   });
 
   it('should create .tuture/diff directory', () => {
-    const diffPath = path.join('.tuture', 'diff');
+    const diffPath = path.join(repoPath, '.tuture', 'diff');
     expect(fs.existsSync(diffPath)).toBe(true);
     expect(fs.readdirSync(diffPath).length).toBe(expectedRepo.length);
   });
 
   it('should create correct tuture.yml with default values', () => {
-    expect(fs.existsSync('tuture.yml')).toBe(true);
+    const tutureYmlPath = path.join(repoPath, 'tuture.yml');
+    expect(fs.existsSync(tutureYmlPath)).toBe(true);
 
-    const tuture = yaml.safeLoad(fs.readFileSync('tuture.yml'));
+    const tuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
     testTutureObject(tuture, expectedRepo);
   });
 
   it('should have .gitignore properly configured', () => {
-    expect(fs.existsSync('.gitignore')).toBe(true);
+    const gitignorePath = path.join(repoPath, '.gitignore');
+    expect(fs.existsSync(gitignorePath)).toBe(true);
 
-    const ignoreRules = fs.readFileSync('.gitignore').toString();
+    const ignoreRules = fs.readFileSync(gitignorePath).toString();
 
     // .tuture is ignored.
     expect(ignoreRules.indexOf('.tuture')).not.toBe(-1);

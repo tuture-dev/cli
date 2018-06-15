@@ -17,13 +17,22 @@ const exampleRepo = [
 ];
 
 /**
- * Run any tuture command.
- * @param {Array} args array of arguments
- * @returns {ChildProcess} spawned ChildProcess
+ * Factory of functions running tuture commands in a given directory.
  */
-function run(args) {
-  const cmd = process.platform === 'win32' ? 'tuture.cmd' : 'tuture';
-  return cp.spawnSync(cmd, args);
+function tutureRunnerFactory(cwd) {
+  return function(args) {
+    const tuturePath = path.join(__dirname, '..', 'bin', 'tuture');
+    return cp.spawnSync(tuturePath, args, { cwd: cwd });
+  }
+}
+
+/**
+ * Factory of functions running git commands in a given directory.
+ */
+function gitRunnerFactory(cwd) {
+  return function(args) {
+    return cp.spawnSync('git', args, { cwd: cwd });
+  }
 }
 
 /**
@@ -42,27 +51,29 @@ function createEmptyDir() {
  */
 function createGitRepo(repo = exampleRepo, ignoreTuture = false) {
   const repoPath = tmp.dirSync().name;
+  const gitRunner = gitRunnerFactory(repoPath);
 
-  process.chdir(repoPath);
-  cp.execSync(`git init`);
+  gitRunner(['init']);
+
   repo.forEach(commit => {
     commit.files.forEach(fileName => {
       const dir = path.parse(fileName).dir;
-      if (dir) fs.mkdirpSync(dir);
+      if (dir) fs.mkdirpSync(path.join(repoPath, dir));
       if (fileName === '.gitignore' && ignoreTuture) {
-        fs.writeFileSync(fileName, '.tuture\n');
+        fs.writeFileSync(path.join(repoPath, fileName), '.tuture\n');
       } else {
-        fs.createFileSync(fileName);
+        fs.createFileSync(path.join(repoPath, fileName));
       }
     });
-    cp.execSync(`git add ${commit.files.join(' ')}`);
-    cp.execSync(`git commit -m "${commit.message}"`);
+    gitRunner(['add', ...commit.files]);
+    gitRunner(['commit', '-m', commit.message]);
   });
 
   return repoPath;
 }
 
 exports.exampleRepo = exampleRepo;
-exports.run = run;
+exports.tutureRunnerFactory = tutureRunnerFactory;
+exports.gitRunnerFactory = gitRunnerFactory;
 exports.createEmptyDir = createEmptyDir;
 exports.createGitRepo = createGitRepo;

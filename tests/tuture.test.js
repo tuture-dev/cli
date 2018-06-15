@@ -1,38 +1,40 @@
 const path = require('path');
+const utils = require('./utils');
 
-const { run } = require('./utils');
 const { version } = require('../package.json');
 
 describe('tuture', () => {
 
+  const tutureRunner = utils.tutureRunnerFactory('.');
+
   test('output help message', () => {
     // no args given
-    matchHelpMessage(run([]).stdout);
+    matchHelpMessage(tutureRunner([]).stdout);
 
     // -h option given
-    matchHelpMessage(run(['-h']).stdout);
+    matchHelpMessage(tutureRunner(['-h']).stdout);
 
     // --help option given
-    matchHelpMessage(run(['--help']).stdout);
+    matchHelpMessage(tutureRunner(['--help']).stdout);
   });
 
   test('output version number', () => {
     // -V option given
-    expect(run(['-V']).stdout.toString()).toMatch(version);
+    expect(tutureRunner(['-V']).stdout.toString()).toMatch(version);
 
     // --version option given
-    expect(run(['--version']).stdout.toString()).toMatch(version);
+    expect(tutureRunner(['--version']).stdout.toString()).toMatch(version);
   });
 
   test('unknown args', () => {
     // unknown commands given
-    expect(run(['foobar']).status).toBe(1);
+    expect(tutureRunner(['foobar']).status).toBe(1);
 
     // unknown options (shorthand) given
-    expect(run(['-f']).status).toBe(1);
+    expect(tutureRunner(['-f']).status).toBe(1);
 
     // unknown options given
-    expect(run(['--foobar']).status).toBe(1);
+    expect(tutureRunner(['--foobar']).status).toBe(1);
   });
 });
 
