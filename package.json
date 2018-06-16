@@ -6,10 +6,12 @@
   "preferGlobal": true,
   "keywords": [
     "tutorial",
-    "learn-by-example"
+    "learn-by-doing",
+    "step-by-step",
+    "git",
+    "yml"
   ],
   "scripts": {
-    "pretest": "npm un -g && npm i -g",
     "test": "jest",
     "lint": "eslint **/*.js"
   },
@@ -26,8 +28,10 @@
   },
   "homepage": "https://github.com/tutureproject/tuture#readme",
   "files": [
-    "index.js",
-    "utils/"
+    "LICENSE",
+    "README.md",
+    "bin/",
+    "lib/"
   ],
   "dependencies": {
     "commander": "^2.15.1",

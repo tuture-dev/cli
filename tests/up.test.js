@@ -7,18 +7,15 @@ let tmpDirs = Array();
 
 describe('tuture up', () => {
 
-  afterAll(() => {
-    tmpDirs.forEach(dir => fs.removeSync(dir));
-    process.chdir(path.join(__dirname, '..'));
-  });
+  afterAll(() => tmpDirs.forEach(dir => fs.removeSync(dir)));
 
   describe('tuture is not initialized', () => {
     const nonTuturePath = utils.createEmptyDir();
+    const tutureRunner = utils.tutureRunnerFactory(nonTuturePath);
     tmpDirs.push(nonTuturePath);
 
     it('should refuse to up', () => {
-      process.chdir(nonTuturePath);
-      const cp = utils.run(['up']);
+      const cp = tutureRunner(['up']);
       expect(cp.status).toBe(1);
     });
   });
