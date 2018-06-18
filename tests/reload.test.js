@@ -1,10 +1,7 @@
-const { execSync } = require('child_process');
 const utils = require('./utils');
 const fs = require('fs-extra');
 const path = require('path');
 const yaml = require('js-yaml');
-
-const { EXPLAIN_PLACEHOLDER, shouldBeCollapsed } = require('../lib/common');
 
 // Tmp directories used in tests.
 let tmpDirs = Array();

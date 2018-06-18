@@ -1,5 +1,4 @@
 const fs = require('fs-extra');
-const path = require('path');
 const utils = require('./utils');
 
 // Tmp directories used in tests.
