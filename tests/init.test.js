@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const yaml = require('js-yaml');
 
-const { EXPLAIN_PLACEHOLDER, shouldBeCollapsed } = require('../lib/common');
+const { shouldBeCollapsed } = require('../lib/common');
 
 // Tmp directories used in tests.
 let tmpDirs = Array();
@@ -148,12 +148,10 @@ function testTutureObject(tuture, expectedRepo) {
   // Check equivalence of each step.
   for (let i = 0; i < steps.length; i++) {
     expect(steps[i].name).toBe(expectedRepo[i].message);
-    expect(steps[i].explain).toBe(EXPLAIN_PLACEHOLDER);
     expect(steps[i].diff.length).toBe(expectedRepo[i].files.length);
 
     for (let j = 0; j < expectedRepo[i].files.length; j++) {
       expect(steps[i].diff[j].file).toBe(expectedRepo[i].files[j]);
-      expect(steps[i].diff[j].explain).toBe(EXPLAIN_PLACEHOLDER);
 
       if (shouldBeCollapsed(expectedRepo[i].files[j])) {
         expect(steps[i].diff[j].collapse).toBe(true);
