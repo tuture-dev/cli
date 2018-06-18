@@ -14,24 +14,29 @@ topics:
 description: This is my first tutorial, come and read it!
 maintainer: maintainer@example.com
 steps:
-  - name: Commit message of commit ae05546
+  - name: Message of commit ae05546
     commit: ae05546
     explain: Explain what will be done in this step
     diff:
       - file: Changed file A
+        intro: Introduction before doing something to A
         explain: Explain why this change happens
         collapse: true
       - file: Changed file B
+        intro: Introduction before doing something to B
         explain: Explain why this change happens
-  - name: Commit message of commit ae05546
+  - name: Message of commit ae05546
     commit: a45bec1
     explain: Explain what will be done in this step
     diff:
       - file: Changed file A
+        intro: Introduction before doing something to A
         explain: Explain why this change happens
       - file: Changed file B
+        intro: Introduction before doing something to B
         explain: Explain why this change happens
       - file: Changed file C
+        intro: Introduction before doing something to C
         explain: Explain why this change happens
 ```
 
@@ -118,15 +123,19 @@ Added or changed files in this step.
 
 - Changes to **tuture.yml** will not be tracked by default.
 
-Each diff file has three fields:
+Each diff file has four fields:
 
 #### `file`
 
 Path to this changed file (from the tutorial root). Tuture will extract this information for you from Git logs.
 
+#### `intro`
+
+Introduction displayed before code change.
+
 #### `explain`
 
-This is similar to `explain` of a step. You should explain why this file is added or changed.
+This is similar to `explain` of a step. You should explain why this file is added or changed. Explanation will be displayed after code change.
 
 #### `collapse`
 
