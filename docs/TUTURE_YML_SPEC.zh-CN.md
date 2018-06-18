@@ -19,19 +19,24 @@ steps:
     explain: 讲解第一步做了什么
     diff:
       - file: 发生变化的文件 A
+        intro: 在修改 A 之前的介绍
         explain: 讲解为什么要增加或修改这个文件
         collapse: true
       - file: 发生变化的文件 B
+        intro: 在修改 B 之前的介绍
         explain: 讲解为什么要增加或修改这个文件
   - name: ae05546 的提交信息
     commit: a45bec1
     explain: 讲解第二步做了什么
     diff:
       - file: 发生变化的文件 A
+        intro: 在修改 A 之前的介绍
         explain: 讲解为什么要增加或修改这个文件
       - file: 发生变化的文件 B
+        intro: 在修改 B 之前的介绍
         explain: 讲解为什么要增加或修改这个文件
       - file: 发生变化的文件 C
+        intro: 在修改 C 之前的介绍
         explain: 讲解为什么要增加或修改这个文件
 ```
 
@@ -118,15 +123,19 @@ Tuture 非常重视国际化，因此所有教程将会根据语言分类。
 
 - 所有对 tuture.yml 的改变默认不会被记录
 
-每个 diff 文件包括三个字段：
+每个 diff 文件包括四个字段：
 
 #### `file`
 
 指向此文件的路径（从教程根目录开始）。Tuture 会为你从 Git 日志中提取此信息。
 
+### `intro`
+
+在修改代码展示之前的介绍文字。
+
 #### `explain`
 
-与每一步的 `explain` 字段相似。你应当解释为什么这个文件被添加或修改。
+与每一步的 `explain` 字段相似。你应当解释为什么这个文件被添加或修改。解释文字会展示在修改代码之后。
 
 #### `collapse`
 
