@@ -8,7 +8,7 @@ const { shouldBeCollapsed } = require('../lib/common');
 // Tmp directories used in tests.
 let tmpDirs = Array();
 
-describe('tuture init', () => {
+describe('tuture init -y', () => {
 
   afterAll(() => tmpDirs.forEach(dir => fs.removeSync(dir)));
 
@@ -17,9 +17,16 @@ describe('tuture init', () => {
     const tutureRunner = utils.tutureRunnerFactory(nonRepoPath);
     tmpDirs.push(nonRepoPath);
 
-    it('should refuse to init', () => {
-      const cp = tutureRunner(['init', '-y']);
-      expect(cp.status).toBe(1);
+    const cp = tutureRunner(['init', '-y']);
+
+    it('should exit with status 0', () => {
+      expect(cp.status).toBe(0);
+    });
+
+    it('should have all needed files created', () => {
+      expect(fs.existsSync(path.join(nonRepoPath, 'tuture.yml'))).toBe(true);
+      expect(fs.existsSync(path.join(nonRepoPath, '.tuture', 'tuture.json'))).toBe(true);
+      expect(fs.existsSync(path.join(nonRepoPath, '.tuture', 'diff.json'))).toBe(true);
     });
   });
 
@@ -78,17 +85,6 @@ describe('tuture init', () => {
         },
       ];
       testInit(testRepo);
-    });
-
-    describe('no commit at all', () => {
-      const repoPath = utils.createGitRepo([]);
-      const tutureRunner = utils.tutureRunnerFactory(repoPath);
-      tmpDirs.push(repoPath);
-
-      it('should refuse to init', () => {
-        const cp = tutureRunner(['init', '-y']);
-        expect(cp.status).toBe(1);
-      });
     });
   });
 });
