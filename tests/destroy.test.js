@@ -23,7 +23,7 @@ describe('tuture destroy', () => {
     });
 
     it('should delete all tuture files', () => {
-      expect(fs.existsSync(path.join(repoPath, '.tuture', 'diff'))).toBe(false);
+      expect(fs.existsSync(path.join(repoPath, '.tuture'))).toBe(false);
       expect(fs.existsSync(path.join(repoPath, 'tuture.yml'))).toBe(false);
     });
 
