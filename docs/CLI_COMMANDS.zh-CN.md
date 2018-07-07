@@ -6,7 +6,13 @@
 
 初始化一个 Tuture 教程。
 
-Tuture 会询问你以下问题（如果使用了 `-y` 或 `--yes` 则不会询问）：
+此命令会执行以下步骤：
+
+1. 检查 Git 是否在本机安装。如果没有安装，Tuture 会停止运行并显示出错信息。
+
+2. 检查当前所在目录是否为 Git 仓库。如果不是 Git 仓库并且没有提供 `-y` 选项，Tuture 就会询问是否确认要将当前目录初始化为 Git 仓库。如果你回答了否，Tuture 会终止运行。否则 Tuture 会执行 `git init` 命令并继续执行。
+
+3. 询问你以下问题（如果使用了 `-y` 或 `--yes` 则不会询问）：
 
 | 询问               | 对应字段   | 必要/可选 | 默认值             | 含义                                                         |
 | ------------------ | ---------- | --------- | ------------------ | ------------------------------------------------------------ |
@@ -16,18 +22,16 @@ Tuture 会询问你以下问题（如果使用了 `-y` 或 `--yes` 则不会询�
 | Topics?            | `topics`   | 可选      | -                  | 此教程的主题，不同的主题用空格或逗号分隔，例如 `express,mongodb` |
 | Maintainer email?  | `email`    | 可选      | -                  | 此教程维护者的电子邮件                                       |
 
-然后 Tuture 会做以下三件事：
+4. 创建写教程所需的 **tuture.yml** 文件（详细说明请参考 [tuture.yml 规格说明](TUTURE_YML_SPEC.zh-CN.md)）和用于存放 Tuture 所需的 diff 数据 **.tuture** 目录，。
 
-1. 创建写教程所需的 **tuture.yml** 文件（详细说明请参考 [tuture.yml 规格说明](TUTURE_YML_SPEC.zh-CN.md)）和用于存放 Tuture 所需的 diff 数据 **.tuture** 目录，。
-
-2. 在你的 `.gitignore` 中添加以下规则（如果没有会为你创建）：
+5. 在你的 `.gitignore` 中添加以下规则（如果没有会为你创建）：
 
 ```
 # Tuture supporting files
 .tuture
 ```
 
-3. 增加 Git post-commit 钩子（如果没有会为你创建），用于每次提交后触发 `tuture reload`。
+6. 增加 Git post-commit 钩子（如果没有会为你创建），用于每次提交后触发 `tuture reload`。
 
 ### 前提条件
 
