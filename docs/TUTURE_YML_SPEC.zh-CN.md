@@ -21,7 +21,6 @@ steps:
       - file: 发生变化的文件 A
         intro: 在修改 A 之前的介绍
         explain: 讲解为什么要增加或修改这个文件
-        collapse: true
       - file: 发生变化的文件 B
         intro: 在修改 B 之前的介绍
         explain: 讲解为什么要增加或修改这个文件
@@ -136,11 +135,3 @@ Tuture 非常重视国际化，因此所有教程将会根据语言分类。
 #### `explain`
 
 与每一步的 `explain` 字段相似。你应当解释为什么这个文件被添加或修改。解释文字会展示在修改代码之后。
-
-#### `collapse`
-
-此文件是否应当默认被折叠（不显示内容）。Tuture 将对以下文件名设置 `collapse: true`：
-
-- package-lock.json
-- yarn.lock
-- .gitignore
