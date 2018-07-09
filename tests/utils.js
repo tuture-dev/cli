@@ -10,7 +10,7 @@ const exampleRepo = [
   },
   {
     message: 'Commit 2',
-    files: ['package-lock.json'],
+    files: ['test3.js'],
   },
 ];
 

@@ -36,8 +36,8 @@ describe('tuture reload', () => {
     fs.writeFileSync(tutureYmlPath, yaml.safeDump(tuture));
 
     // Add one more commit.
-    fs.createFileSync(path.join(repoPath, 'test3.js'));
-    gitRunner(['add', 'test3.js']);
+    fs.createFileSync(path.join(repoPath, 'test4.js'));
+    gitRunner(['add', 'test4.js']);
     gitRunner(['commit', '-m', 'Commit 3']);
 
     it('should have updated diff.json', () => {
