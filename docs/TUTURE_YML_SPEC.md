@@ -21,7 +21,6 @@ steps:
       - file: Changed file A
         intro: Introduction before doing something to A
         explain: Explain why this change happens
-        collapse: true
       - file: Changed file B
         intro: Introduction before doing something to B
         explain: Explain why this change happens
@@ -136,11 +135,3 @@ Introduction displayed before code change.
 #### `explain`
 
 This is similar to `explain` of a step. You should explain why this file is added or changed. Explanation will be displayed after code change.
-
-#### `collapse`
-
-Whether this file should be collapsed by default. Tuture will set `collapse: true` by default for following filename patterns:
-
-- package-lock.json
-- yarn.lock
-- .gitignore
