@@ -1,9 +1,10 @@
 const utils = require('./utils');
 const fs = require('fs-extra');
+const minimatch = require('minimatch');
 const path = require('path');
 const yaml = require('js-yaml');
 
-const { shouldBeCollapsed } = require('../lib/common');
+const { ignoreFiles, tutureRoot } = require('../lib/config');
 
 // Tmp directories used in tests.
 let tmpDirs = Array();
@@ -25,8 +26,8 @@ describe('tuture init -y', () => {
 
     it('should have all needed files created', () => {
       expect(fs.existsSync(path.join(nonRepoPath, 'tuture.yml'))).toBe(true);
-      expect(fs.existsSync(path.join(nonRepoPath, '.tuture', 'tuture.json'))).toBe(true);
-      expect(fs.existsSync(path.join(nonRepoPath, '.tuture', 'diff.json'))).toBe(true);
+      expect(fs.existsSync(path.join(nonRepoPath, tutureRoot, 'tuture.json'))).toBe(true);
+      expect(fs.existsSync(path.join(nonRepoPath, tutureRoot, 'diff.json'))).toBe(true);
     });
   });
 
@@ -95,7 +96,18 @@ function testInit(testRepo = utils.exampleRepo, ignoreTuture = false) {
   tmpDirs.push(repoPath);
 
   // Remove commits with commit messages starting with `tuture:`
-  const expectedRepo = testRepo.filter(commit => !commit.message.startsWith('tuture:'));
+  // and files that should be ignored in each commit.
+  const expectedRepo = testRepo
+    .filter(commit => !commit.message.startsWith('tuture:'))
+    .map(commit => {
+      const { message, files } = commit;
+      return {
+        message,
+        files: files.filter(
+          file => !ignoreFiles.some(pattern => minimatch(path.basename(file), pattern))
+        )
+      };
+    });
 
   const cp = tutureRunner(['init', '-y']);
 
@@ -112,7 +124,7 @@ function testInit(testRepo = utils.exampleRepo, ignoreTuture = false) {
 
   it('should create correct tuture.[yml|json] with default values', () => {
     const tutureYmlPath = path.join(repoPath, 'tuture.yml');
-    const tutureJsonPath = path.join(repoPath, '.tuture', 'tuture.json');
+    const tutureJsonPath = path.join(repoPath, tutureRoot, 'tuture.json');
     expect(fs.existsSync(tutureYmlPath)).toBe(true);
     expect(fs.existsSync(tutureJsonPath)).toBe(true);
 
@@ -131,10 +143,10 @@ function testInit(testRepo = utils.exampleRepo, ignoreTuture = false) {
     const ignoreRules = fs.readFileSync(gitignorePath).toString();
 
     // .tuture is ignored.
-    expect(ignoreRules).toContain('.tuture');
+    expect(ignoreRules).toContain(tutureRoot);
 
     // .tuture is ignored only once.
-    expect(ignoreRules.indexOf('.tuture')).toBe(ignoreRules.lastIndexOf('.tuture'));
+    expect(ignoreRules.indexOf(tutureRoot)).toBe(ignoreRules.lastIndexOf(tutureRoot));
   });
 }
 
@@ -155,10 +167,6 @@ function testTutureObject(tuture, expectedRepo) {
 
     for (let j = 0; j < expectedRepo[i].files.length; j++) {
       expect(steps[i].diff[j].file).toBe(expectedRepo[i].files[j]);
-
-      if (shouldBeCollapsed(expectedRepo[i].files[j])) {
-        expect(steps[i].diff[j].collapse).toBe(true);
-      }
     }
   }
 }
