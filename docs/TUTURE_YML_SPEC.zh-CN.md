@@ -16,27 +16,40 @@ maintainer: maintainer@example.com
 steps:
   - name: ae05546 的提交信息
     commit: ae05546
-    explain: 讲解第一步做了什么
+    explain:
+      pre: 此步骤最前面的介绍文字
+      post: 此步骤最后的总结文字
     diff:
       - file: 发生变化的文件 A
-        intro: 在修改 A 之前的介绍
-        explain: 讲解为什么要增加或修改这个文件
+        section:
+          start: 1
+          end: 10
+        explain: 修改此部分 A 之前的介绍文字
+      - file: 发生变化的文件 A
+        section:
+          start: 11
+          end: 20
+        explain: 修改此部分 A 之前的介绍文字
       - file: 发生变化的文件 B
-        intro: 在修改 B 之前的介绍
-        explain: 讲解为什么要增加或修改这个文件
+        explain:
+          pre: 修改 B 之前的介绍文字
+          post: 修改 B 之后的解释文字
   - name: ae05546 的提交信息
     commit: a45bec1
-    explain: 讲解第二步做了什么
+    explain:
+      pre: 此步骤最前面的介绍文字
+      post: 此步骤最后的总结文字
     diff:
       - file: 发生变化的文件 A
-        intro: 在修改 A 之前的介绍
-        explain: 讲解为什么要增加或修改这个文件
+        explain:
+          pre: 修改 A 之前的介绍文字
+          post: 修改 A 之后的解释文字
       - file: 发生变化的文件 B
-        intro: 在修改 B 之前的介绍
-        explain: 讲解为什么要增加或修改这个文件
+        explain: 在修改 B 之前的介绍
       - file: 发生变化的文件 C
-        intro: 在修改 C 之前的介绍
-        explain: 讲解为什么要增加或修改这个文件
+        explain:
+          pre: 修改 C 之前的介绍文字
+          post: 修改 C 之后的解释文字
 ```
 
 ---
@@ -104,15 +117,29 @@ Tuture 非常重视国际化，因此所有教程将会根据语言分类。
 
 ### `name`
 
-步骤的名称。这将用对应的提交信息自动填充，你可以酌情进行修改。
+**[必填]** 步骤的名称。这将用对应的提交信息自动填充，你可以酌情进行修改。
 
 ### `commit`
 
-对应的提交 ID。请**不要**手动修改此字段。
+**[必填]** 对应的提交 ID。请**不要**手动修改此字段。
 
 ### `explain`
 
-此步骤的解释。通常你可以解释这一步将完成什么。
+此步骤的解释。有两种添加解说的方式：
+
+- 提供一个字符串，它将会显示在此步骤的最前面
+
+```yaml
+explain: 此步骤最前面的介绍文字
+```
+
+- 提供一个映射，其中含有键 `pre` （放在最前面）和 `post` （放在最后面）
+
+```yaml
+explain:
+  pre: 此步骤最前面的介绍文字
+  post: 此步骤最后的总结文字
+```
 
 ### `diff`
 
@@ -120,18 +147,31 @@ Tuture 非常重视国际化，因此所有教程将会根据语言分类。
 
 **注意**
 
-- 所有对 tuture.yml 的改变默认不会被记录
+所有对以下文件的改变默认不会被记录：
 
-每个 diff 文件包括四个字段：
+```
+tuture.yml
+package-lock.json
+yarn.lock
+```
+
+每个 diff 文件包括以下字段：
 
 #### `file`
 
-指向此文件的路径（从教程根目录开始）。Tuture 会为你从 Git 日志中提取此信息。
+**[必填]** 指向此文件的路径（从教程根目录开始）。Tuture 会为你从 Git 日志中提取此信息。
 
-### `intro`
+### `section`
 
-在修改代码展示之前的介绍文字。
+指定要展示哪一部分代码。当你改变了一个大文件并且想要拆开来解说时，这一功能非常有用。
+
+![Section Selection](images/section-selection.png)
+
+你可以通过提供以下字段来选择想要的代码变化：
+
+- `start`：开始的行号（上图中的红色数字）。如果没有提供此字段，则为 `1`
+- `end`：结束的行号。如果没有提供，则将是总行数
 
 #### `explain`
 
-与每一步的 `explain` 字段相似。你应当解释为什么这个文件被添加或修改。解释文字会展示在修改代码之后。
+与每一步的 `explain` 字段相似。你可以提供一个字符串或是带有键 `pre` 和 `post` 的映射。

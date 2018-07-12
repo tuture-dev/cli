@@ -16,27 +16,40 @@ maintainer: maintainer@example.com
 steps:
   - name: Message of commit ae05546
     commit: ae05546
-    explain: Explain what will be done in this step
+    explain:
+      pre: Introduction placed at the top of this step
+      post: Sumup placed at the bottom of this step
     diff:
       - file: Changed file A
-        intro: Introduction before doing something to A
-        explain: Explain why this change happens
+        section:
+          start: 1
+          end: 10
+        explain: Introduction before doing something to this part of A
+      - file: Changed file A
+        section:
+          start: 11
+          end: 20
+        explain: Introduction before doing something to this part of A
       - file: Changed file B
-        intro: Introduction before doing something to B
-        explain: Explain why this change happens
+        explain:
+          pre: Introduction before doing something to B
+          post: Explanation after doing something to B
   - name: Message of commit ae05546
     commit: a45bec1
-    explain: Explain what will be done in this step
+    explain:
+      pre: Introduction placed at the top of this step
+      post: Sumup placed at the bottom of this step
     diff:
       - file: Changed file A
-        intro: Introduction before doing something to A
-        explain: Explain why this change happens
+        explain:
+          pre: Introduction before doing something to A
+          post: Explanation after doing something to A
       - file: Changed file B
-        intro: Introduction before doing something to B
-        explain: Explain why this change happens
+        explain: Introduction before doing something to B
       - file: Changed file C
-        intro: Introduction before doing something to C
-        explain: Explain why this change happens
+        explain:
+          pre: Introduction before doing something to C
+          post: Explanation after doing something to C
 ```
 
 ---
@@ -104,15 +117,29 @@ Here is the specification of a single step.
 
 ### `name`
 
-Name of this step. This will be automatically filled with corresponding commit message. You can rewrite this as you see fit.
+**[Required]** Name of this step. This will be automatically filled with corresponding commit message. You can rewrite this as you see fit.
 
 ### `commit`
 
-Corresponding commit ID. Please **do not** manually edit this field.
+**[Required]** Corresponding commit ID. Please **do not** manually edit this field.
 
 ### `explain`
 
-Explanation for this step. Generally you can explain what will be done in this single step.
+Explanation for this step. Here are two ways to add your narration:
+
+- Provide a **string** for this field, and it will be placed at the top of this step
+
+```yaml
+explain: Introduction placed at the top of this step
+```
+
+- Provide a **mapping** with keys `pre` (placed at top) and `post` (placed at bottom)
+
+```yaml
+explain:
+  pre: Introduction placed at the top of this step
+  post: Sumup placed at the bottom of this step
+```
 
 ### `diff`
 
@@ -120,18 +147,31 @@ Added or changed files in this step.
 
 **Notes**
 
-- Changes to **tuture.yml** will not be tracked by default.
+Changes to following files will not be tracked by default.
 
-Each diff file has four fields:
+```
+tuture.yml
+package-lock.json
+yarn.lock
+```
+
+Each diff file has following fields:
 
 #### `file`
 
-Path to this changed file (from the tutorial root). Tuture will extract this information for you from Git logs.
+**[Required]** Path to this changed file (from the tutorial root). Tuture will extract this information for you from Git logs.
 
-#### `intro`
+#### `section`
 
-Introduction displayed before code change.
+Specify which part of code diff should be displayed. This is quite handy when you have made changes to a large file and want to tear it apart for convenience of explanation.
+
+![Section Selection](images/section-selection.png)
+
+You can select your desired part of code diff by providing following fields:
+
+- `start`: Line number (those red numbers in the image above) to start. If not given, this will be `1`
+- `end`: Line number to stop. If not given, this will be the total number of lines
 
 #### `explain`
 
-This is similar to `explain` of a step. You should explain why this file is added or changed. Explanation will be displayed after code change.
+This is similar to `explain` of a step. You can provide either a **string** or a **mapping** with keys `pre` and `post`.
