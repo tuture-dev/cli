@@ -22,12 +22,12 @@ steps:
     diff:
       - file: 发生变化的文件 A
         section:
-          start: 1
+          start: 0
           end: 10
         explain: 修改此部分 A 之前的介绍文字
       - file: 发生变化的文件 A
         section:
-          start: 11
+          start: 10
           end: 20
         explain: 修改此部分 A 之前的介绍文字
       - file: 发生变化的文件 B
@@ -165,12 +165,14 @@ yarn.lock
 
 指定要展示哪一部分代码。当你改变了一个大文件并且想要拆开来解说时，这一功能非常有用。
 
-![Section Selection](images/section-selection.png)
+![Section Selection](images/code-selection.png)
 
 你可以通过提供以下字段来选择想要的代码变化：
 
-- `start`：开始的行号（上图中的红色数字）。如果没有提供此字段，则为 `1`
-- `end`：结束的行号。如果没有提供，则将是总行数
+- `start`：开始的行号（上图中的红色数字）。如果没有提供此字段，则为 `0`
+- `end`：结束的行号。**不包括此行**。如果没有提供，则将是总行数
+
+其实这和许多编程语言中的切片操作非常相似。
 
 #### `explain`
 
