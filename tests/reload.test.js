@@ -47,9 +47,6 @@ describe('tuture reload', () => {
 
     it('should have updated tuture.[yml|json] appropriately', () => {
       const newTuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
-      const newTuture2 = utils.parseInternalFile(repoPath, 'tuture.json');
-
-      expect(newTuture).toStrictEqual(newTuture2);
       expect(newTuture.steps).toHaveLength(utils.exampleRepo.length + 1);
       expect(newTuture.steps[0].explain).toBe('Some Explanation');
       expect(newTuture.steps[2].name).toBe('Commit 3');
@@ -83,9 +80,7 @@ describe('tuture reload', () => {
 
     it('should leave internal files unchanged', () => {
       const diffAfterReload = utils.parseInternalFile(repoPath, 'diff.json');
-      const tutureAfterReload = utils.parseInternalFile(repoPath, 'tuture.json');
       expect(diffAfterReload).toStrictEqual(diffBeforeReload);
-      expect(tutureAfterReload).toStrictEqual(tutureBeforeReload);
     });
 
     it('should complete missing steps in tuture.yml', () => {
