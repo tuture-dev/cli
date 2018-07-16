@@ -26,7 +26,6 @@ describe('tuture init -y', () => {
 
     it('should have all needed files created', () => {
       expect(fs.existsSync(path.join(nonRepoPath, 'tuture.yml'))).toBe(true);
-      expect(fs.existsSync(path.join(nonRepoPath, tutureRoot, 'tuture.json'))).toBe(true);
       expect(fs.existsSync(path.join(nonRepoPath, tutureRoot, 'diff.json'))).toBe(true);
     });
   });
@@ -122,17 +121,11 @@ function testInit(testRepo = utils.exampleRepo, ignoreTuture = false) {
     expect(diffContent[0]).toHaveProperty('diff');
   });
 
-  it('should create correct tuture.[yml|json] with default values', () => {
+  it('should create correct tuture.yml with default values', () => {
     const tutureYmlPath = path.join(repoPath, 'tuture.yml');
-    const tutureJsonPath = path.join(repoPath, tutureRoot, 'tuture.json');
     expect(fs.existsSync(tutureYmlPath)).toBe(true);
-    expect(fs.existsSync(tutureJsonPath)).toBe(true);
 
-    // Test if tuture.yml and tuture.json are strictly equivalent.
     const tuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
-    const tuture2 = utils.parseInternalFile(repoPath, 'tuture.json');
-    expect(tuture).toStrictEqual(tuture2);
-
     testTutureObject(tuture, expectedRepo);
   });
 
