@@ -22,12 +22,12 @@ steps:
     diff:
       - file: Changed file A
         section:
-          start: 1
+          start: 0
           end: 10
         explain: Introduction before doing something to this part of A
       - file: Changed file A
         section:
-          start: 11
+          start: 10
           end: 20
         explain: Introduction before doing something to this part of A
       - file: Changed file B
@@ -165,12 +165,14 @@ Each diff file has following fields:
 
 Specify which part of code diff should be displayed. This is quite handy when you have made changes to a large file and want to tear it apart for convenience of explanation.
 
-![Section Selection](images/section-selection.png)
+![Section Selection](images/code-selection.png)
 
 You can select your desired part of code diff by providing following fields:
 
-- `start`: Line number (those red numbers in the image above) to start. If not given, this will be `1`
-- `end`: Line number to stop. If not given, this will be the total number of lines
+- `start`: Line number (those red numbers in the image above) to start. If not given, this will be `0`
+- `end`: Line number to stop. **This line is not included**. If not given, this will be the total number of lines
+
+This is quite like slicing operation in many programming languages.
 
 #### `explain`
 
