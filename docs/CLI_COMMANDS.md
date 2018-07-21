@@ -69,15 +69,16 @@ Output usage information.
 
 Render your tutorial in the browser.
 
-This command will invoke `tuture-renderer` under the hood, which should have been installed before `tuture`. If `tuture-renderer` is not available on your machine somehow, you can manually install it with **npm**:
+Whether you have initialized with `tuture init` or have just cloned a Tuture tutorial repository, running `tuture up` both suffices.
 
-```bash
-$ npm i -g tuture-renderer
-```
+> This command will invoke `tuture-renderer` under the hood, which should have been installed before `tuture`. If `tuture-renderer` is not available on your machine somehow, you can manually install it with **npm**:
+> ```bash
+> $ npm i -g tuture-renderer
+> ```
 
 ### Preconditions
 
-Current working directory should already be initialized with `tuture init`.
+Current working directory should already be a Git repository with **tuture.yml** present.
 
 ### Options
 
