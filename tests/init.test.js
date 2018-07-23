@@ -77,7 +77,7 @@ describe('tuture init -y', () => {
         },
         {
           message: 'tuture: Ignore this commit',
-          files: ['tuture.yml'],
+          files: ['foobar.js'],
         },
         {
           message: 'Do some other thing',
