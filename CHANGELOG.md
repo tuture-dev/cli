@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.2
+
+### New Features
+
+- Tuture will now generate diff before running `up` command, which can be quite handy for sharing tutorials.
+- `section` field is added for each diff file to allow splitting large file
+- `explain` field now has richer options, which can be either a string or a mapping with `pre` and `post` fields (both are optional)
+
 ## 0.2.1
 
 ### New Features
