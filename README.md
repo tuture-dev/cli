@@ -26,18 +26,18 @@ Make sure you have [Node.js](https://nodejs.org/) (>= 8.0.0) and [npm](https://w
 - **install with npm**
 
 ```bash
-$ npm i -g tuture
+$ npm i -g tuture tuture-renderer
 ```
 
 - **install with yarn**
 
 ```bash
-$ yarn global add tuture
+$ yarn global add tuture tuture-renderer
 ```
 
 - **install from source**
 
-Clone this repo to your machine, and run following command:
+Clone this repo and [tuture-renderer](https://github.com/tutureproject/renderer) to your machine, and `cd` into these repos and run following command respectively:
 
 ```bash
 $ npm i -g
