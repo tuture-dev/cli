@@ -26,6 +26,12 @@ Tuture 革新了技术教程写作的方式。
 $ npm i -g tuture
 ```
 
+- **通过 yarn 安装**
+
+```bash
+$ yarn global add tuture
+```
+
 - **通过源代码安装**
 
 将本仓库 clone 到本地后，执行以下命令安装：
@@ -55,6 +61,10 @@ $ npm i -g
 5. 运行 `tuture up` ，就会打开浏览器并渲染你的教程
 
 6. 编辑 `tuture.yml` 并保存，即可修改教程中的内容
+
+## 为何取名叫 Tuture？
+
+Tutorials from the future. 来自未来的教程。
 
 ## 许可证
 

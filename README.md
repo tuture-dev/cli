@@ -29,6 +29,12 @@ Make sure you have [Node.js](https://nodejs.org/) (>= 8.0.0) and [npm](https://w
 $ npm i -g tuture
 ```
 
+- **install with yarn**
+
+```bash
+$ yarn global add tuture
+```
+
 - **install from source**
 
 Clone this repo to your machine, and run following command:
@@ -58,6 +64,10 @@ Writing a Tuture tutorial is incredibly simple and delightful.
 5. Run `tuture up` to see your tutorial live in the browser
 
 6. Edit **tuture.yml** and save to change something
+
+## Why this name, Tuture?
+
+Tutorials from the future.
 
 ## License
 
