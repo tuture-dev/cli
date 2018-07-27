@@ -133,12 +133,23 @@ Explanation for this step. Here are two ways to add your narration:
 explain: Introduction placed at the top of this step
 ```
 
-- Provide a **mapping** with keys `pre` (placed at top) and `post` (placed at bottom)
+- Provide an **array of strings** to add multiple paragraphs of explanation, which will be placed at the top of this step
+
+```yaml
+explain:
+  - First paragraph
+  - Second paragraph
+  - Third paragrah
+```
+
+- Provide a **mapping** with keys `pre` (placed at top, *optional*) and `post` (placed at bottom, *optional*), with the value of each key being a **string** or an **array of strings**
 
 ```yaml
 explain:
   pre: Introduction placed at the top of this step
-  post: Sumup placed at the bottom of this step
+  post:
+    - First paragraph of sumup at the bottom of this step
+    - Second paragraph of sumup at the bottom of this step
 ```
 
 ### `diff`
@@ -176,4 +187,4 @@ This is quite like slicing operation in many programming languages.
 
 #### `explain`
 
-This is similar to `explain` of a step. You can provide either a **string** or a **mapping** with keys `pre` and `post`.
+This is the same as `explain` of a step. You can provide either a **string**, an **array of strings** or a **mapping** with keys `pre` and `post`.
