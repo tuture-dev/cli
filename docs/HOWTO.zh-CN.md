@@ -38,7 +38,12 @@ Tuture 初始化完成后，你会发现原来的目录里多了下面这些东�
 
 下面分别介绍一下新增加的文件：
 
-- `.gitignore`，这个文件大家都很熟悉了，这里我们专门添加了忽略 `.tuture` 目录的规则。
+- `.gitignore`，这个文件大家都很熟悉了。Tuture 自动添加了忽略 `.tuture` 目录的规则，这里我们再添加一些 Node 项目的规则：
+
+  ```
+  .tuture
+  node_modules
+  ```
 
 - `.tuture/diff.json` 记录了解析后的用于内部使用的 Git Diff 数据，在渲染教程时需要使用到。
 
@@ -99,8 +104,13 @@ document.body.appendChild(component());
 
 ```
 .
+├── .gitignore
+├── .tuture
+│   └── diff.json
 ├── index.html
+├── node_modules
 ├── package.json
+├── package-lock.json
 ├── src
 │   └── index.js
 └── tuture.yml
@@ -109,6 +119,7 @@ document.body.appendChild(component());
 最后提交这一步的代码：
 
 ```bash
+$ git add .
 $ git commit -m "基础设置"
 ```
 
@@ -134,6 +145,8 @@ steps:
 
 每一个步骤 `step` 对应一次 commit（可以从 `commit` 字段看出来），然后 `name` 就是提交信息，`diff` 则是这一步中所有发生改变的文件。从这里我们可以看出，为了方便讲解，**我们尽量应该让每一步做一件事，不要在一次提交中做出太多修改**。
 
+另外，我们可以发现有些文件没有被列出来，例如 .gitignore、package-lock.json 还有 tuture.yml 本身。实际上，tuture.yml 对一些文件自动进行了忽略（被忽略的列表可以查看[这里](https://github.com/tutureproject/tuture/blob/master/docs/TUTURE_YML_SPEC.zh-CN.md#diff)）。如果你确实需要在教程中展示这些文件，那么可以自行添加进 tuture.yml 中。
+
 我们在这一步骤的最前面添加一些说明文字，指导读者创建用于学习 webpack 所需的内容。在 Tuture 中，所有说明文字都在 `explain` 字段中，并且可以使用 Markdown 语法：
 
 ```yaml
@@ -142,9 +155,12 @@ steps:
   - name: 基础设置
     commit: 90ef523
     explain:
-      - "首先我们创建一个目录，初始化 npm 并本地安装 webpack 和 webpack-cli："
-      - "```bash\nmkdir webpack-demo && cd webpack-demo\n```"
-      - "接下来我们创建以下文件："
+      - 首先我们创建一个目录，初始化 npm 并本地安装 webpack 和 webpack-cli：
+      - |-
+        ```bash
+        mkdir webpack-demo && cd webpack-demo
+        ```
+      - 接下来我们创建以下文件：
     diff:
       - file: index.html
       - file: package.json
@@ -154,7 +170,7 @@ steps:
 这里 `explain` 字段是一个数组，表示有多段说明文字。如果只有一段说明文字，那么直接填在 `explain` 字段中即可，例如：
 
 ```yaml
-explain: "唯一的一段说明文字"
+explain: 唯一的一段说明文字
 ```
 
 接下来我们为”基础设置“这一步骤的内容添加说明文字。tuture.yml 中 `diff` 字段里面的文件顺序是可以任意改变的，因此我们调整一下顺序便于讲解，并且为 package.json 添加说明：
@@ -165,15 +181,18 @@ steps:
   - name: 基础设置
     commit: 90ef523
     explain:
-      - "首先我们创建一个目录，初始化 npm 并本地安装 webpack 和 webpack-cli："
-      - "```bash\nmkdir webpack-demo && cd webpack-demo\n```"
-      - "接下来我们创建以下文件："
+      - 首先我们创建一个目录，初始化 npm 并本地安装 webpack 和 webpack-cli：
+      - |-
+        ```bash
+        mkdir webpack-demo && cd webpack-demo
+        ```
+      - 接下来我们创建以下文件：
     diff:
       - file: index.html
       - file: src/index.js
       - file: package.json
         explain:
-          post: "注意到我们把这个包标记为 `private`，并且去掉了原来的 `main` 字段，这是为了防止意外发布我们的代码。"
+          post: 注意到我们把这个包标记为 `private`，并且去掉了原来的 `main` 字段，这是为了防止意外发布我们的代码。
 ```
 
 之前我们写 `explain` 的时候，是填一个字符串或一个字符串数组，这样说明文字就会放在步骤或修改文件的前面。其实 `explain` 还可以是一个 mapping，包括 `pre` 和 `post` 两个键（都是可选的），`pre` 就是放在前面的说明文字，`post` 就是放在后面的说明文字。同样地，它们分别也可以填字符串或字符串数组。关于 `explain` 字段的详细说明，参考[这篇文档](TUTURE_YML_SPEC.zh-CN.md#explain)。
@@ -187,15 +206,21 @@ steps:
     commit: 90ef523
     explain:
       pre:
-        - "首先我们创建一个目录，初始化 npm 并本地安装 webpack 和 webpack-cli："
-        - "```bash\nmkdir webpack-demo && cd webpack-demo\n```"
+        - 首先我们创建一个目录，初始化 npm 并本地安装 webpack 和 webpack-cli：
+        - |-
+          ```bash
+          mkdir webpack-demo && cd webpack-demo
+          ```
+        - 接下来我们创建以下文件：
       post:
-        - "在这个例子中，`<script>` 标签之间存在隐含的依赖。在运行之前，我们的 `index.js` 文件依赖于包括在页面中的 `lodash` 库。这是因为 `index.js` 从未显式声明对 `lodash` 的依赖，它认为全局变量 `_` 已经存在。"
-        - "这种管理 JavaScript 项目存在许多问题，让我们试着用 webpack 来解决。"
+        - 在这个例子中，`<script>` 标签之间存在隐含的依赖。在运行之前，我们的 `index.js` 文件依赖于包括在页面中的 `lodash` 库。这是因为 `index.js` 从未显式声明对 `lodash` 的依赖，它认为全局变量 `_` 已经存在。
+        - 这种管理 JavaScript 项目存在许多问题，让我们试着用 webpack 来解决。
     diff: ...
 ```
 
 第一步就写好了！我们运行 `tuture up`，即可看到我们刚刚写的内容！
+
+![Tuture Up!](images/tuture-up.png)
 
 ### 反复迭代
 
@@ -250,29 +275,19 @@ $ git commit -m "使用 webpack 管理依赖"
 steps:
   - name: 基础设置
     commit: 90ef523
-    explain:
-      pre:
-        - "首先我们创建一个目录，初始化 npm 并本地安装 webpack 和 webpack-cli："
-        - "```bash\nmkdir webpack-demo && cd webpack-demo\n```"
-      post:
-        - "在这个例子中，`<script>` 标签之间存在隐含的依赖。在运行之前，我们的 `index.js` 文件依赖于包括在页面中的 `lodash` 库。这是因为 `index.js` 从未显式声明对 `lodash` 的依赖，它认为全局变量 `_` 已经存在。"
-        - "这种管理 JavaScript 项目存在许多问题，让我们试着用 webpack 来解决。"
-    diff:
-      - file: index.html
-      - file: src/index.js
-      - file: package.json
-        explain:
-          post: "注意到我们把这个包标记为 `private`，并且去掉了原来的 `main` 字段，这是为了防止意外发布我们的代码。"
+    explain: ...
+    diff: ...
   - name: 使用 webpack 管理依赖
     commit: 52390ef
     diff:
       - file: index.html
+      - file: package.json
       - file: src/index.js
 ```
 
 如果你的教程还在浏览器中渲染的话（并且没有关闭 `tuture up` 进程），那么你会看到浏览器自动加载刚刚对 tuture.yml 的修改。
 
-然后填写我们第二步的说明文字：
+然后填写我们第二步的说明文字，删去不需要展示的 package.json：
 
 ```yaml
 ...
@@ -285,15 +300,18 @@ steps:
     commit: 52390ef
     explain:
       pre:
-      	- "首先我们要微调项目结构，把源代码(`/src`)和发布代码(`/dist`)分开来。源代码是我们要编辑的代码。发布代码是构建过程产生的最小化、最优化的输出结果，并将最终被浏览器加载。"
-      	- "为了让 `lodash` 打包进 `index.js`，我们需要本地安装这个库："
-      	- "```bash\nnpm install --save lodash\n```"
-      post: "一切完成后，运行 `npx webpack` 进行打包。在浏览器中打开 `index.html` 文件，就可以看到 Hello webpack！"
+        - 首先我们要微调项目结构，把源代码(`/src`)和发布代码(`/dist`)分开来。源代码是我们要编辑的代码。发布代码是构建过程产生的最小化、最优化的输出结果，并将最终被浏览器加载。
+        - 为了让 `lodash` 打包进 `index.js`，我们需要本地安装这个库：
+        - |-
+          ```bash
+          npm install --save lodash
+          ```
+      post: 一切完成后，运行 `npx webpack` 进行打包。在浏览器中打开 `index.html` 文件，就可以看到 Hello webpack！
     diff:
       - file: src/index.js
-      	explain: "让我们把 `lodash` 导入进来："
+        explain: 让我们把 `lodash` 导入进来：
       - file: dist/index.html
-      	explain: "既然我们已经决定把所有脚本打包，我们需要更新 `index.html` 文件。删除掉引入 lodash 的 `<script>` 标签，并且修改另一个 `<script>` 标签来将我们打包后的脚本添加进来："
+        explain: 既然我们已经决定把所有脚本打包，我们需要更新 `index.html` 文件。删除掉引入 lodash 的 `<script>` 标签，并且修改另一个 `<script>` 标签来将我们打包后的脚本添加进来：
 ```
 
 接下来写最后一步，添加 webpack.config.js：
@@ -331,31 +349,109 @@ steps:
     explain: ...
     diff: ...
   - name: 使用 webpack 配置文件
-  	commit: cfadaa6
-  	explain:
-  	  pre: "到了版本 4，webpack 可以不需要任何配置。但是通过配置文件，我们能实现非常复杂的设定功能，这比在命令行中指定要方便的多。让我们创建一个 webpack 配置文件："
-  	  post:
-  	    - "最后，我们开始用配置文件开始构建："
-  	    - "```bash\nnpx webpack --config webpack.config.js\n```"
-  	    - "配置文件是 webpack 如此强大的关键因素，我们可以在配置中指定 loader、插件等等。参考[这篇文档](https://webpack.js.org/configuration)以学习更多配置。"
-  	diff:
-  	  - file: webpack.config.js
-  	    section:
-  	      start: 0
-  	      end: 4
-  	    explain:
-  	      post: "`entry` 指定了打包的入口，告诉 webpack 依赖图的起点。"
-  	  - file: webpack.config.js
-  	    section:
-  	      start: 4
-  	    explain: "`output` 指定了打包后输出文件的设置，这里我们设定打包后的文件名为 `main.js`，放在 `dist` 目录下。"
+    commit: cfadaa6
+    explain:
+      pre: 到了版本 4，webpack 可以不需要任何配置。但是通过配置文件，我们能实现非常复杂的设定功能，这比在命令行中指定要方便的多。让我们创建一个 webpack 配置文件：
+      post:
+        - 最后，我们开始用配置文件开始构建：
+        - |-
+          ```bash
+          npx webpack --config webpack.config.js
+          ```
+        - 配置文件是 webpack 如此强大的关键因素，我们可以在配置中指定 loader、插件等等。参考[这篇文档](https://webpack.js.org/configuration)以学习更多配置。
+    diff:
+      - file: webpack.config.js
+        section:
+          start: 0
+          end: 4
+        explain:
+          post: "`entry` 指定了打包的入口，告诉 webpack 依赖图的起点。"
+      - file: webpack.config.js
+        section:
+          start: 4
+        explain: "`output` 指定了打包后输出文件的设置，这里我们设定打包后的文件名为 `main.js`，放在 `dist` 目录下。"
 ```
 
 有一个字段我们是从未见过的：`section`。它是用来指定某个 diff 文件的一部分，当代码文件非常长时，这个字段特别有用。在这里，我们将 webpack.config.js 拆成两部分讲解，第一部分是第 0 行到第 3 行（不包括第 4 行），第二部分是第 4 行到末尾。关于 `section` 字段的具体信息，参考[这里](https://github.com/tutureproject/tuture/blob/master/docs/TUTURE_YML_SPEC.zh-CN.md#section)。
 
+最终的 tuture.yml 如下：
+
+```yaml
+name: 学习 webpack
+version: 0.0.1
+language: zh-CN
+topics:
+  - webpack
+email: me@example.com
+steps:
+  - name: 基础设置
+    commit: 90ef523
+    explain:
+      pre:
+        - 首先我们创建一个目录，初始化 npm 并本地安装 webpack 和 webpack-cli：
+        - |-
+          ```bash
+          mkdir webpack-demo && cd webpack-demo
+          ```
+        - 接下来我们创建以下文件：
+      post:
+        - >-
+          在这个例子中，`<script>` 标签之间存在隐含的依赖。在运行之前，我们的 `index.js` 文件依赖于包括在页面中的
+          `lodash` 库。这是因为 `index.js` 从未显式声明对 `lodash` 的依赖，它认为全局变量 `_` 已经存在。
+        - 这种管理 JavaScript 项目存在许多问题，让我们试着用 webpack 来解决。
+    diff:
+      - file: index.html
+      - file: src/index.js
+      - file: package.json
+        explain:
+          post: 注意到我们把这个包标记为 `private`，并且去掉了原来的 `main` 字段，这是为了防止意外发布我们的代码。
+  - name: 使用 webpack 管理依赖
+    commit: 52390ef
+    explain:
+      pre:
+        - >-
+          首先我们要微调项目结构，把源代码(`/src`)和发布代码(`/dist`)分开来。源代码是我们要编辑的代码。发布代码是构建过程产生的最小化、最优化的输出结果，并将最终被浏览器加载。
+        - 为了让 `lodash` 打包进 `index.js`，我们需要本地安装这个库：
+        - |-
+          ```bash
+          npm install --save lodash
+          ```
+      post: 一切完成后，运行 `npx webpack` 进行打包。在浏览器中打开 `index.html` 文件，就可以看到 Hello webpack！
+    diff:
+      - file: src/index.js
+        explain: 让我们把 `lodash` 导入进来：
+      - file: index.html
+        explain: >-
+          既然我们已经决定把所有脚本打包，我们需要更新 `index.html` 文件。删除掉引入 lodash 的 `<script>`
+          标签，并且修改另一个 `<script>` 标签来将我们打包后的脚本添加进来：
+  - name: 使用 webpack 配置文件
+    commit: cfadaa6
+    explain:
+      pre: 到了版本 4，webpack 可以不需要任何配置。但是通过配置文件，我们能实现非常复杂的设定功能，这比在命令行中指定要方便的多。让我们创建一个 webpack 配置文件：
+      post:
+        - 最后，我们开始用配置文件开始构建：
+        - |-
+          ```bash
+          npx webpack --config webpack.config.js
+          ```
+        - 配置文件是 webpack 如此强大的关键因素，我们可以在配置中指定 loader、插件等等。参考[这篇文档](https://webpack.js.org/configuration)以学习更多配置。
+    diff:
+      - file: webpack.config.js
+        section:
+          start: 0
+          end: 4
+        explain:
+          post: "`entry` 指定了打包的入口，告诉 webpack 依赖图的起点。"
+      - file: webpack.config.js
+        section:
+          start: 4
+        explain: "`output` 指定了打包后输出文件的设置，这里我们设定打包后的文件名为 `main.js`，放在 `dist` 目录下。"
+```
+
 最后我们提交 tuture.yml 的改动：
 
 ```bash
+$ git add tuture.yml
 $ git commit -m "tuture: 提交 tuture.yml"
 ```
 
@@ -401,63 +497,7 @@ steps:
       - file: webpack.config.js
 ```
 
-我们可以看到教程的基本结构和上一节基本一致，只不过 `diff` 文件的顺序不怎么一样，而且也没有 `explain` 字段。接下来我们要做的就是把它改得跟上一节写的一样即可：
-
-```yaml
-name: 学习 webpack
-version: 0.0.1
-language: zh-CN
-steps:
-  - name: 基础设置
-    commit: 90ef523
-    explain:
-      pre:
-        - "首先我们创建一个目录，初始化 npm 并本地安装 webpack 和 webpack-cli："
-        - "```bash\nmkdir webpack-demo && cd webpack-demo\n```"
-      post:
-        - "在这个例子中，`<script>` 标签之间存在隐含的依赖。在运行之前，我们的 `index.js` 文件依赖于包括在页面中的 `lodash` 库。这是因为 `index.js` 从未显式声明对 `lodash` 的依赖，它认为全局变量 `_` 已经存在。"
-        - "这种管理 JavaScript 项目存在许多问题，让我们试着用 webpack 来解决。"
-    diff:
-      - file: index.html
-      - file: src/index.js
-      - file: package.json
-        explain:
-          post: "注意到我们把这个包标记为 `private`，并且去掉了原来的 `main` 字段，这是为了防止意外发布我们的代码。"
-  - name: 使用 webpack 管理依赖
-    commit: 52390ef
-    explain:
-      pre:
-      	- "首先我们要微调项目结构，把源代码(`/src`)和发布代码(`/dist`)分开来。源代码是我们要编辑的代码。发布代码是构建过程产生的最小化、最优化的输出结果，并将最终被浏览器加载。"
-      	- "为了让 `lodash` 打包进 `index.js`，我们需要本地安装这个库："
-      	- "```bash\nnpm install --save lodash\n```"
-      post: "一切完成后，运行 `npx webpack` 进行打包。在浏览器中打开 `index.html` 文件，就可以看到 Hello webpack！"
-    diff:
-      - file: src/index.js
-      	explain: "让我们把 `lodash` 导入进来："
-      - file: dist/index.html
-      	explain: "既然我们已经决定把所有脚本打包，我们需要更新 `index.html` 文件。删除掉引入 lodash 的 `<script>` 标签，并且修改另一个 `<script>` 标签来将我们打包后的脚本添加进来："
-  - name: 使用 webpack 配置文件
-  	commit: cfadaa6
-  	explain:
-  	  pre: "到了版本 4，webpack 可以不需要任何配置。但是通过配置文件，我们能实现非常复杂的设定功能，这比在命令行中指定要方便的多。让我们创建一个 webpack 配置文件："
-  	  post:
-  	    - "最后，我们开始用配置文件开始构建："
-  	    - "```bash\nnpx webpack --config webpack.config.js\n```"
-  	    - "配置文件是 webpack 如此强大的关键因素，我们可以在配置中指定 loader、插件等等。参考[这篇文档](https://webpack.js.org/configuration)以学习更多配置。"
-  	diff:
-  	  - file: webpack.config.js
-  	    section:
-  	      start: 0
-  	      end: 4
-  	    explain:
-  	      post: "`entry` 指定了打包的入口，告诉 webpack 依赖图的起点。"
-  	  - file: webpack.config.js
-  	    section:
-  	      start: 4
-  	    explain: "`output` 指定了打包后输出文件的设置，这里我们设定打包后的文件名为 `main.js`，放在 `dist` 目录下。"
-```
-
-运行 `tuture up`，在浏览器中就能看到写好的教程。
+我们可以看到教程的基本结构和上一节基本一致，只不过 `diff` 文件的顺序不怎么一样，而且也没有 `explain` 字段。接下来我们要做的就是把它改得跟上一节写的一样即可。然后运行 `tuture up`，在浏览器中就能看到写好的教程。
 
 同样地，我们最后也要把对 tuture.yml 的修改提交：
 
