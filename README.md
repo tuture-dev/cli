@@ -17,7 +17,7 @@ Tuture revolutionizes the way of writing tech tutorials.
 
 - **Writing in a programming way**: Writing is more of a casual and personal course in these good old days. But with Tuture, you can write tutorial in a way that greatly resembles programming. Your whole tutorial is exactly specified in a YAML file, so all you need is to fill in needed fields.
 
-- **Eye-catching rendering in the browser**: Thanks to the blazingly fast development of JavaScript technologis, [tuture-renderer](https://github.com/tutureproject/renderer) is fully capable of rendering your tutorial in a beautiful and interactive way.
+- **Eye-catching rendering in the browser**: Thanks to the blazingly fast development of JavaScript technologies, [tuture-renderer](https://github.com/tutureproject/renderer) is fully capable of rendering your tutorial in a beautiful and interactive way.
 
 ## Installation
 
