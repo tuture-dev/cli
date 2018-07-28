@@ -159,6 +159,8 @@ steps:
       - |-
         ```bash
         mkdir webpack-demo && cd webpack-demo
+        npm init -y
+        npm install webpack webpack-cli --save-dev
         ```
       - 接下来我们创建以下文件：
     diff:
@@ -185,6 +187,8 @@ steps:
       - |-
         ```bash
         mkdir webpack-demo && cd webpack-demo
+        npm init -y
+        npm install webpack webpack-cli --save-dev
         ```
       - 接下来我们创建以下文件：
     diff:
@@ -210,6 +214,8 @@ steps:
         - |-
           ```bash
           mkdir webpack-demo && cd webpack-demo
+          npm init -y
+          npm install webpack webpack-cli --save-dev
           ```
         - 接下来我们创建以下文件：
       post:
@@ -392,6 +398,8 @@ steps:
         - |-
           ```bash
           mkdir webpack-demo && cd webpack-demo
+          npm init -y
+          npm install webpack webpack-cli --save-dev
           ```
         - 接下来我们创建以下文件：
       post:
