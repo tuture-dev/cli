@@ -1,6 +1,6 @@
 # 如何用 Tuture 写教程？
 
-写 Tuture 教程有两种方式：一种是从零开始，一步步写；另一种是将代码写完后才来写每一步的教程。我们将分别介绍两种写一篇 webpack 教程的方式。
+写 Tuture 教程有两种方式：一种是从零开始，一步步写；另一种是将代码写完后才来写每一步的教程。我们将分别介绍两种写一篇 webpack 教程的方式。所写教程可以在[这个仓库](https://github.com/mRcfps/getting-started-with-tuture)查看。
 
 ## 从零开始写教程
 
@@ -159,6 +159,8 @@ steps:
       - |-
         ```bash
         mkdir webpack-demo && cd webpack-demo
+        npm init -y
+        npm install webpack webpack-cli --save-dev
         ```
       - 接下来我们创建以下文件：
     diff:
@@ -185,6 +187,8 @@ steps:
       - |-
         ```bash
         mkdir webpack-demo && cd webpack-demo
+        npm init -y
+        npm install webpack webpack-cli --save-dev
         ```
       - 接下来我们创建以下文件：
     diff:
@@ -210,6 +214,8 @@ steps:
         - |-
           ```bash
           mkdir webpack-demo && cd webpack-demo
+          npm init -y
+          npm install webpack webpack-cli --save-dev
           ```
         - 接下来我们创建以下文件：
       post:
@@ -392,6 +398,8 @@ steps:
         - |-
           ```bash
           mkdir webpack-demo && cd webpack-demo
+          npm init -y
+          npm install webpack webpack-cli --save-dev
           ```
         - 接下来我们创建以下文件：
       post:
