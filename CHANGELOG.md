@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.3
+
+### New Features
+
+Tuture will check syntax of **tuture.yml** for you before running `tuture up`
+
+### Bug Fixes
+
+Fix a bug of firing `tuture-renderer` even before `reload` is not completed
+
 ## 0.2.2
 
 ### New Features

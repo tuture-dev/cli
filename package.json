@@ -1,6 +1,6 @@
 {
   "name": "tuture",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Tuture magically turns your repositories into juicy tutorials.",
   "main": "lib/tuture.js",
   "preferGlobal": true,
