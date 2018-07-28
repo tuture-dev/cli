@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.4
+
+### Bug Fixes
+
+Fix unexpected logging of missing tuture-renderer
+
 ## 0.2.3
 
 ### New Features
