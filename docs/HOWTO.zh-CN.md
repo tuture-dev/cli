@@ -362,17 +362,17 @@ steps:
     diff:
       - file: webpack.config.js
         section:
-          start: 0
+          start: 1
           end: 4
         explain:
           post: "`entry` 指定了打包的入口，告诉 webpack 依赖图的起点。"
       - file: webpack.config.js
         section:
-          start: 4
+          start: 5
         explain: "`output` 指定了打包后输出文件的设置，这里我们设定打包后的文件名为 `main.js`，放在 `dist` 目录下。"
 ```
 
-有一个字段我们是从未见过的：`section`。它是用来指定某个 diff 文件的一部分，当代码文件非常长时，这个字段特别有用。在这里，我们将 webpack.config.js 拆成两部分讲解，第一部分是第 0 行到第 3 行（不包括第 4 行），第二部分是第 4 行到末尾。关于 `section` 字段的具体信息，参考[这里](https://github.com/tutureproject/tuture/blob/master/docs/TUTURE_YML_SPEC.zh-CN.md#section)。
+有一个字段我们是从未见过的：`section`。它是用来指定某个 diff 文件的一部分，当代码文件非常长时，这个字段特别有用。在这里，我们将 webpack.config.js 拆成两部分讲解，第一部分是第 1 行到第 4 行，第二部分是第 5 行到末尾。关于 `section` 字段的具体信息，参考[这里](https://github.com/tutureproject/tuture/blob/master/docs/TUTURE_YML_SPEC.zh-CN.md#section)。
 
 最终的 tuture.yml 如下：
 
@@ -438,13 +438,13 @@ steps:
     diff:
       - file: webpack.config.js
         section:
-          start: 0
+          start: 1
           end: 4
         explain:
           post: "`entry` 指定了打包的入口，告诉 webpack 依赖图的起点。"
       - file: webpack.config.js
         section:
-          start: 4
+          start: 5
         explain: "`output` 指定了打包后输出文件的设置，这里我们设定打包后的文件名为 `main.js`，放在 `dist` 目录下。"
 ```
 
