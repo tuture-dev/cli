@@ -23,6 +23,8 @@ Tuture revolutionizes the way of writing tech tutorials.
 
 Make sure you have [Node.js](https://nodejs.org/) (>= 8.0.0) and [npm](https://www.npmjs.com/) (>= 5.0.0) on your machine.
 
+> You may need `sudo` to install npm packages globally.
+
 - **install with npm**
 
 ```bash
@@ -34,6 +36,8 @@ $ npm i -g tuture tuture-renderer
 ```bash
 $ yarn global add tuture tuture-renderer
 ```
+
+> Installing global binaries via yarn can fail sometimes (check out this [issue](https://github.com/yarnpkg/yarn/issues/1321)), so it's not recommended. But you can `export PATH="$PATH:$(yarn global bin)"` if you insist.
 
 - **install from source**
 
