@@ -1,13 +1,11 @@
 {
   "name": "tuture-cli",
   "version": "0.2.4",
-  "description": "Tuture magically turns your repositories into juicy tutorials.",
+  "description": "Command-line tool for Tuture.",
   "main": "lib/tuture.js",
   "preferGlobal": true,
   "keywords": [
-    "tutorial",
-    "learn-by-doing",
-    "step-by-step",
+    "cli",
     "git",
     "yml"
   ],
@@ -17,16 +15,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tutureproject/tuture.git"
+    "url": "https://github.com/tutureproject/cli.git"
   },
   "license": "MIT",
   "bin": {
     "tuture": "bin/tuture"
   },
   "bugs": {
-    "url": "https://github.com/tutureproject/tuture/issues"
+    "url": "https://github.com/tutureproject/cli/issues"
   },
-  "homepage": "https://github.com/tutureproject/tuture#readme",
+  "homepage": "https://github.com/tutureproject/cli#readme",
   "files": [
     "LICENSE",
     "README.md",
