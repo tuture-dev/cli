@@ -14,7 +14,7 @@ install:
   - ps: Install-Product node $env:nodejs_version
   - git config --global user.email "dev@tuture.io"
   - git config --global user.name "Tuture Authors"
-  - yarn global add tuture-renderer
+  - yarn global add tuture
   - yarn
 
 build: off

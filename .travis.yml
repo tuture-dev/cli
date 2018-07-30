@@ -15,7 +15,7 @@ branches:
     - master
 
 before_script:
-  - yarn global add tuture-renderer
+  - yarn global add tuture
 
 script:
   - yarn lint
