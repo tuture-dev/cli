@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+
+_This npm package has been renamed to **tuture-cli**._
+
 ## 0.2.4
 
 ### Bug Fixes
