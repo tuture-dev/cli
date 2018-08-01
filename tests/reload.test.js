@@ -22,34 +22,72 @@ describe('tuture reload', () => {
   });
 
   describe('automatic reload', () => {
-    const repoPath = utils.createGitRepo();
-    const tutureRunner = utils.tutureRunnerFactory(repoPath);
-    const gitRunner = utils.gitRunnerFactory(repoPath);
-    const tutureYmlPath = path.join(repoPath, 'tuture.yml');
-    tmpDirs.push(repoPath);
 
-    const cp = tutureRunner(['init', '-y']);
+    describe('add commits plainly', () => {
+      const repoPath = utils.createGitRepo();
+      const tutureRunner = utils.tutureRunnerFactory(repoPath);
+      const gitRunner = utils.gitRunnerFactory(repoPath);
+      const tutureYmlPath = path.join(repoPath, 'tuture.yml');
+      tmpDirs.push(repoPath);
 
-    // Write some explanations.
-    const tuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
-    tuture.steps[0].explain = 'Some Explanation';
-    fs.writeFileSync(tutureYmlPath, yaml.safeDump(tuture));
+      tutureRunner(['init', '-y']);
 
-    // Add one more commit.
-    fs.createFileSync(path.join(repoPath, 'test4.js'));
-    gitRunner(['add', 'test4.js']);
-    gitRunner(['commit', '-m', 'Commit 3']);
+      // Write some explanations.
+      const tuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
+      tuture.steps[0].explain = 'Some Explanation';
+      fs.writeFileSync(tutureYmlPath, yaml.safeDump(tuture));
 
-    it('should have updated diff.json', () => {
-      const diffContent = utils.parseInternalFile(repoPath, 'diff.json');
-      expect(diffContent).toHaveLength(utils.exampleRepo.length + 1);
+      // Add one more commit.
+      fs.createFileSync(path.join(repoPath, 'test4.js'));
+      gitRunner(['add', 'test4.js']);
+      gitRunner(['commit', '-m', 'Commit 3']);
+
+      it('should have updated diff.json', () => {
+        const diffContent = utils.parseInternalFile(repoPath, 'diff.json');
+        expect(diffContent).toHaveLength(utils.exampleRepo.length + 1);
+      });
+
+      it('should have updated tuture.[yml|json] appropriately', () => {
+        const newTuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
+        expect(newTuture.steps).toHaveLength(utils.exampleRepo.length + 1);
+        expect(newTuture.steps[0].explain).toBe('Some Explanation');
+        expect(newTuture.steps[2].name).toBe('Commit 3');
+      });
     });
 
-    it('should have updated tuture.[yml|json] appropriately', () => {
-      const newTuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
-      expect(newTuture.steps).toHaveLength(utils.exampleRepo.length + 1);
-      expect(newTuture.steps[0].explain).toBe('Some Explanation');
-      expect(newTuture.steps[2].name).toBe('Commit 3');
+    describe('amend last commit', () => {
+      const repoPath = utils.createGitRepo();
+      const tutureRunner = utils.tutureRunnerFactory(repoPath);
+      const gitRunner = utils.gitRunnerFactory(repoPath);
+      const tutureYmlPath = path.join(repoPath, 'tuture.yml');
+      tmpDirs.push(repoPath);
+
+      tutureRunner(['init', '-y']);
+
+      // Write some explanations.
+      const tuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
+      tuture.steps[0].explain = 'Some Explanation';
+      fs.writeFileSync(tutureYmlPath, yaml.safeDump(tuture));
+
+      // Amend last commit (revise commit log only).
+      gitRunner(['commit', '--amend', '-m', 'Amended commit 2']);
+
+      it('should not have updated diff.json', () => {
+        const diffContent = utils.parseInternalFile(repoPath, 'diff.json');
+        expect(diffContent).toHaveLength(utils.exampleRepo.length);
+      });
+
+      it('should have updated tuture.[yml|json] appropriately', () => {
+        const newTuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
+        expect(newTuture.steps).toHaveLength(utils.exampleRepo.length + 1);
+        expect(newTuture.steps[0].explain).toBe('Some Explanation');
+
+        // Outdated commit still there.
+        expect(newTuture.steps[1].name).toBe('Commit 2');
+        expect(newTuture.steps[1].outdated).toBe(true);
+
+        expect(newTuture.steps[2].name).toBe('Amended commit 2');
+      });
     });
   });
 
