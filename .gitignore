@@ -1,4 +1,8 @@
 ### Node ###
+# Builds
+/dist
+/lib
+
 # Logs
 logs
 *.log

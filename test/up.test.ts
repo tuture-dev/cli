@@ -1,29 +1,33 @@
-const fs = require('fs-extra');
-const path = require('path');
+import * as fs from 'fs-extra';
+import * as path from 'path';
 
-const utils = require('./utils');
+import {
+  createEmptyDir,
+  createGitRepo,
+  tutureRunnerFactory,
+} from './utils';
 
 // Tmp directories used in tests.
-let tmpDirs = Array();
+const tmpDirs: string[] = Array();
 
 describe('tuture up', () => {
 
   afterAll(() => tmpDirs.forEach(dir => fs.removeSync(dir)));
 
   describe('tuture is not initialized', () => {
-    const nonTuturePath = utils.createEmptyDir();
-    const tutureRunner = utils.tutureRunnerFactory(nonTuturePath);
+    const nonTuturePath = createEmptyDir();
+    const tutureRunner = tutureRunnerFactory(nonTuturePath);
     tmpDirs.push(nonTuturePath);
 
     it('should refuse to up', () => {
       const cp = tutureRunner(['up']);
-      expect(cp.status).toBe(1);
+      expect(cp.status).not.toBe(0);
     });
   });
 
   describe('tuture.yml syntax error', () => {
-    const repoPath = utils.createGitRepo();
-    const tutureRunner = utils.tutureRunnerFactory(repoPath);
+    const repoPath = createGitRepo();
+    const tutureRunner = tutureRunnerFactory(repoPath);
     tmpDirs.push(repoPath);
     tutureRunner(['init', '-y']);
 
@@ -32,8 +36,7 @@ describe('tuture up', () => {
 
     it('should report syntax error', () => {
       const cp = tutureRunner(['up']);
-      expect(cp.status).toBe(1);
-      expect(cp.stdout.toString()).toMatch(/syntax error/);
+      expect(cp.status).not.toBe(0);
     });
-  })
+  });
 });
