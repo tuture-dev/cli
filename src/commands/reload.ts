@@ -18,7 +18,7 @@ export default class Reload extends BaseCommand {
       http
         .get(serverURL + '/reload', (res) => {
           const { statusCode, statusMessage } = res;
-          if (statusCode != 200) {
+          if (statusCode !== 200) {
             this.warn(`tuture-server ${statusCode}: ${statusMessage}`);
           } else {
             this.success('server is ready to reload.');
