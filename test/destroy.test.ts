@@ -1,17 +1,22 @@
-const fs = require('fs-extra');
-const path = require('path');
-const utils = require('./utils');
+import * as fs from 'fs-extra';
+import * as path from 'path';
+
+import {
+  createEmptyDir,
+  createGitRepo,
+  tutureRunnerFactory,
+} from './utils';
 
 // Tmp directories used in tests.
-let tmpDirs = Array();
+const tmpDirs: string[] = Array();
 
 describe('tuture destroy', () => {
 
   afterAll(() => tmpDirs.forEach(dir => fs.removeSync(dir)));
 
   describe('normal destroy', () => {
-    const repoPath = utils.createGitRepo();
-    const tutureRunner = utils.tutureRunnerFactory(repoPath);
+    const repoPath = createGitRepo();
+    const tutureRunner = tutureRunnerFactory(repoPath);
     tmpDirs.push(repoPath);
 
     tutureRunner(['init', '-y']);
@@ -31,20 +36,23 @@ describe('tuture destroy', () => {
       const hookPath = path.join(repoPath, '.git', 'hooks', 'post-commit');
       if (fs.existsSync(hookPath)) {
         const hook = fs.readFileSync(hookPath).toString();
+        // @ts-ignore
         expect(hook).toEqual(expect.not.stringContaining('tuture reload'));
       }
     });
   });
 
   describe('no tuture files present', () => {
-    const nonTuturePath = utils.createEmptyDir();
-    const tutureRunner = utils.tutureRunnerFactory(nonTuturePath);
+    const nonTuturePath = createEmptyDir();
+    const tutureRunner = tutureRunnerFactory(nonTuturePath);
     tmpDirs.push(nonTuturePath);
 
     const cp = tutureRunner(['destroy', '-f']);
 
     it('should refuse to destroy', () => {
-      expect(cp.status).toBe(1);
+      console.log(cp.output.toString());
+      console.log(cp.stdout.toString());
+      expect(cp.status).not.toBe(0);
     });
   });
 });

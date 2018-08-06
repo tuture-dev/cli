@@ -1,39 +1,50 @@
-const utils = require('./utils');
-const fs = require('fs-extra');
-const path = require('path');
-const yaml = require('js-yaml');
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as yaml from 'js-yaml';
+
+import {
+  exampleRepo,
+  createEmptyDir,
+  createGitRepo,
+  parseInternalFile,
+  gitRunnerFactory,
+  tutureRunnerFactory,
+} from './utils';
 
 // Tmp directories used in tests.
-let tmpDirs = Array();
+const tmpDirs: string[] = Array();
 
 describe('tuture reload', () => {
 
   afterAll(() => tmpDirs.forEach(dir => fs.removeSync(dir)));
 
   describe('tuture is not initialized', () => {
-    const nonRepoPath = utils.createEmptyDir();
-    const tutureRunner = utils.tutureRunnerFactory(nonRepoPath);
+    const nonRepoPath = createEmptyDir();
+    const tutureRunner = tutureRunnerFactory(nonRepoPath);
     tmpDirs.push(nonRepoPath);
 
     it('should refuse to reload', () => {
       const cp = tutureRunner(['reload']);
-      expect(cp.status).toBe(1);
+      console.log(cp.stdout.toString());
+      expect(cp.status).not.toBe(0);
     });
   });
 
   describe('automatic reload', () => {
 
     describe('add commits plainly', () => {
-      const repoPath = utils.createGitRepo();
-      const tutureRunner = utils.tutureRunnerFactory(repoPath);
-      const gitRunner = utils.gitRunnerFactory(repoPath);
+      const repoPath = createGitRepo();
+      const tutureRunner = tutureRunnerFactory(repoPath);
+      const gitRunner = gitRunnerFactory(repoPath);
       const tutureYmlPath = path.join(repoPath, 'tuture.yml');
       tmpDirs.push(repoPath);
 
       tutureRunner(['init', '-y']);
 
       // Write some explanations.
-      const tuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
+      const tuture = yaml.safeLoad(
+        fs.readFileSync(tutureYmlPath).toString(),
+      );
       tuture.steps[0].explain = 'Some Explanation';
       fs.writeFileSync(tutureYmlPath, yaml.safeDump(tuture));
 
@@ -43,29 +54,33 @@ describe('tuture reload', () => {
       gitRunner(['commit', '-m', 'Commit 3']);
 
       it('should have updated diff.json', () => {
-        const diffContent = utils.parseInternalFile(repoPath, 'diff.json');
-        expect(diffContent).toHaveLength(utils.exampleRepo.length + 1);
+        const diffContent = parseInternalFile(repoPath, 'diff.json');
+        expect(diffContent).toHaveLength(exampleRepo.length + 1);
       });
 
-      it('should have updated tuture.[yml|json] appropriately', () => {
-        const newTuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
-        expect(newTuture.steps).toHaveLength(utils.exampleRepo.length + 1);
+      it('should have updated tuture.yml appropriately', () => {
+        const newTuture = yaml.safeLoad(
+          fs.readFileSync(tutureYmlPath).toString(),
+        );
+        expect(newTuture.steps).toHaveLength(exampleRepo.length + 1);
         expect(newTuture.steps[0].explain).toBe('Some Explanation');
         expect(newTuture.steps[2].name).toBe('Commit 3');
       });
     });
 
     describe('amend last commit', () => {
-      const repoPath = utils.createGitRepo();
-      const tutureRunner = utils.tutureRunnerFactory(repoPath);
-      const gitRunner = utils.gitRunnerFactory(repoPath);
+      const repoPath = createGitRepo();
+      const tutureRunner = tutureRunnerFactory(repoPath);
+      const gitRunner = gitRunnerFactory(repoPath);
       const tutureYmlPath = path.join(repoPath, 'tuture.yml');
       tmpDirs.push(repoPath);
 
       tutureRunner(['init', '-y']);
 
       // Write some explanations.
-      const tuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
+      const tuture = yaml.safeLoad(
+        fs.readFileSync(tutureYmlPath).toString(),
+      );
       tuture.steps[0].explain = 'Some Explanation';
       fs.writeFileSync(tutureYmlPath, yaml.safeDump(tuture));
 
@@ -73,13 +88,15 @@ describe('tuture reload', () => {
       gitRunner(['commit', '--amend', '-m', 'Amended commit 2']);
 
       it('should not have updated diff.json', () => {
-        const diffContent = utils.parseInternalFile(repoPath, 'diff.json');
-        expect(diffContent).toHaveLength(utils.exampleRepo.length);
+        const diffContent = parseInternalFile(repoPath, 'diff.json');
+        expect(diffContent).toHaveLength(exampleRepo.length);
       });
 
-      it('should have updated tuture.[yml|json] appropriately', () => {
-        const newTuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
-        expect(newTuture.steps).toHaveLength(utils.exampleRepo.length + 1);
+      it('should have updated tuture.yml appropriately', () => {
+        const newTuture = yaml.safeLoad(
+          fs.readFileSync(tutureYmlPath).toString(),
+        );
+        expect(newTuture.steps).toHaveLength(exampleRepo.length + 1);
         expect(newTuture.steps[0].explain).toBe('Some Explanation');
 
         // Outdated commit still there.
@@ -92,18 +109,20 @@ describe('tuture reload', () => {
   });
 
   describe('manual reload', () => {
-    const repoPath = utils.createGitRepo();
-    const tutureRunner = utils.tutureRunnerFactory(repoPath);
+    const repoPath = createGitRepo();
+    const tutureRunner = tutureRunnerFactory(repoPath);
     const tutureYmlPath = path.join(repoPath, 'tuture.yml');
     tmpDirs.push(repoPath);
 
     tutureRunner(['init', '-y']);
 
-    const tuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
+    const tuture = yaml.safeLoad(
+      fs.readFileSync(tutureYmlPath).toString(),
+    );
     tuture.steps[0].explain = 'Some Explanation';
 
     const tutureBeforeReload = JSON.parse(JSON.stringify(tuture)); // deep copy
-    const diffBeforeReload = utils.parseInternalFile(repoPath, 'diff.json');
+    const diffBeforeReload = parseInternalFile(repoPath, 'diff.json');
 
     // Remove the last step to see if it can be recovered after reload.
     tuture.steps.pop();
@@ -117,12 +136,14 @@ describe('tuture reload', () => {
     });
 
     it('should leave internal files unchanged', () => {
-      const diffAfterReload = utils.parseInternalFile(repoPath, 'diff.json');
+      const diffAfterReload = parseInternalFile(repoPath, 'diff.json');
       expect(diffAfterReload).toStrictEqual(diffBeforeReload);
     });
 
     it('should complete missing steps in tuture.yml', () => {
-      const tutureAfterReload = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
+      const tutureAfterReload = yaml.safeLoad(
+        fs.readFileSync(tutureYmlPath).toString(),
+      );
       expect(tutureAfterReload).toStrictEqual(tutureBeforeReload);
     });
   });

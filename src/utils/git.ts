@@ -1,27 +1,25 @@
-const cp = require('child_process');
-const fs = require('fs-extra');
-const minimatch = require('minimatch');
-const parser = require('gitdiff-parser');
-const path = require('path');
-const which = require('which');
+import { spawn } from 'child_process';
+import * as fs from 'fs-extra';
+import * as minimatch from 'minimatch';
+import * as path from 'path';
+import * as which from 'which';
+import * as parseDiff from 'parse-diff';
 
-const { ignoreFiles, tutureRoot } = require('./config');
+import { ignoreFiles, tutureRoot } from '../config';
 
 /**
  * Check if Git command is available.
  */
-function isGitAvailable() {
+export function isGitAvailable() {
   return which.sync('git', { nothrow: true }) !== null;
 }
 
 /**
  * Run arbitrary Git commands.
- * @param {Array} args arguments of command
- * @returns {Promise<String>} stdout of running this git command
  */
-function runGitCommand(args) {
+function runGitCommand(args: string[]): Promise<string> {
   return new Promise((resolve, reject) => {
-    const git = cp.spawn('git', args);
+    const git = spawn('git', args);
     let stdout = '';
     let stderr = '';
 
@@ -46,15 +44,14 @@ function runGitCommand(args) {
 /**
  * Initialize a Git repo.
  */
-async function initGit() {
+export async function initGit() {
   await runGitCommand(['init']);
 }
 
 /**
  * Get an array of Git commit messages.
- * @returns {Array} Git commit messages
  */
-async function getGitLogs() {
+export async function getGitLogs() {
   try {
     const output = await runGitCommand(['log', '--oneline', '--no-merges']);
     return output.trim().split('\n');
@@ -64,25 +61,10 @@ async function getGitLogs() {
   }
 }
 
-function parseDiff(diff) {
-  const files = parser.parse(diff);
-
-  return files.map((file) => {
-    const hunks = file.hunks.map(hunk => ({
-      ...hunk,
-      isPlain: false,
-    }));
-
-    return { ...file, hunks };
-  });
-}
-
 /**
- * Get diff of a given commit.
- * @param {String} commit Commit ID
- * @returns {Array} Diff objects with attrs `file`, `explain`, and optional `collapse`
+ * Get all changed files of a given commit.
  */
-async function getGitDiff(commit) {
+export async function getGitDiff(commit: string) {
   const output = await runGitCommand(['show', commit, '--name-only']);
   let changedFiles = output.split('\n\n').slice(-1)[0].split('\n');
   changedFiles = changedFiles.slice(0, changedFiles.length - 1);
@@ -96,8 +78,8 @@ async function getGitDiff(commit) {
  * Store diff of all commits.
  * @param {string[]} commits Hashes of all commits
  */
-async function storeDiff(commits) {
-  const diffPromises = commits.map(async (commit) => {
+export async function storeDiff(commits: string[]) {
+  const diffPromises = commits.map(async (commit: string) => {
     const output = await runGitCommand(['show', commit]);
     const diffText = output.split('\n\n').slice(-1)[0];
     const diff = parseDiff(diffText);
@@ -116,24 +98,28 @@ async function storeDiff(commits) {
  * Generate Git hook for different platforms.
  */
 function getGitHook() {
-  let tuturePath = path.join(__dirname, '..', 'bin', 'tuture');
+  let tuturePath = path.join(__dirname, '..', '..', 'bin', 'run');
   if (process.platform === 'win32') {
-    // replace all \ with / in the path, as is required in Git hook on windows
+    // Replace all \ with / in the path, as is required in Git hook on windows
     // e.g. C:\foo\bar => C:/foo/bar
     tuturePath = tuturePath.replace(/\\/g, '/');
   }
-  return `#!/bin/sh\n${tuturePath} reload\n`;
+  return `#!/bin/sh
+    ${tuturePath} reload
+  `;
 }
 
 /**
  * Add post-commit Git hook for reloading.
  */
-function appendGitHook() {
+export function appendGitHook() {
   const reloadHook = getGitHook();
   const hookPath = path.join('.git', 'hooks', 'post-commit');
   if (!fs.existsSync(hookPath)) {
     fs.writeFileSync(hookPath, reloadHook, { mode: 0o755 });
-  } else if (!fs.readFileSync(hookPath).toString().includes('tuture reload')) {
+  } else if (
+    !fs.readFileSync(hookPath).toString().includes('tuture reload')
+  ) {
     fs.appendFileSync(hookPath, reloadHook);
   }
 }
@@ -141,7 +127,7 @@ function appendGitHook() {
 /**
  * Remove Git hook for reloading.
  */
-function removeGitHook() {
+export function removeGitHook() {
   const reloadHook = getGitHook();
   const hookPath = path.join('.git', 'hooks', 'post-commit');
   if (fs.existsSync(hookPath)) {
@@ -155,10 +141,22 @@ function removeGitHook() {
   }
 }
 
-exports.isGitAvailable = isGitAvailable;
-exports.initGit = initGit;
-exports.getGitLogs = getGitLogs;
-exports.getGitDiff = getGitDiff;
-exports.storeDiff = storeDiff;
-exports.appendGitHook = appendGitHook;
-exports.removeGitHook = removeGitHook;
+/**
+ * Append .tuture rule to gitignore.
+ * If it's already ignored, do nothing.
+ * If .gitignore doesn't exist, create one and add the rule.
+ */
+export function appendGitignore() {
+  const ignoreRules = `# Tuture supporting files
+
+  .tuture
+  `;
+
+  if (!fs.existsSync('.gitignore')) {
+    fs.writeFileSync('.gitignore', ignoreRules);
+  } else if (
+    !fs.readFileSync('.gitignore').toString().includes('.tuture')
+  ) {
+    fs.appendFileSync('.gitignore', `\n${ignoreRules}`);
+  }
+}

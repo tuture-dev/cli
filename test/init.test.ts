@@ -1,21 +1,29 @@
-const utils = require('./utils');
-const fs = require('fs-extra');
-const minimatch = require('minimatch');
-const path = require('path');
-const yaml = require('js-yaml');
+import * as fs from 'fs-extra';
+import * as minimatch from 'minimatch';
+import * as path from 'path';
+import * as yaml from 'js-yaml';
 
-const { ignoreFiles, tutureRoot } = require('../lib/config');
+import {
+  Commit,
+  exampleRepo,
+  createEmptyDir,
+  createGitRepo,
+  parseInternalFile,
+  tutureRunnerFactory,
+} from './utils';
+import { ignoreFiles, tutureRoot } from '../src/config';
+import { Tuture } from '../src/types';
 
 // Tmp directories used in tests.
-let tmpDirs = Array();
+const tmpDirs: string[] = Array();
 
 describe('tuture init -y', () => {
 
   afterAll(() => tmpDirs.forEach(dir => fs.removeSync(dir)));
 
   describe('outside a git repo', () => {
-    const nonRepoPath = utils.createEmptyDir();
-    const tutureRunner = utils.tutureRunnerFactory(nonRepoPath);
+    const nonRepoPath = createEmptyDir();
+    const tutureRunner = tutureRunnerFactory(nonRepoPath);
     tmpDirs.push(nonRepoPath);
 
     const cp = tutureRunner(['init', '-y']);
@@ -89,9 +97,9 @@ describe('tuture init -y', () => {
   });
 });
 
-function testInit(testRepo = utils.exampleRepo, ignoreTuture = false) {
-  const repoPath = utils.createGitRepo(testRepo, ignoreTuture);
-  const tutureRunner = utils.tutureRunnerFactory(repoPath);
+function testInit(testRepo = exampleRepo, ignoreTuture = false) {
+  const repoPath = createGitRepo(testRepo, ignoreTuture);
+  const tutureRunner = tutureRunnerFactory(repoPath);
   tmpDirs.push(repoPath);
 
   // Remove commits with commit messages starting with `tuture:`
@@ -103,8 +111,8 @@ function testInit(testRepo = utils.exampleRepo, ignoreTuture = false) {
       return {
         message,
         files: files.filter(
-          file => !ignoreFiles.some(pattern => minimatch(path.basename(file), pattern))
-        )
+          file => !ignoreFiles.some(pattern => minimatch(path.basename(file), pattern)),
+        ),
       };
     });
 
@@ -115,7 +123,7 @@ function testInit(testRepo = utils.exampleRepo, ignoreTuture = false) {
   });
 
   it('should create valid diff.json', () => {
-    const diffContent = utils.parseInternalFile(repoPath, 'diff.json');
+    const diffContent = parseInternalFile(repoPath, 'diff.json');
     expect(diffContent).toHaveLength(expectedRepo.length);
     expect(diffContent[0]).toHaveProperty('commit');
     expect(diffContent[0]).toHaveProperty('diff');
@@ -125,7 +133,9 @@ function testInit(testRepo = utils.exampleRepo, ignoreTuture = false) {
     const tutureYmlPath = path.join(repoPath, 'tuture.yml');
     expect(fs.existsSync(tutureYmlPath)).toBe(true);
 
-    const tuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath));
+    const tuture = yaml.safeLoad(
+      fs.readFileSync(tutureYmlPath).toString(),
+    );
     testTutureObject(tuture, expectedRepo);
   });
 
@@ -143,11 +153,10 @@ function testInit(testRepo = utils.exampleRepo, ignoreTuture = false) {
   });
 }
 
-function testTutureObject(tuture, expectedRepo) {
+function testTutureObject(tuture: Tuture, expectedRepo: Commit[]) {
   // Expect metadata to be default values.
   expect(tuture.name).toBe('My Awesome Tutorial');
   expect(tuture.version).toBe('0.0.1');
-  expect(tuture.language).toBe('en');
 
   expect(tuture.steps).toHaveLength(expectedRepo.length);
 
