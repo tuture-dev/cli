@@ -1,15 +1,15 @@
 import * as fs from 'fs-extra';
 import * as http from 'http';
 import * as path from 'path';
-import { Command } from '@oclif/command';
 import { safeDump, safeLoad } from 'js-yaml';
 
+import BaseCommand from './base';
 import { Step, Tuture } from '../types';
 import { makeSteps, mergeSteps } from '../utils';
 import { isGitAvailable } from '../utils/git';
 import { tutureRoot, serverURL } from '../config';
 
-export default class Reload extends Command {
+export default class Reload extends BaseCommand {
   static description = 'Sync tuture files with current repo';
 
   // Notify server to reload.
@@ -21,12 +21,12 @@ export default class Reload extends Command {
           if (statusCode != 200) {
             this.warn(`tuture-server ${statusCode}: ${statusMessage}`);
           } else {
-            this.log('Notify server to reload.');
+            this.success('server is ready to reload.');
           }
           resolve();
         })
         .on('error', (err) => {
-          this.warn(`tuture-server error: ${err.message}`);
+          this.warn(`tuture-server error (${err.message})`);
           resolve();
         });
     });
@@ -36,12 +36,12 @@ export default class Reload extends Command {
     this.parse(Reload);
 
     if (!fs.existsSync('tuture.yml')) {
-      this.error('Tuture has not been initialized!');
+      this.error('tuture has not been initialized!');
       this.exit(1);
     }
 
     if (!isGitAvailable()) {
-      this.error('Git is not installed on your machine!');
+      this.error('git is not installed on your machine!');
       this.exit(1);
     }
 
@@ -58,6 +58,6 @@ export default class Reload extends Command {
     fs.writeFileSync('tuture.yml', safeDump(tuture));
     await this.notifyServer();
 
-    this.log('reload complete!');
+    this.success('reload complete!');
   }
 }

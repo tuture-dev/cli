@@ -1,7 +1,8 @@
 import * as fs from 'fs-extra';
-import { Command, flags } from '@oclif/command';
+import { flags } from '@oclif/command';
 import { prompt } from 'inquirer';
 
+import BaseCommand from './base';
 import * as git from '../utils/git';
 import { removeTutureSuite } from '../utils';
 
@@ -9,7 +10,7 @@ type ConfirmResponse = {
   answer: boolean;
 };
 
-export default class Destroy extends Command {
+export default class Destroy extends BaseCommand {
   static description = 'Delete all tuture files';
 
   static flags = {
@@ -47,6 +48,6 @@ export default class Destroy extends Command {
     git.removeGitHook();
     await removeTutureSuite();
 
-    this.log('Tuture suite has been destroyed!');
+    this.success('Tuture suite has been destroyed!');
   }
 }

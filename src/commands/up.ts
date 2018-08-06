@@ -1,12 +1,12 @@
 import * as cp from 'child_process';
 import * as fs from 'fs-extra';
 import * as which from 'which';
-import { Command } from '@oclif/command';
 import { safeLoad } from 'js-yaml';
 
+import BaseCommand from './base';
 import reload from './reload';
 
-export default class Up extends Command {
+export default class Up extends BaseCommand {
   static description = 'Render and edit tutorial in browser';
 
   async run() {
@@ -32,7 +32,7 @@ export default class Up extends Command {
 
     await reload.run([]);
 
-    this.log('Your tutorial is now served on http://localhost:3000.');
+    this.success('tutorial is now served on http://localhost:3000.');
     cp.spawnSync('tuture-server');
   }
 }
