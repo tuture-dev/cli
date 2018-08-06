@@ -18,3 +18,6 @@ export const ignoreFiles: string[] = [
   // Tuture-related files
   'tuture.yml',
 ];
+
+// URL of tuture-server.
+export const serverURL = 'http://localhost:3000';

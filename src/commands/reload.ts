@@ -1,4 +1,5 @@
 import * as fs from 'fs-extra';
+import * as http from 'http';
 import * as path from 'path';
 import { Command } from '@oclif/command';
 import { safeDump, safeLoad } from 'js-yaml';
@@ -6,10 +7,30 @@ import { safeDump, safeLoad } from 'js-yaml';
 import { Step, Tuture } from '../types';
 import { makeSteps, mergeSteps } from '../utils';
 import { isGitAvailable } from '../utils/git';
-import { tutureRoot } from '../config';
+import { tutureRoot, serverURL } from '../config';
 
 export default class Reload extends Command {
   static description = 'Sync tuture files with current repo';
+
+  // Notify server to reload.
+  async notifyServer() {
+    return new Promise((resolve, reject) => {
+      http
+        .get(serverURL + '/reload', (res) => {
+          const { statusCode, statusMessage } = res;
+          if (statusCode != 200) {
+            this.warn(`tuture-server ${statusCode}: ${statusMessage}`);
+          } else {
+            this.log('Notify server to reload.');
+          }
+          resolve();
+        })
+        .on('error', (err) => {
+          this.warn(`tuture-server error: ${err.message}`);
+          resolve();
+        });
+    });
+  }
 
   async run() {
     this.parse(Reload);
@@ -35,6 +56,8 @@ export default class Reload extends Command {
     tuture.steps = mergeSteps(tuture.steps, currentSteps);
 
     fs.writeFileSync('tuture.yml', safeDump(tuture));
-    this.log('Reload complete!');
+    await this.notifyServer();
+
+    this.log('reload complete!');
   }
 }
