@@ -13,7 +13,7 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "lint": "tslint -p .",
+    "lint": "tslint -p . -t verbose",
     "test": "rm -rf lib && tsc && jest",
     "build": "rm -rf lib && tsc",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme && npm shrinkwrap",

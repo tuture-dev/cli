@@ -13,7 +13,7 @@ export default class Destroy extends Command {
   static description = 'Delete all tuture files';
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    help: flags.help({ char: 'h' }),
     force: flags.boolean({
       char: 'f',
       description: 'destroy without confirmation',

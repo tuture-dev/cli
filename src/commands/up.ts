@@ -4,7 +4,7 @@ import * as which from 'which';
 import { Command } from '@oclif/command';
 import { safeLoad } from 'js-yaml';
 
-import Reload from './reload';
+import reload from './reload';
 
 export default class Up extends Command {
   static description = 'Render and edit tutorial in browser';
@@ -30,7 +30,7 @@ export default class Up extends Command {
       this.exit(1);
     }
 
-    await Reload.run([]);
+    await reload.run([]);
 
     this.log('Your tutorial is now served on http://localhost:3000.');
     cp.spawnSync('tuture-server');
