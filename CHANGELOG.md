@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.0
+
+### New Features
+
+Commits rebased out will be kept in tuture.yml with all its explanation and marked outdated, instead of wiped out altogether.
+
+### Improvements
+
+This CLI has been rewritten with TypeScript and [oclif](https://oclif.io), which brings about better CLI ui, safety and scalability.
+
+### Bug Fixes
+
+Fix reload bug when `.tuture` directory is not created.
+
 ## 0.3.0
 
 _This npm package has been renamed to **tuture-cli**._
