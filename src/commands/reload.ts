@@ -1,26 +1,26 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { Command } from '@oclif/command';
 import { safeDump, safeLoad } from 'js-yaml';
 
-import BaseCommand from './base';
 import { Step, Tuture } from '../types';
 import { makeSteps, mergeSteps } from '../utils';
 import { isGitAvailable } from '../utils/git';
 import { tutureRoot } from '../config';
 
-export default class Reload extends BaseCommand {
+export default class Reload extends Command {
   static description = 'Sync tuture files with current repo';
 
   async run() {
     this.parse(Reload);
 
     if (!fs.existsSync('tuture.yml')) {
-      this.err('Tuture has not been initialized!');
+      this.error('Tuture has not been initialized!');
       this.exit(1);
     }
 
     if (!isGitAvailable()) {
-      this.err('Git is not installed on your machine!');
+      this.error('Git is not installed on your machine!');
       this.exit(1);
     }
 
@@ -35,6 +35,6 @@ export default class Reload extends BaseCommand {
     tuture.steps = mergeSteps(tuture.steps, currentSteps);
 
     fs.writeFileSync('tuture.yml', safeDump(tuture));
-    this.success('reload complete!');
+    this.log('Reload complete!');
   }
 }

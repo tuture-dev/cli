@@ -1,8 +1,7 @@
 import * as fs from 'fs-extra';
-import { flags } from '@oclif/command';
+import { Command, flags } from '@oclif/command';
 import { prompt } from 'inquirer';
 
-import BaseCommand from './base';
 import * as git from '../utils/git';
 import { removeTutureSuite } from '../utils';
 
@@ -10,7 +9,7 @@ type ConfirmResponse = {
   answer: boolean;
 };
 
-export default class Destroy extends BaseCommand {
+export default class Destroy extends Command {
   static description = 'Delete all tuture files';
 
   static flags = {
@@ -37,7 +36,7 @@ export default class Destroy extends BaseCommand {
     const { flags } = this.parse(Destroy);
 
     if (!fs.existsSync('tuture.yml')) {
-      this.err('No tuture tutorial to destroy!');
+      this.error('No tuture tutorial to destroy!');
       this.exit(1);
     }
 
@@ -48,6 +47,6 @@ export default class Destroy extends BaseCommand {
     git.removeGitHook();
     await removeTutureSuite();
 
-    this.success('Tuture suite has been destroyed!');
+    this.log('Tuture suite has been destroyed!');
   }
 }

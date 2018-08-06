@@ -1,9 +1,8 @@
 import * as fs from 'fs-extra';
-import { flags } from '@oclif/command';
+import { Command, flags } from '@oclif/command';
 import { prompt } from 'inquirer';
 import { safeDump } from 'js-yaml';
 
-import BaseCommand from './base';
 import { TutureMetadata, Tuture } from '../types';
 import { makeSteps, removeTutureSuite } from '../utils';
 import * as git from '../utils/git';
@@ -13,7 +12,7 @@ type ConfirmResponse = {
   answer: boolean;
 };
 
-export default class Init extends BaseCommand {
+export default class Init extends Command {
   static description = 'Initialize a tuture tutorial';
 
   static flags = {
@@ -36,7 +35,7 @@ export default class Init extends BaseCommand {
       this.exit(0);
     } else {
       await git.initGit();
-      this.info('Git repo is initialized!');
+      this.log('Git repo is initialized!');
     }
   }
 
@@ -72,12 +71,12 @@ export default class Init extends BaseCommand {
     const { flags } = this.parse(Init);
 
     if (fs.existsSync('tuture.yml')) {
-      this.err('Tuture has already been initialized!');
+      this.error('Tuture has already been initialized!');
       this.exit(0);
     }
 
     if (!git.isGitAvailable()) {
-      this.err('Git is not installed on your machine!');
+      this.error('Git is not installed on your machine!');
       this.exit(1);
     }
 
@@ -95,13 +94,13 @@ export default class Init extends BaseCommand {
       };
 
       fs.writeFileSync('tuture.yml', safeDump(tuture));
-      this.success('tuture.yml created!');
+      this.log('tuture.yml created!');
 
       git.appendGitignore();
       git.appendGitHook();
     } catch (err) {
       await removeTutureSuite();
-      this.err(err.message);
+      this.error(err.message);
       this.exit(1);
     }
   }
