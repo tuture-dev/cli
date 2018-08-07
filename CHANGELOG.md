@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.1
+
+### Improvements
+
+Remove annoying warnings when running `reload` command.
+
+### Bug Fixes
+
+Remove `base` from commands list (which was added unintentionally)
+
 ## 0.4.0
 
 ### New Features
