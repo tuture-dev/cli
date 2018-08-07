@@ -104,9 +104,7 @@ function getGitHook() {
     // e.g. C:\foo\bar => C:/foo/bar
     tuturePath = tuturePath.replace(/\\/g, '/');
   }
-  return `#!/bin/sh
-    ${tuturePath} reload
-  `;
+  return `#!/bin/sh\n${tuturePath} reload\n`;
 }
 
 /**
@@ -147,10 +145,7 @@ export function removeGitHook() {
  * If .gitignore doesn't exist, create one and add the rule.
  */
 export function appendGitignore() {
-  const ignoreRules = `# Tuture supporting files
-
-  .tuture
-  `;
+  const ignoreRules = '# Tuture supporting files\n\n.tuture\n';
 
   if (!fs.existsSync('.gitignore')) {
     fs.writeFileSync('.gitignore', ignoreRules);
