@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import { flags } from '@oclif/command';
 import { prompt } from 'inquirer';
 
-import BaseCommand from './base';
+import BaseCommand from '../base';
 import * as git from '../utils/git';
 import { removeTutureSuite } from '../utils';
 

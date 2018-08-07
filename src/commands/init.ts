@@ -3,7 +3,7 @@ import { flags } from '@oclif/command';
 import { prompt } from 'inquirer';
 import { safeDump } from 'js-yaml';
 
-import BaseCommand from './base';
+import BaseCommand from '../base';
 import { TutureMetadata, Tuture } from '../types';
 import { makeSteps, removeTutureSuite } from '../utils';
 import * as git from '../utils/git';

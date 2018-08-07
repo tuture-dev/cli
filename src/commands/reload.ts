@@ -3,7 +3,7 @@ import * as http from 'http';
 import * as path from 'path';
 import { safeDump, safeLoad } from 'js-yaml';
 
-import BaseCommand from './base';
+import BaseCommand from '../base';
 import { Step, Tuture } from '../types';
 import { makeSteps, mergeSteps } from '../utils';
 import { isGitAvailable } from '../utils/git';

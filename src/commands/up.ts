@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import * as which from 'which';
 import { safeLoad } from 'js-yaml';
 
-import BaseCommand from './base';
+import BaseCommand from '../base';
 import reload from './reload';
 
 export default class Up extends BaseCommand {
