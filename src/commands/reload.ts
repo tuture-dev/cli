@@ -3,7 +3,7 @@ import * as http from 'http';
 import * as path from 'path';
 import { safeDump, safeLoad } from 'js-yaml';
 
-import BaseCommand from './base';
+import BaseCommand from '../base';
 import { Step, Tuture } from '../types';
 import { makeSteps, mergeSteps } from '../utils';
 import { isGitAvailable } from '../utils/git';
@@ -17,16 +17,13 @@ export default class Reload extends BaseCommand {
     return new Promise((resolve, reject) => {
       http
         .get(serverURL + '/reload', (res) => {
-          const { statusCode, statusMessage } = res;
-          if (statusCode !== 200) {
-            this.warn(`tuture-server ${statusCode}: ${statusMessage}`);
-          } else {
+          const { statusCode } = res;
+          if (statusCode === 200) {
             this.success('server is ready to reload.');
           }
           resolve();
         })
-        .on('error', (err) => {
-          this.warn(`tuture-server error (${err.message})`);
+        .on('error', () => {
           resolve();
         });
     });
