@@ -15,7 +15,8 @@
   "scripts": {
     "lint": "tslint -p . -t verbose",
     "test": "rimraf lib && tsc && jest",
-    "build": "rimraf lib && tsc"
+    "build": "rimraf lib && tsc",
+    "prepack": "rimraf lib && tsc"
   },
   "repository": {
     "type": "git",
