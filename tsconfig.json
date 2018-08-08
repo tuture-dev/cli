@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
