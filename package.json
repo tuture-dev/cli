@@ -16,7 +16,7 @@
     "lint": "tslint -p . -t verbose",
     "test": "rimraf lib && tsc && jest",
     "build": "rimraf lib && tsc",
-    "prepack": "rimraf lib && tsc"
+    "prepublishOnly": "rimraf lib && tsc"
   },
   "repository": {
     "type": "git",
@@ -32,9 +32,7 @@
   "homepage": "https://github.com/tutureproject/cli#readme",
   "files": [
     "/bin",
-    "/lib",
-    "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
+    "/lib"
   ],
   "dependencies": {
     "@oclif/command": "^1.4.36",
