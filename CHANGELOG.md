@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.3
+
+Fix installation dependencies issue.
+
 ## 0.4.2
 
 ### Bug Fixes

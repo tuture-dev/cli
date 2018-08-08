@@ -1,6 +1,6 @@
 {
   "name": "tuture-cli",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Command-line tool for Tuture.",
   "main": "lib/index.js",
   "preferGlobal": true,
