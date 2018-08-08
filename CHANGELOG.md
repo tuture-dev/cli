@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2
+
+### Bug Fixes
+
+Fix bug of adding invalid gitignore rules.
+
 ## 0.4.1
 
 ### Improvements
