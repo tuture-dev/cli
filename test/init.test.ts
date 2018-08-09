@@ -11,7 +11,7 @@ import {
   parseInternalFile,
   tutureRunnerFactory,
 } from './utils';
-import { ignoreFiles, tutureRoot } from '../src/config';
+import defaultConfig, { tutureRoot } from '../src/config';
 import { Tuture } from '../src/types';
 
 // Tmp directories used in tests.
@@ -102,16 +102,18 @@ function testInit(testRepo = exampleRepo, ignoreTuture = false) {
   const tutureRunner = tutureRunnerFactory(repoPath);
   tmpDirs.push(repoPath);
 
+  const ignoredFiles = defaultConfig.ignoredFiles;
+
   // Remove commits with commit messages starting with `tuture:`
   // and files that should be ignored in each commit.
   const expectedRepo = testRepo
     .filter(commit => !commit.message.startsWith('tuture:'))
-    .map(commit => {
+    .map((commit) => {
       const { message, files } = commit;
       return {
         message,
         files: files.filter(
-          file => !ignoreFiles.some(pattern => minimatch(path.basename(file), pattern)),
+          file => !ignoredFiles.some(pattern => minimatch(path.basename(file), pattern)),
         ),
       };
     });
@@ -163,11 +165,11 @@ function testTutureObject(tuture: Tuture, expectedRepo: Commit[]) {
   const steps = tuture.steps;
 
   // Check equivalence of each step.
-  for (let i = 0; i < steps.length; i++) {
+  for (let i = 0; i < steps.length; i += 1) {
     expect(steps[i].name).toBe(expectedRepo[i].message);
     expect(steps[i].diff).toHaveLength(expectedRepo[i].files.length);
 
-    for (let j = 0; j < expectedRepo[i].files.length; j++) {
+    for (let j = 0; j < expectedRepo[i].files.length; j += 1) {
       expect(steps[i].diff[j].file).toBe(expectedRepo[i].files[j]);
     }
   }
