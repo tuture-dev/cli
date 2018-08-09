@@ -114,6 +114,12 @@
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/@oclif/screen/download/@oclif/screen-1.0.2.tgz#c9d7c84b0ea60ecec8dd7a9b22c012ba9967aed8"
 
+"@types/cross-spawn@^6.0.0":
+  version "6.0.0"
+  resolved "http://registry.npm.taobao.org/@types/cross-spawn/download/@types/cross-spawn-6.0.0.tgz#320aaf1d1a12979f1b84fe7a5590a7e860bf3a80"
+  dependencies:
+    "@types/node" "*"
+
 "@types/fs-extra@^5.0.4":
   version "5.0.4"
   resolved "http://registry.npm.taobao.org/@types/fs-extra/download/@types/fs-extra-5.0.4.tgz#b971134d162cc0497d221adde3dbb67502225599"

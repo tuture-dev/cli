@@ -33,3 +33,8 @@ export interface TutureMetadata {
 export interface Tuture extends TutureMetadata {
   steps: Step[];
 }
+
+export interface TutureConfig {
+  ignoredFiles: string[];
+  port: number;
+}

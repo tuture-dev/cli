@@ -7,7 +7,6 @@ import BaseCommand from '../base';
 import { TutureMetadata, Tuture } from '../types';
 import { makeSteps, removeTutureSuite } from '../utils';
 import * as git from '../utils/git';
-import { tutureRoot } from '../config';
 
 type ConfirmResponse = {
   answer: boolean;
@@ -86,7 +85,6 @@ export default class Init extends BaseCommand {
     }
 
     const tutureMeta = await this.promptMetaData(flags.yes);
-    fs.mkdirSync(tutureRoot);
 
     try {
       const tuture: Tuture = {
