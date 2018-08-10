@@ -81,7 +81,10 @@ export async function getGitDiff(commit: string) {
 export async function storeDiff(commits: string[]) {
   const diffPromises = commits.map(async (commit: string) => {
     const output = await runGitCommand(['show', commit]);
-    const diffText = output.split('\n\n').slice(-1)[0];
+    const diffText = output
+      .replace('\n\\ No newline at end of file', '')
+      .split('\n\n')
+      .slice(-1)[0];
     const diff = parseDiff(diffText);
     return { commit, diff };
   });
