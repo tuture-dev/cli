@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.4
+
+### New Features
+
+Tuture will now ask for confirmation whether to use a new port when the default port (3000) is already in use (previously Tuture would crash on that), and if the answer is yes, it will open `tuture-server` on an available port.
+
+### Bug Fixes
+
+Remove annoying 'no new line at the end of file' from parsed git diff output
+
 ## 0.4.3
 
 Fix installation dependencies issue.
