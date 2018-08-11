@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as which from 'which';
 import * as parseDiff from 'parse-diff';
 
-import { ignoreFiles, tutureRoot } from '../config';
+import { tutureRoot, loadConfig } from '../config';
 
 /**
  * Check if Git command is available.
@@ -68,9 +68,12 @@ export async function getGitDiff(commit: string) {
   const output = await runGitCommand(['show', commit, '--name-only']);
   let changedFiles = output.split('\n\n').slice(-1)[0].split('\n');
   changedFiles = changedFiles.slice(0, changedFiles.length - 1);
+
+  const ignoredFiles = loadConfig().ignoredFiles;
+
   return changedFiles
     // don't track changes of ignored files
-    .filter(file => !ignoreFiles.some(pattern => minimatch(path.basename(file), pattern)))
+    .filter(file => !ignoredFiles.some(pattern => minimatch(path.basename(file), pattern)))
     .map(file => ({ file }));
 }
 

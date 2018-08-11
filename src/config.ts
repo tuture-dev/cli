@@ -1,23 +1,34 @@
-/**
- * Default config of Tuture.
- */
+import * as fs from 'fs-extra';
+import * as path from 'path';
 
-// Directory which houses Tuture internal files.
+import { TutureConfig } from './types';
+
+// Directory which houses tuture internal files.
 export const tutureRoot = '.tuture';
 
-// Files that should be commited but won't be tracked by Tuture.
-export const ignoreFiles: string[] = [
-  // Git-related files
-  '.gitignore',
-  '.gitattributes',
+// Path to runtime config file.
+export const configPath = path.join(tutureRoot, 'config.json');
 
-  // Node.js
-  'package-lock.json',
-  'yarn.lock',
+export function loadConfig(): TutureConfig {
+  return JSON.parse(fs.readFileSync(configPath).toString());
+}
 
-  // Tuture-related files
-  'tuture.yml',
-];
+// Default config of Tuture.
+export default {
+  // Files that should be commited but won't be tracked by Tuture.
+  ignoredFiles: [
+    // Git-related files
+    '.gitignore',
+    '.gitattributes',
 
-// URL of tuture-server.
-export const serverURL = 'http://localhost:3000';
+    // Node.js
+    'package-lock.json',
+    'yarn.lock',
+
+    // Tuture-related files
+    'tuture.yml',
+  ],
+
+  // Port to use for tuture-server.
+  port: 3000,
+};

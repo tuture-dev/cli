@@ -42,6 +42,7 @@
     "@oclif/config": "^1.6.33",
     "@oclif/plugin-help": "^2.0.5",
     "chalk": "^2.4.1",
+    "cross-spawn": "^6.0.5",
     "fs-extra": "^7.0.0",
     "inquirer": "^6.0.0",
     "js-yaml": "^3.12.0",
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.15.4",
+    "@types/cross-spawn": "^6.0.0",
     "@types/fs-extra": "^5.0.4",
     "@types/inquirer": "^0.0.42",
     "@types/jest": "^23.3.1",

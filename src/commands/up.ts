@@ -1,13 +1,52 @@
-import * as cp from 'child_process';
 import * as fs from 'fs-extra';
 import * as which from 'which';
+import * as spawn from 'cross-spawn';
 import { safeLoad } from 'js-yaml';
+import { prompt } from 'inquirer';
 
 import BaseCommand from '../base';
 import reload from './reload';
 
+type ConfirmResponse = {
+  answer: boolean;
+};
+
 export default class Up extends BaseCommand {
   static description = 'Render and edit tutorial in browser';
+
+  spawnServerProcess(port: number) {
+    return spawn.sync(
+      'tuture-server',
+      ['--port', port.toString()],
+      // Inherit stdout only.
+      { stdio: ['pipe', process.stdout, 'pipe'] },
+    );
+  }
+
+  async fireTutureServer() {
+    let port = 3000;
+    let serverProc = this.spawnServerProcess(port);
+
+    // Port 3000 is occupied.
+    if (serverProc.status !== 0) {
+      const response = await prompt([{
+        type: 'confirm',
+        name: 'answer',
+        message: `Port ${port} has been used. Do you want to use a new port?`,
+        default: true,
+      }]);
+
+      if (!(response as ConfirmResponse).answer) {
+        this.exit(0);
+      }
+    }
+
+    // Incrementing port number until it's available.
+    while (serverProc.status !== 0) {
+      port += 1;
+      serverProc = this.spawnServerProcess(port);
+    }
+  }
 
   async run() {
     this.parse(Up);
@@ -32,7 +71,6 @@ export default class Up extends BaseCommand {
 
     await reload.run([]);
 
-    this.success('tutorial is now served on http://localhost:3000.');
-    cp.spawnSync('tuture-server');
+    this.fireTutureServer();
   }
 }
