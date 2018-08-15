@@ -10,6 +10,7 @@ export interface Section {
 
 export interface Diff {
   file: string;
+  display?: boolean;
   explain?: Explain;
   section?: Section;
 }

@@ -114,6 +114,10 @@
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/@oclif/screen/download/@oclif/screen-1.0.2.tgz#c9d7c84b0ea60ecec8dd7a9b22c012ba9967aed8"
 
+"@types/braces@*":
+  version "2.3.0"
+  resolved "http://registry.npm.taobao.org/@types/braces/download/@types/braces-2.3.0.tgz#d00ec0a76562b2acb6f29330be33a093e33ed25c"
+
 "@types/cross-spawn@^6.0.0":
   version "6.0.0"
   resolved "http://registry.npm.taobao.org/@types/cross-spawn/download/@types/cross-spawn-6.0.0.tgz#320aaf1d1a12979f1b84fe7a5590a7e860bf3a80"
@@ -141,9 +145,11 @@
   version "3.11.2"
   resolved "http://registry.npm.taobao.org/@types/js-yaml/download/@types/js-yaml-3.11.2.tgz#699ad86054cc20043c30d66a6fcde30bbf5d3d5e"
 
-"@types/minimatch@^3.0.3":
-  version "3.0.3"
-  resolved "http://registry.npm.taobao.org/@types/minimatch/download/@types/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
+"@types/micromatch@^3.1.0":
+  version "3.1.0"
+  resolved "http://registry.npm.taobao.org/@types/micromatch/download/@types/micromatch-3.1.0.tgz#514c8a3d24b2680a9b838eeb80e6d7d724545433"
+  dependencies:
+    "@types/braces" "*"
 
 "@types/node@*":
   version "10.5.6"

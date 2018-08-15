@@ -1,6 +1,6 @@
 import cp from 'child_process';
 import fs from 'fs-extra';
-import minimatch from 'minimatch';
+import mm from 'micromatch';
 import path from 'path';
 import which from 'which';
 import parseDiff from 'parse-diff';
@@ -71,15 +71,17 @@ export async function getGitDiff(commit: string) {
 
   const ignoredFiles = loadConfig().ignoredFiles;
 
-  return changedFiles
-    // don't track changes of ignored files
-    .filter(file => !ignoredFiles.some(pattern => minimatch(path.basename(file), pattern)))
-    .map(file => ({ file }));
+  return changedFiles.map((file) => {
+    const fileObj: any = { file };
+    if (!ignoredFiles.some(pattern => mm.isMatch(file, pattern))) {
+      fileObj.display = true;
+    }
+    return fileObj;
+  });
 }
 
 /**
  * Store diff of all commits.
- * @param {string[]} commits Hashes of all commits
  */
 export async function storeDiff(commits: string[]) {
   const diffPromises = commits.map(async (commit: string) => {

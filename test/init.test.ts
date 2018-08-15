@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import minimatch from 'minimatch';
+import mm from 'micromatch';
 import path from 'path';
 import yaml from 'js-yaml';
 
@@ -53,11 +53,11 @@ describe('tuture init -y', () => {
         },
         {
           message: 'Another Test',
-          files: ['dir/test1.js', 'dir/yarn.lock'],
+          files: ['dir/test1.js', 'dir/test2.lock'],
         },
         {
           message: 'Still Another Test',
-          files: ['dir/test2.js'],
+          files: ['dir/test3.js'],
         },
       ];
       testInit(testRepo);
@@ -102,21 +102,9 @@ function testInit(testRepo = exampleRepo, ignoreTuture = false) {
   const tutureRunner = tutureRunnerFactory(repoPath);
   tmpDirs.push(repoPath);
 
-  const ignoredFiles = defaultConfig.ignoredFiles;
-
-  // Remove commits with commit messages starting with `tuture:`
-  // and files that should be ignored in each commit.
+  // Remove commits with commit messages starting with `tuture:`.
   const expectedRepo = testRepo
-    .filter(commit => !commit.message.startsWith('tuture:'))
-    .map((commit) => {
-      const { message, files } = commit;
-      return {
-        message,
-        files: files.filter(
-          file => !ignoredFiles.some(pattern => minimatch(path.basename(file), pattern)),
-        ),
-      };
-    });
+    .filter(commit => !commit.message.startsWith('tuture:'));
 
   const cp = tutureRunner(['init', '-y']);
 
@@ -156,6 +144,7 @@ function testInit(testRepo = exampleRepo, ignoreTuture = false) {
 }
 
 function testTutureObject(tuture: Tuture, expectedRepo: Commit[]) {
+
   // Expect metadata to be default values.
   expect(tuture.name).toBe('My Awesome Tutorial');
   expect(tuture.version).toBe('0.0.1');
@@ -171,6 +160,11 @@ function testTutureObject(tuture: Tuture, expectedRepo: Commit[]) {
 
     for (let j = 0; j < expectedRepo[i].files.length; j += 1) {
       expect(steps[i].diff[j].file).toBe(expectedRepo[i].files[j]);
+
+      const file = steps[i].diff[j].file;
+      if (!defaultConfig.ignoredFiles.some(pattern => mm.isMatch(file, pattern))) {
+        expect(steps[i].diff[j].display).toBe(true);
+      }
     }
   }
 }
