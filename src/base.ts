@@ -1,6 +1,6 @@
 import { Command } from '@oclif/command';
 import chalk from 'chalk';
-import * as fs from 'fs-extra';
+import fs from 'fs-extra';
 
 import defaultConfig, { tutureRoot, configPath } from './config';
 

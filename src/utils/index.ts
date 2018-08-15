@@ -1,8 +1,6 @@
-import * as fs from 'fs-extra';
-import { safeLoad } from 'js-yaml';
+import fs from 'fs-extra';
 
-import { Step, Tuture } from '../types';
-
+import { Step } from '../types';
 import { tutureRoot } from '../config';
 import * as git from './git';
 

@@ -1,7 +1,7 @@
-import * as fs from 'fs-extra';
-import * as which from 'which';
-import * as spawn from 'cross-spawn';
-import { safeLoad } from 'js-yaml';
+import fs from 'fs-extra';
+import which from 'which';
+import spawn from 'cross-spawn';
+import yaml from 'js-yaml';
 import { prompt } from 'inquirer';
 
 import BaseCommand from '../base';
@@ -63,7 +63,7 @@ export default class Up extends BaseCommand {
 
     // Check for tuture.yml syntax.
     try {
-      safeLoad(fs.readFileSync('tuture.yml').toString());
+      yaml.safeLoad(fs.readFileSync('tuture.yml').toString());
     } catch (err) {
       this.error(err.message);
       this.exit(1);

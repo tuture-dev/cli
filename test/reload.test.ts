@@ -1,6 +1,6 @@
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import * as yaml from 'js-yaml';
+import fs from 'fs-extra';
+import path from 'path';
+import yaml from 'js-yaml';
 
 import {
   exampleRepo,

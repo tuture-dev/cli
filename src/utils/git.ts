@@ -1,9 +1,9 @@
-import { spawn } from 'child_process';
-import * as fs from 'fs-extra';
-import * as minimatch from 'minimatch';
-import * as path from 'path';
-import * as which from 'which';
-import * as parseDiff from 'parse-diff';
+import cp from 'child_process';
+import fs from 'fs-extra';
+import mm from 'micromatch';
+import path from 'path';
+import which from 'which';
+import parseDiff from 'parse-diff';
 
 import { tutureRoot, loadConfig } from '../config';
 
@@ -19,7 +19,7 @@ export function isGitAvailable() {
  */
 function runGitCommand(args: string[]): Promise<string> {
   return new Promise((resolve, reject) => {
-    const git = spawn('git', args);
+    const git = cp.spawn('git', args);
     let stdout = '';
     let stderr = '';
 
@@ -71,15 +71,17 @@ export async function getGitDiff(commit: string) {
 
   const ignoredFiles = loadConfig().ignoredFiles;
 
-  return changedFiles
-    // don't track changes of ignored files
-    .filter(file => !ignoredFiles.some(pattern => minimatch(path.basename(file), pattern)))
-    .map(file => ({ file }));
+  return changedFiles.map((file) => {
+    const fileObj: any = { file };
+    if (!ignoredFiles.some(pattern => mm.isMatch(file, pattern))) {
+      fileObj.display = true;
+    }
+    return fileObj;
+  });
 }
 
 /**
  * Store diff of all commits.
- * @param {string[]} commits Hashes of all commits
  */
 export async function storeDiff(commits: string[]) {
   const diffPromises = commits.map(async (commit: string) => {

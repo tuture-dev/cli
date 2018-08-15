@@ -1,7 +1,6 @@
-import * as fs from 'fs-extra';
-import * as http from 'http';
-import * as path from 'path';
-import { safeDump, safeLoad } from 'js-yaml';
+import fs from 'fs-extra';
+import http from 'http';
+import yaml from 'js-yaml';
 
 import BaseCommand from '../base';
 import { Step, Tuture } from '../types';
@@ -42,11 +41,11 @@ export default class Reload extends BaseCommand {
       this.exit(1);
     }
 
-    const tuture: Tuture = safeLoad(fs.readFileSync('tuture.yml').toString());
+    const tuture: Tuture = yaml.safeLoad(fs.readFileSync('tuture.yml').toString());
     const currentSteps: Step[] = await makeSteps();
     tuture.steps = mergeSteps(tuture.steps, currentSteps);
 
-    fs.writeFileSync('tuture.yml', safeDump(tuture));
+    fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
     await this.notifyServer();
 
     this.success('reload complete!');
