@@ -1,7 +1,7 @@
-import * as fs from 'fs-extra';
-import * as cp from 'child_process';
-import * as path from 'path';
-import * as tmp from 'tmp';
+import cp from 'child_process';
+import fs from 'fs-extra';
+import path from 'path';
+import tmp from 'tmp';
 
 export interface Commit {
   message: string;
@@ -54,8 +54,8 @@ export function createGitRepo(repo = exampleRepo, ignoreTuture = false) {
 
   gitRunner(['init']);
 
-  repo.forEach(commit => {
-    commit.files.forEach(fileName => {
+  repo.forEach((commit) => {
+    commit.files.forEach((fileName) => {
       const dir = path.parse(fileName).dir;
       if (dir) fs.mkdirpSync(path.join(repoPath, dir));
       if (fileName === '.gitignore' && ignoreTuture) {

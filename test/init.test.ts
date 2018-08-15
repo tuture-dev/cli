@@ -1,7 +1,7 @@
-import * as fs from 'fs-extra';
-import * as minimatch from 'minimatch';
-import * as path from 'path';
-import * as yaml from 'js-yaml';
+import fs from 'fs-extra';
+import minimatch from 'minimatch';
+import path from 'path';
+import yaml from 'js-yaml';
 
 import {
   Commit,

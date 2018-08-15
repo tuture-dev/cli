@@ -1,9 +1,9 @@
-import { spawn } from 'child_process';
-import * as fs from 'fs-extra';
-import * as minimatch from 'minimatch';
-import * as path from 'path';
-import * as which from 'which';
-import * as parseDiff from 'parse-diff';
+import cp from 'child_process';
+import fs from 'fs-extra';
+import minimatch from 'minimatch';
+import path from 'path';
+import which from 'which';
+import parseDiff from 'parse-diff';
 
 import { tutureRoot, loadConfig } from '../config';
 
@@ -19,7 +19,7 @@ export function isGitAvailable() {
  */
 function runGitCommand(args: string[]): Promise<string> {
   return new Promise((resolve, reject) => {
-    const git = spawn('git', args);
+    const git = cp.spawn('git', args);
     let stdout = '';
     let stderr = '';
 

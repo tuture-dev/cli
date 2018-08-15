@@ -1,7 +1,7 @@
-import * as fs from 'fs-extra';
+import fs from 'fs-extra';
 import { flags } from '@oclif/command';
 import { prompt } from 'inquirer';
-import { safeDump } from 'js-yaml';
+import yaml from 'js-yaml';
 
 import BaseCommand from '../base';
 import { TutureMetadata, Tuture } from '../types';
@@ -92,7 +92,7 @@ export default class Init extends BaseCommand {
         steps: await makeSteps(),
       };
 
-      fs.writeFileSync('tuture.yml', safeDump(tuture));
+      fs.writeFileSync('tuture.yml', yaml.safeDump(tuture));
       this.success('tuture.yml created!');
 
       git.appendGitignore();
