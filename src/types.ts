@@ -25,10 +25,8 @@ export interface Step {
 
 export interface TutureMetadata {
   name: string;
-  version: string;
-  description?: string;
-  maintainer?: string;
   topics?: string[];
+  description?: string;
 }
 
 export interface Tuture extends TutureMetadata {

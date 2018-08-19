@@ -32,12 +32,19 @@ export default class Publish extends BaseCommand {
       fs.readFileSync('tuture.yml').toString(),
     );
 
-    const formData = {
+    const formData: any = {
       name: tuture.name,
-      version: tuture.version,
       tutureYml: fs.createReadStream('tuture.yml'),
       diffJson: fs.createReadStream(path.join('.tuture', 'diff.json')),
     };
+
+    if (tuture.topics) {
+      formData.topics = tuture.topics.join(',');
+    }
+
+    if (tuture.description) {
+      formData.description = tuture.description;
+    }
 
     request.post(
       `${apiEndpoint}/publish`,
