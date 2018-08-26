@@ -15,7 +15,7 @@ export const globalTutureRoot = path.join(os.homedir(), tutureRoot);
 export const apiTokenPath = path.join(globalTutureRoot, 'token');
 
 // API endpoint of tuture.co.
-export const apiEndpoint = 'http://localhost:3000/api';
+export const apiEndpoint = 'http://tuture.co/api';
 
 export const staticServer = 'http://static.tuture.co/';
 
