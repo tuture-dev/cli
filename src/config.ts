@@ -15,9 +15,9 @@ export const globalTutureRoot = path.join(os.homedir(), tutureRoot);
 export const apiTokenPath = path.join(globalTutureRoot, 'token');
 
 // API endpoint of tuture.co.
-export const apiEndpoint = 'http://tuture.co/api';
+export const apiEndpoint = 'https://tuture.co/api';
 
-export const staticServer = 'http://static.tuture.co/';
+export const staticServer = 'https://static.tuture.co/';
 
 export function loadConfig(): TutureConfig {
   return JSON.parse(fs.readFileSync(configPath).toString());
