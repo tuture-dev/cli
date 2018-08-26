@@ -20,10 +20,10 @@ export async function makeSteps() {
   logs = logs
     .reverse()
     // filter out commits whose commit message starts with 'tuture:'
-    .filter(log => !log.slice(8, log.length).startsWith('tuture:'));
+    .filter((log) => !log.slice(8, log.length).startsWith('tuture:'));
 
   // Store all diff into .tuture/diff.json
-  const commits = logs.map(log => log.slice(0, 7));
+  const commits = logs.map((log) => log.slice(0, 7));
   await git.storeDiff(commits);
 
   const stepProms: Promise<Step>[] = logs.map(async (log, idx) => {
@@ -46,7 +46,7 @@ export async function makeSteps() {
 export function mergeSteps(prevSteps: Step[], currentSteps: Step[]) {
   // Mark steps not included in latest steps as outdated.
   prevSteps.forEach((prevStep) => {
-    if (!currentSteps.find(step => step.commit === prevStep.commit)) {
+    if (!currentSteps.find((step) => step.commit === prevStep.commit)) {
       prevStep.outdated = true; /* eslint no-param-reassign: "off"  */
     }
   });

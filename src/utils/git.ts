@@ -66,14 +66,17 @@ export async function getGitLogs() {
  */
 export async function getGitDiff(commit: string) {
   const output = await runGitCommand(['show', commit, '--name-only']);
-  let changedFiles = output.split('\n\n').slice(-1)[0].split('\n');
+  let changedFiles = output
+    .split('\n\n')
+    .slice(-1)[0]
+    .split('\n');
   changedFiles = changedFiles.slice(0, changedFiles.length - 1);
 
   const ignoredFiles = loadConfig().ignoredFiles;
 
   return changedFiles.map((file) => {
     const fileObj: any = { file };
-    if (!ignoredFiles.some(pattern => mm.isMatch(file, pattern))) {
+    if (!ignoredFiles.some((pattern) => mm.isMatch(file, pattern))) {
       fileObj.display = true;
     }
     return fileObj;
@@ -96,10 +99,7 @@ export async function storeDiff(commits: string[]) {
 
   const diffs = await Promise.all(diffPromises);
 
-  fs.writeFileSync(
-    path.join(tutureRoot, 'diff.json'),
-    JSON.stringify(diffs),
-  );
+  fs.writeFileSync(path.join(tutureRoot, 'diff.json'), JSON.stringify(diffs));
 }
 
 /**
@@ -124,7 +124,10 @@ export function appendGitHook() {
   if (!fs.existsSync(hookPath)) {
     fs.writeFileSync(hookPath, reloadHook, { mode: 0o755 });
   } else if (
-    !fs.readFileSync(hookPath).toString().includes('tuture reload')
+    !fs
+      .readFileSync(hookPath)
+      .toString()
+      .includes('tuture reload')
   ) {
     fs.appendFileSync(hookPath, reloadHook);
   }
@@ -158,7 +161,10 @@ export function appendGitignore() {
   if (!fs.existsSync('.gitignore')) {
     fs.writeFileSync('.gitignore', ignoreRules);
   } else if (
-    !fs.readFileSync('.gitignore').toString().includes('.tuture')
+    !fs
+      .readFileSync('.gitignore')
+      .toString()
+      .includes('.tuture')
   ) {
     fs.appendFileSync('.gitignore', `\n${ignoreRules}`);
   }
