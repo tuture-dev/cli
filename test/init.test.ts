@@ -18,8 +18,7 @@ import { Tuture } from '../src/types';
 const tmpDirs: string[] = Array();
 
 describe('tuture init -y', () => {
-
-  afterAll(() => tmpDirs.forEach(dir => fs.removeSync(dir)));
+  afterAll(() => tmpDirs.forEach((dir) => fs.removeSync(dir)));
 
   describe('outside a git repo', () => {
     const nonRepoPath = createEmptyDir();
@@ -34,12 +33,13 @@ describe('tuture init -y', () => {
 
     it('should have all needed files created', () => {
       expect(fs.existsSync(path.join(nonRepoPath, 'tuture.yml'))).toBe(true);
-      expect(fs.existsSync(path.join(nonRepoPath, tutureRoot, 'diff.json'))).toBe(true);
+      expect(
+        fs.existsSync(path.join(nonRepoPath, tutureRoot, 'diff.json')),
+      ).toBe(true);
     });
   });
 
   describe('inside a Git repo', () => {
-
     describe('no .gitignore', () => {
       testInit();
     });
@@ -103,8 +103,9 @@ function testInit(testRepo = exampleRepo, ignoreTuture = false) {
   tmpDirs.push(repoPath);
 
   // Remove commits with commit messages starting with `tuture:`.
-  const expectedRepo = testRepo
-    .filter(commit => !commit.message.startsWith('tuture:'));
+  const expectedRepo = testRepo.filter(
+    (commit) => !commit.message.startsWith('tuture:'),
+  );
 
   const cp = tutureRunner(['init', '-y']);
 
@@ -123,9 +124,7 @@ function testInit(testRepo = exampleRepo, ignoreTuture = false) {
     const tutureYmlPath = path.join(repoPath, 'tuture.yml');
     expect(fs.existsSync(tutureYmlPath)).toBe(true);
 
-    const tuture = yaml.safeLoad(
-      fs.readFileSync(tutureYmlPath).toString(),
-    );
+    const tuture = yaml.safeLoad(fs.readFileSync(tutureYmlPath).toString());
     testTutureObject(tuture, expectedRepo);
   });
 
@@ -139,16 +138,14 @@ function testInit(testRepo = exampleRepo, ignoreTuture = false) {
     expect(ignoreRules).toContain(tutureRoot);
 
     // .tuture is ignored only once.
-    expect(ignoreRules.indexOf(tutureRoot)).toBe(ignoreRules.lastIndexOf(tutureRoot));
+    expect(ignoreRules.indexOf(tutureRoot)).toBe(
+      ignoreRules.lastIndexOf(tutureRoot),
+    );
   });
 }
 
 function testTutureObject(tuture: Tuture, expectedRepo: Commit[]) {
-
-  // Expect metadata to be default values.
   expect(tuture.name).toBe('My Awesome Tutorial');
-  expect(tuture.version).toBe('0.0.1');
-
   expect(tuture.steps).toHaveLength(expectedRepo.length);
 
   const steps = tuture.steps;
@@ -162,7 +159,9 @@ function testTutureObject(tuture: Tuture, expectedRepo: Commit[]) {
       expect(steps[i].diff[j].file).toBe(expectedRepo[i].files[j]);
 
       const file = steps[i].diff[j].file;
-      if (!defaultConfig.ignoredFiles.some(pattern => mm.isMatch(file, pattern))) {
+      if (
+        !defaultConfig.ignoredFiles.some((pattern) => mm.isMatch(file, pattern))
+      ) {
         expect(steps[i].diff[j].display).toBe(true);
       }
     }

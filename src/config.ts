@@ -1,3 +1,4 @@
+import os from 'os';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -8,6 +9,15 @@ export const tutureRoot = '.tuture';
 
 // Path to runtime config file.
 export const configPath = path.join(tutureRoot, 'config.json');
+
+export const globalTutureRoot = path.join(os.homedir(), tutureRoot);
+
+export const apiTokenPath = path.join(globalTutureRoot, 'token');
+
+// API endpoint of tuture.co.
+export const apiEndpoint = 'https://tuture.co/api';
+
+export const staticServer = 'https://static.tuture.co/';
 
 export function loadConfig(): TutureConfig {
   return JSON.parse(fs.readFileSync(configPath).toString());

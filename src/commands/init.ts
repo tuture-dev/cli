@@ -24,12 +24,17 @@ export default class Init extends BaseCommand {
   };
 
   async promptInitGit(yes: boolean) {
-    const response = yes ? { answer: true } : await prompt([{
-      name: 'answer',
-      type: 'confirm',
-      message: 'You are not in a Git repository, do you want to initialize one?',
-      default: false,
-    }]);
+    const response = yes
+      ? { answer: true }
+      : await prompt([
+        {
+          name: 'answer',
+          type: 'confirm',
+          message:
+              'You are not in a Git repository, do you want to initialize one?',
+          default: false,
+        },
+      ]);
 
     if (!(response as ConfirmResponse).answer) {
       this.exit(0);
@@ -40,30 +45,15 @@ export default class Init extends BaseCommand {
   }
 
   async promptMetaData(yes: boolean): Promise<TutureMetadata> {
-    const defaultValues = {
-      name: 'My Awesome Tutorial',
-      version: '0.0.1',
-      email: 'me@example.com',
-    };
-    const questions = [
-      {
-        name: 'name',
-        message: 'Tutorial Name',
-        default: defaultValues.name,
-      },
-      {
-        name: 'version',
-        message: 'Version',
-        default: defaultValues.version,
-      },
-      {
-        name: 'email',
-        message: 'Maintainer Email',
-        default: defaultValues.email,
-      },
-    ];
-
-    const answer = yes ? defaultValues : await prompt(questions);
+    const answer = yes
+      ? { name: 'My Awesome Tutorial' }
+      : await prompt([
+        {
+          name: 'name',
+          message: 'Tutorial Name',
+          default: 'My Awesome Tutorial',
+        },
+      ]);
     return answer as TutureMetadata;
   }
 
