@@ -2,10 +2,9 @@ import tmp from 'tmp';
 import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
-import request from 'request';
-import { Readable } from 'stream';
-import { flags } from '@oclif/command';
 import yaml from 'js-yaml';
+import request from 'request';
+import { flags } from '@oclif/command';
 
 import BaseCommand from '../base';
 import { Tuture } from '../types';
@@ -22,7 +21,7 @@ export default class Publish extends BaseCommand {
     const assets: string[] = [];
 
     // Replace all paths to local assets with ones on tuture static server.
-    // For instance, "./tuture-assets/foo.png" => "http://static.tuture.co/foo.png".
+    // For instance, ./tuture-assets/foo.png => https://static.tuture.co/foo.png.
     const updatedTuture = tutureYml.replace(
       /!\[.*\]\((.*)\)/g,
       (match, imagePath) => {
@@ -36,7 +35,7 @@ export default class Publish extends BaseCommand {
 
   saveTutureToTmp(tuture: string) {
     const tmpDir = tmp.dirSync();
-    const tmpPath = path.join(tmpDir.name, 'tuture.yml');
+    const tmpPath = path.join(tmpDir.name, 'tuture.json');
     fs.writeFileSync(tmpPath, tuture);
     return tmpPath;
   }
@@ -50,23 +49,18 @@ export default class Publish extends BaseCommand {
           'tuture login',
         )}.`,
       );
+      this.exit(1);
     }
 
     const tutureYml = fs.readFileSync('tuture.yml').toString();
     const [updatedTutureYml, assets] = this.collectTutureAssets(tutureYml);
-
-    // This streaming method comes from here:
-    // https://stackoverflow.com/questions/12755997/how-to-create-streams-from-string-in-node-js
-    const tutureYmlStream = new Readable();
-    tutureYmlStream._read = () => {};
-    tutureYmlStream.push(updatedTutureYml);
-    tutureYmlStream.push(null);
-
     const tuture: Tuture = yaml.safeLoad(updatedTutureYml);
 
     const formData: any = {
       name: tuture.name,
-      tutureYml: fs.createReadStream(this.saveTutureToTmp(updatedTutureYml)),
+      tutureYml: fs.createReadStream(
+        this.saveTutureToTmp(JSON.stringify(tuture)),
+      ),
       diffJson: fs.createReadStream(path.join('.tuture', 'diff.json')),
       assets: assets.map((asset) => fs.createReadStream(asset)),
     };
@@ -86,7 +80,6 @@ export default class Publish extends BaseCommand {
       { formData, headers: { Authorization: `JWT ${token}` } },
       (err, res, body) => {
         if (err) {
-          console.log(err);
           this.log(
             `Verification failed. Please relogin with ${chalk.bold(
               'tuture login',
@@ -98,7 +91,8 @@ export default class Publish extends BaseCommand {
         if (res.statusCode === 201) {
           this.success('Your tutorial has been successfully published!');
         } else {
-          this.error('Publish failed. Please retry.');
+          this.log('Publish failed. Please retry.');
+          this.log(body);
           this.exit(1);
         }
       },
