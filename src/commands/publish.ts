@@ -58,10 +58,10 @@ export default class Publish extends BaseCommand {
 
     const formData: any = {
       name: tuture.name,
-      tutureYml: fs.createReadStream(
+      tuture: fs.createReadStream(
         this.saveTutureToTmp(JSON.stringify(tuture)),
       ),
-      diffJson: fs.createReadStream(path.join('.tuture', 'diff.json')),
+      diff: fs.createReadStream(path.join('.tuture', 'diff.json')),
       assets: assets.map((asset) => fs.createReadStream(asset)),
     };
 
