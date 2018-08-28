@@ -53,9 +53,10 @@ export default class Login extends BaseCommand {
         if (res.statusCode === 200) {
           this.saveToken(JSON.parse(body).token as string);
           this.success('Login successfully!');
+        } else if (res.statusCode === 401) {
+          this.log('Invalid email or password.');
         } else {
-          this.error(JSON.parse(body).msg as string);
-          this.exit(1);
+          this.log(body);
         }
       },
     );
