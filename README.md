@@ -63,15 +63,39 @@ USAGE
 
 ### `tuture destroy`
 
+```
 Delete all tuture files
 
-```
 USAGE
   $ tuture destroy
 
 OPTIONS
   -f, --force  destroy without confirmation
   -h, --help   show CLI help
+```
+
+### `tuture login`
+
+```
+Login to tuture account
+
+USAGE
+  $ tuture login
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+### `tuture publish`
+
+```
+Publish tutorial to tuture.co
+
+USAGE
+  $ tuture publish
+
+OPTIONS
+  -h, --help  show CLI help
 ```
 
 ## License
