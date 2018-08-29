@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.0
+
+### New Features
+
+- `login` and `publish` commands are added to connect to [tuture.co](https://tuture.co) and share your tutorials!
+- You can now specify which port to use for running tutorial server when `tuture up`
+
+### Breaking Changes
+
+- `version` and `maintainer` fields are removed from **tuture.yml**
+
 ## 0.4.4
 
 ### New Features
