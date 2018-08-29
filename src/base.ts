@@ -10,7 +10,7 @@ export default abstract class BaseCommand extends Command {
   userConfig = defaultConfig;
 
   success(msg: string) {
-    this.log(` ${chalk.green('›') }   Success: ${msg}`);
+    this.log(` ${chalk.green('›')}   Success: ${msg}`);
   }
 
   async init() {
@@ -27,5 +27,10 @@ export default abstract class BaseCommand extends Command {
 
   async finally() {
     fs.removeSync(configPath);
+
+    // Clean tuture root if it's empty, since it's created for no reason..
+    if (fs.existsSync(tutureRoot) && fs.readdirSync(tutureRoot).length === 0) {
+      fs.removeSync(tutureRoot);
+    }
   }
 }
