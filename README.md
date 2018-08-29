@@ -46,6 +46,10 @@ Render and edit tutorial in browser
 
 USAGE
   $ tuture up
+
+OPTIONS
+  -h, --help       show CLI help
+  -p, --port=port  which port to use for tutorial server
 ```
 
 ### `tuture reload`
