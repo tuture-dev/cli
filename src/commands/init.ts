@@ -54,8 +54,17 @@ export default class Init extends BaseCommand {
           message: 'Tutorial Name',
           default: 'My Awesome Tutorial',
         },
+        {
+          name: 'topics',
+          message: 'Topics',
+        },
       ]);
     answer.id = crypto.randomBytes(16).toString('hex');
+    if (answer.topics) {
+      answer.topics = answer.topics.split(/\W+/);
+    } else {
+      delete answer.topics;
+    }
     return answer as TutureMetadata;
   }
 
