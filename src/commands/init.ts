@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import fs from 'fs-extra';
 import { flags } from '@oclif/command';
 import { prompt } from 'inquirer';
@@ -45,7 +46,7 @@ export default class Init extends BaseCommand {
   }
 
   async promptMetaData(yes: boolean): Promise<TutureMetadata> {
-    const answer = yes
+    const answer: any = yes
       ? { name: 'My Awesome Tutorial' }
       : await prompt([
         {
@@ -54,6 +55,7 @@ export default class Init extends BaseCommand {
           default: 'My Awesome Tutorial',
         },
       ]);
+    answer.id = crypto.randomBytes(16).toString('hex');
     return answer as TutureMetadata;
   }
 

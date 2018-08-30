@@ -24,6 +24,7 @@ export interface Step {
 }
 
 export interface TutureMetadata {
+  id: string;
   name: string;
   topics?: string[];
   description?: string;
